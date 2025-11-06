@@ -1,0 +1,34 @@
+{
+  "header": {
+    "home": "Home",
+    "events": "Events",
+    "policy": "Policy",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "loginRegister": "Login/Register",
+    "account": "Account",
+    "myProfile": "My Profile",
+    "myTickets": "My Tickets",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "Ticket Event QR Web",
+    "subtitle": "Event and QR ticket management system",
+    "welcome": "Welcome, {{name}}!",
+    "welcomeMessage": "You have successfully logged in.",
+    "readyToStart": "Ready to start!",
+    "pleaseLogin": "Please log in or register to continue",
+    "email": "Email",
+    "fullName": "Full Name",
+    "status": "Status",
+    "verified": "Verified",
+    "unverified": "Unverified"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  }
+}
+

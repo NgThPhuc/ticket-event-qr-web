@@ -1,0 +1,165 @@
+{
+  "header": {
+    "home": "Home",
+    "events": "Events",
+    "policy": "Policy",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "loginRegister": "Login/Register",
+    "account": "Account",
+    "myProfile": "My Profile",
+    "myTickets": "My Tickets",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "Ticket Event QR Web",
+    "subtitle": "Event and QR ticket management system",
+    "welcome": "Welcome, {{name}}!",
+    "welcomeMessage": "You have successfully logged in.",
+    "readyToStart": "Ready to start!",
+    "pleaseLogin": "Please log in or register to continue",
+    "email": "Email",
+    "fullName": "Full Name",
+    "status": "Status",
+    "verified": "Verified",
+    "unverified": "Unverified"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "footer": {
+    "whoWeAre": "Who we are?",
+    "description": "Tickrter is a global ticketing platform for live experiences that allows anyone to create, share, find and attend events that fuel their passions and enrich their lives.",
+    "contact": "Contact",
+    "aboutUs": "About Us",
+    "contactUs": "Contact Us",
+    "faqs": "FAQs",
+    "help": "Help",
+    "concertTicketing": "Concert Ticketing",
+    "accountSupport": "Account Support",
+    "termsConditions": "Terms & Conditions",
+    "legal": "Legal",
+    "termsOfUs": "Terms of Us",
+    "acceptable": "Acceptable",
+    "privacyPolicy": "Privacy Policy",
+    "newsletterTitle": "Join our mailing list to stay in the loop with our",
+    "newsletterSubtitle": "newest events and concerts.",
+    "enterEmail": "Enter your email",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "cookies": "Cookies"
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Or",
+    "registerLink": "create a new account",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "submit": "Login",
+    "googleLogin": "Login with Google",
+    "or": "Or",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email",
+    "passwordRequired": "Password is required",
+    "success": "Login successful!",
+    "error": "Login failed. Please try again."
+  },
+  "register": {
+    "title": "Create Account",
+    "subtitle": "Already have an account?",
+    "loginLink": "Login",
+    "fullName": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "submit": "Register",
+    "fullNameRequired": "Full name is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "confirmPasswordRequired": "Please confirm your password",
+    "confirmPasswordMismatch": "Passwords do not match",
+    "success": "Registration successful! Please check your email to verify your account.",
+    "error": "Registration failed. Please try again."
+  },
+  "verifyOTP": {
+    "title": "Verify OTP",
+    "subtitle": "We have sent an OTP code to email",
+    "otpCode": "OTP Code",
+    "otpCodeRequired": "OTP code is required",
+    "otpCodeLength": "OTP code must be 6 digits",
+    "enterCode": "Enter the 6-digit code from your email",
+    "verify": "Verify",
+    "notReceived": "Didn't receive the code?",
+    "resendAfter": "Resend after {{seconds}}s",
+    "resendCode": "Resend code",
+    "resendSuccess": "A new OTP code has been sent to your email.",
+    "success": "Account verification successful!",
+    "error": "OTP code is incorrect or has expired."
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "subtitle": "Enter your email to receive a password reset link",
+    "email": "Email",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email",
+    "submit": "Send reset link",
+    "backToLogin": "Back to login",
+    "success": "If the email exists in the system, we have sent a password reset link.",
+    "error": "An error occurred. Please try again.",
+    "checkEmail": "Please check your email",
+    "toResetPassword": "to reset your password."
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "subtitle": "Enter your new password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "newPasswordRequired": "New password is required",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "confirmPasswordRequired": "Please confirm your password",
+    "confirmPasswordMismatch": "Passwords do not match",
+    "submit": "Reset Password",
+    "backToLogin": "Back to login",
+    "success": "Password reset successful! Please log in again.",
+    "error": "Invalid or expired token.",
+    "invalidToken": "Invalid token. Please request a new password reset link.",
+    "requestNewLink": "Request new link",
+    "redirecting": "Redirecting to login page..."
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "Sorry, the page you are looking for does not exist.",
+    "description": "The URL may have been changed or the page has been deleted.",
+    "goHome": "Go to Home",
+    "login": "Login",
+    "register": "Register"
+  },
+  "googleCallback": {
+    "processing": "Processing login...",
+    "success": "Google login successful!",
+    "error": "Login failed. Please try again.",
+    "noToken": "No token received from Google. Please try again.",
+    "fetchError": "Unable to fetch user information"
+  },
+  "pages": {
+    "events": {
+      "title": "Events",
+      "description": "Events page is under development..."
+    },
+    "policy": {
+      "title": "Policy",
+      "description": "Policy page is under development..."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Contact page is under development..."
+    }
+  }
+}
+

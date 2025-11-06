@@ -1,0 +1,34 @@
+{
+  "header": {
+    "home": "Trang chủ",
+    "events": "Sự kiện",
+    "policy": "Chính sách",
+    "contact": "Liên hệ",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "loginRegister": "Đăng nhập/Đăng ký",
+    "account": "Tài khoản",
+    "myProfile": "Hồ sơ của tôi",
+    "myTickets": "Vé của tôi",
+    "logout": "Đăng xuất"
+  },
+  "home": {
+    "title": "Ticket Event QR Web",
+    "subtitle": "Hệ thống quản lý sự kiện và vé QR",
+    "welcome": "Chào mừng, {{name}}!",
+    "welcomeMessage": "Bạn đã đăng nhập thành công.",
+    "readyToStart": "Đã sẵn sàng để bắt đầu!",
+    "pleaseLogin": "Vui lòng đăng nhập hoặc đăng ký để tiếp tục",
+    "email": "Email",
+    "fullName": "Họ tên",
+    "status": "Trạng thái",
+    "verified": "Đã xác thực",
+    "unverified": "Chưa xác thực"
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công"
+  }
+}
+

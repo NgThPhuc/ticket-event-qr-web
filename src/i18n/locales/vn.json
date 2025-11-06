@@ -1,0 +1,165 @@
+{
+  "header": {
+    "home": "Trang chủ",
+    "events": "Sự kiện",
+    "policy": "Chính sách",
+    "contact": "Liên hệ",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "loginRegister": "Đăng nhập/Đăng ký",
+    "account": "Tài khoản",
+    "myProfile": "Hồ sơ của tôi",
+    "myTickets": "Vé của tôi",
+    "logout": "Đăng xuất"
+  },
+  "home": {
+    "title": "Ticket Event QR Web",
+    "subtitle": "Hệ thống quản lý sự kiện và vé QR",
+    "welcome": "Chào mừng, {{name}}!",
+    "welcomeMessage": "Bạn đã đăng nhập thành công.",
+    "readyToStart": "Đã sẵn sàng để bắt đầu!",
+    "pleaseLogin": "Vui lòng đăng nhập hoặc đăng ký để tiếp tục",
+    "email": "Email",
+    "fullName": "Họ tên",
+    "status": "Trạng thái",
+    "verified": "Đã xác thực",
+    "unverified": "Chưa xác thực"
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công"
+  },
+  "footer": {
+    "whoWeAre": "Chúng tôi là ai?",
+    "description": "Tickrter là nền tảng đặt vé toàn cầu cho các trải nghiệm trực tiếp cho phép mọi người tạo, chia sẻ, tìm và tham dự các sự kiện thúc đẩy đam mê và làm phong phú cuộc sống của họ.",
+    "contact": "Liên hệ",
+    "aboutUs": "Về chúng tôi",
+    "contactUs": "Liên hệ",
+    "faqs": "Câu hỏi thường gặp",
+    "help": "Trợ giúp",
+    "concertTicketing": "Đặt vé hòa nhạc",
+    "accountSupport": "Hỗ trợ tài khoản",
+    "termsConditions": "Điều khoản & Điều kiện",
+    "legal": "Pháp lý",
+    "termsOfUs": "Điều khoản của chúng tôi",
+    "acceptable": "Chấp nhận được",
+    "privacyPolicy": "Chính sách bảo mật",
+    "newsletterTitle": "Tham gia danh sách email của chúng tôi để cập nhật",
+    "newsletterSubtitle": "các sự kiện và buổi hòa nhạc mới nhất.",
+    "enterEmail": "Nhập email của bạn",
+    "terms": "Điều khoản",
+    "privacy": "Bảo mật",
+    "cookies": "Cookies"
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "subtitle": "Hoặc",
+    "registerLink": "đăng ký tài khoản mới",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "forgotPassword": "Quên mật khẩu?",
+    "submit": "Đăng nhập",
+    "googleLogin": "Đăng nhập bằng Google",
+    "or": "Hoặc",
+    "emailRequired": "Email không được để trống",
+    "emailInvalid": "Email không hợp lệ",
+    "passwordRequired": "Mật khẩu không được để trống",
+    "success": "Đăng nhập thành công!",
+    "error": "Đăng nhập thất bại. Vui lòng thử lại."
+  },
+  "register": {
+    "title": "Đăng ký tài khoản",
+    "subtitle": "Đã có tài khoản?",
+    "loginLink": "Đăng nhập",
+    "fullName": "Họ và tên",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "submit": "Đăng ký",
+    "fullNameRequired": "Họ tên không được để trống",
+    "emailRequired": "Email không được để trống",
+    "emailInvalid": "Email không hợp lệ",
+    "passwordRequired": "Mật khẩu không được để trống",
+    "passwordMinLength": "Mật khẩu phải có tối thiểu 6 ký tự",
+    "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
+    "confirmPasswordMismatch": "Mật khẩu xác nhận không khớp",
+    "success": "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
+    "error": "Đăng ký thất bại. Vui lòng thử lại."
+  },
+  "verifyOTP": {
+    "title": "Xác thực OTP",
+    "subtitle": "Chúng tôi đã gửi mã OTP đến email",
+    "otpCode": "Mã OTP",
+    "otpCodeRequired": "Mã OTP không được để trống",
+    "otpCodeLength": "Mã OTP phải có 6 ký tự",
+    "enterCode": "Nhập mã 6 số từ email của bạn",
+    "verify": "Xác thực",
+    "notReceived": "Không nhận được mã?",
+    "resendAfter": "Gửi lại sau {{seconds}}s",
+    "resendCode": "Gửi lại mã",
+    "resendSuccess": "Mã OTP mới đã được gửi đến email của bạn.",
+    "success": "Xác thực tài khoản thành công!",
+    "error": "Mã OTP không chính xác hoặc đã hết hạn."
+  },
+  "forgotPassword": {
+    "title": "Quên mật khẩu",
+    "subtitle": "Nhập email của bạn để nhận link đặt lại mật khẩu",
+    "email": "Email",
+    "emailRequired": "Email không được để trống",
+    "emailInvalid": "Email không hợp lệ",
+    "submit": "Gửi link đặt lại mật khẩu",
+    "backToLogin": "Quay lại đăng nhập",
+    "success": "Nếu email tồn tại trong hệ thống, chúng tôi đã gửi link đặt lại mật khẩu.",
+    "error": "Đã có lỗi xảy ra. Vui lòng thử lại.",
+    "checkEmail": "Vui lòng kiểm tra email",
+    "toResetPassword": "để đặt lại mật khẩu."
+  },
+  "resetPassword": {
+    "title": "Đặt lại mật khẩu",
+    "subtitle": "Nhập mật khẩu mới của bạn",
+    "newPassword": "Mật khẩu mới",
+    "confirmNewPassword": "Xác nhận mật khẩu mới",
+    "newPasswordRequired": "Mật khẩu mới không được để trống",
+    "passwordMinLength": "Mật khẩu phải có tối thiểu 6 ký tự",
+    "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
+    "confirmPasswordMismatch": "Mật khẩu xác nhận không khớp",
+    "submit": "Đặt lại mật khẩu",
+    "backToLogin": "Quay lại đăng nhập",
+    "success": "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.",
+    "error": "Token không hợp lệ hoặc đã hết hạn.",
+    "invalidToken": "Token không hợp lệ. Vui lòng yêu cầu link đặt lại mật khẩu mới.",
+    "requestNewLink": "Yêu cầu link mới",
+    "redirecting": "Đang chuyển đến trang đăng nhập..."
+  },
+  "notFound": {
+    "title": "Trang không tìm thấy",
+    "message": "Xin lỗi, trang bạn đang tìm kiếm không tồn tại.",
+    "description": "Có thể URL đã bị thay đổi hoặc trang đã bị xóa.",
+    "goHome": "Về trang chủ",
+    "login": "Đăng nhập",
+    "register": "Đăng ký"
+  },
+  "googleCallback": {
+    "processing": "Đang xử lý đăng nhập...",
+    "success": "Đăng nhập bằng Google thành công!",
+    "error": "Đăng nhập thất bại. Vui lòng thử lại.",
+    "noToken": "Không nhận được token từ Google. Vui lòng thử lại.",
+    "fetchError": "Không thể lấy thông tin user"
+  },
+  "pages": {
+    "events": {
+      "title": "Sự kiện",
+      "description": "Trang sự kiện đang được phát triển..."
+    },
+    "policy": {
+      "title": "Chính sách",
+      "description": "Trang chính sách đang được phát triển..."
+    },
+    "contact": {
+      "title": "Liên hệ",
+      "description": "Trang liên hệ đang được phát triển..."
+    }
+  }
+}
+
