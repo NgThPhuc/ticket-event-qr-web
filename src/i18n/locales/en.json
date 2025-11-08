@@ -10,7 +10,9 @@
     "account": "Account",
     "myProfile": "My Profile",
     "myTickets": "My Tickets",
-    "logout": "Logout"
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "createOrganizer": "Create Organizer"
   },
   "home": {
     "title": "Ticket Event QR Web",
@@ -28,7 +30,8 @@
   "common": {
     "loading": "Loading...",
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    "cancel": "Cancel"
   },
   "footer": {
     "whoWeAre": "Who we are?",
@@ -160,6 +163,66 @@
       "title": "Contact",
       "description": "Contact page is under development..."
     }
+  },
+  "organization": {
+    "createTitle": "Create New Organization",
+    "createSubtitle": "Create your organization to start managing events",
+    "name": "Organization Name",
+    "namePlaceholder": "e.g., Tech Events Vietnam",
+    "nameHint": "Organization name must be at least 3 characters",
+    "nameMinLength": "Organization name must be at least 3 characters",
+    "slug": "Slug",
+    "slugPlaceholder": "tech-events-vietnam",
+    "slugHint": "Only lowercase letters, numbers, and hyphens",
+    "slugRequired": "Slug is required",
+    "description": "Description",
+    "descriptionPlaceholder": "Description about your organization...",
+    "contactEmail": "Contact Email",
+    "contactEmailPlaceholder": "contact@example.com",
+    "contactEmailRequired": "Contact email is required",
+    "contactPhone": "Phone Number",
+    "contactPhonePlaceholder": "0123456789",
+    "address": "Address",
+    "addressPlaceholder": "123 Nguyen Hue, District 1, HCM",
+    "logoUrl": "Logo URL",
+    "logoUrlPlaceholder": "https://example.com/logo.png",
+    "createButton": "Create Organization",
+    "createSuccess": "Organization created successfully! Redirecting to home...",
+    "createError": "An error occurred while creating the organization. Please try again.",
+    "fetchError": "Unable to load organizations list"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Manage your organizations and events",
+    "noOrganizations": "You don't have any organizations yet",
+    "noOrganizationsDescription": "Create your first organization to start managing events",
+    "createOrganization": "Create Organization",
+    "viewDetails": "View Details",
+    "manageMembers": "Manage Members"
+  },
+  "members": {
+    "title": "Manage Members",
+    "subtitle": "Manage members in your organization",
+    "membersList": "Members List",
+    "addMember": "Add Member",
+    "email": "Email",
+    "emailPlaceholder": "email@example.com",
+    "role": "Role",
+    "addButton": "Add",
+    "noMembers": "No members yet",
+    "name": "Name",
+    "joinedAt": "Joined",
+    "actions": "Actions",
+    "remove": "Remove",
+    "unknown": "Unknown",
+    "fetchError": "Unable to load members list",
+    "addSuccess": "Member added successfully",
+    "addError": "Unable to add member",
+    "updateRoleSuccess": "Role updated successfully",
+    "updateRoleError": "Unable to update role",
+    "removeSuccess": "Member removed successfully",
+    "removeError": "Unable to remove member",
+    "removeConfirm": "Are you sure you want to remove this member?"
   }
 }
 

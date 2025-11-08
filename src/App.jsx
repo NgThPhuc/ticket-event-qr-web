@@ -17,6 +17,10 @@ import Events from './pages/Events';
 import Policy from './pages/Policy';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
+import CreateOrganization from './pages/CreateOrganization';
+import Dashboard from './pages/Dashboard';
+import OrganizationDetail from './pages/OrganizationDetail';
+import ManageMembers from './pages/ManageMembers';
 
 function AppContent() {
   const location = useLocation();
@@ -83,6 +87,40 @@ function AppContent() {
         <Route path="/events" element={<Events />} />
         <Route path="/policy" element={<Policy />} />
         <Route path="/contact" element={<Contact />} />
+
+        {/* Protected pages - Organizations */}
+        <Route
+          path="/create-organization"
+          element={
+            <ProtectedRoute>
+              <CreateOrganization />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizations/:organizationId"
+          element={
+            <ProtectedRoute>
+              <OrganizationDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizations/:organizationId/members"
+          element={
+            <ProtectedRoute>
+              <ManageMembers />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 404 Not Found */}
         <Route path="*" element={<NotFound />} />

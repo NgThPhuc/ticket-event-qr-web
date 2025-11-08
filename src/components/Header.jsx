@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import ThemeToggle from './ui/ThemeToggle';
 import LanguageToggle from './ui/LanguageToggle';
+import { getMyOrganizations, getAllOrganizations } from '../api/organizations';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -11,6 +12,8 @@ const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [hasOrganizations, setHasOrganizations] = useState(false);
+  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
 
   const menuItems = [
     { label: t('header.home'), path: '/' },
@@ -21,8 +24,43 @@ const Header = () => {
 
   const handleLogout = async () => {
     await logout();
+    setHasOrganizations(false);
+    setIsPlatformAdmin(false);
     // Vẫn ở lại trang chủ sau khi đăng xuất
   };
+
+  // Kiểm tra xem user có organizations không
+  // PLATFORM_ADMIN luôn hiển thị Dashboard, không cần check organizations
+  useEffect(() => {
+    const checkOrganizations = async () => {
+      if (isAuthenticated) {
+        // Kiểm tra xem có phải PLATFORM_ADMIN không bằng cách thử gọi API /organizations
+        // (chỉ PLATFORM_ADMIN mới có quyền truy cập endpoint này)
+        try {
+          await getAllOrganizations();
+          // Nếu thành công, đây là PLATFORM_ADMIN
+          setIsPlatformAdmin(true);
+          setHasOrganizations(true);
+          return;
+        } catch (error) {
+          // Nếu lỗi 403, không phải PLATFORM_ADMIN
+          setIsPlatformAdmin(false);
+          // Tiếp tục check organizations của user
+          try {
+            const orgs = await getMyOrganizations();
+            setHasOrganizations(orgs && orgs.length > 0);
+          } catch (err) {
+            setHasOrganizations(false);
+          }
+        }
+      } else {
+        setIsPlatformAdmin(false);
+        setHasOrganizations(false);
+      }
+    };
+
+    checkOrganizations();
+  }, [isAuthenticated, user]);
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700">
@@ -70,6 +108,52 @@ const Header = () => {
 
             {/* Language Toggle */}
             <LanguageToggle />
+
+            {/* Dashboard Button - Hiển thị khi user có organizations hoặc là PLATFORM_ADMIN */}
+            {isAuthenticated && (hasOrganizations || isPlatformAdmin) && (
+              <Link
+                to="/dashboard"
+                className="hidden md:flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-200"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+                <span className="text-sm font-medium">{t('header.dashboard')}</span>
+              </Link>
+            )}
+
+            {/* Create Organizer Button - Hiển thị khi user chưa có organizations và không phải PLATFORM_ADMIN */}
+            {isAuthenticated && !hasOrganizations && !isPlatformAdmin && (
+              <Link
+                to="/create-organization"
+                className="hidden md:flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors duration-200"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                <span className="text-sm font-medium">{t('header.createOrganizer')}</span>
+              </Link>
+            )}
 
             {/* Auth Button */}
             {isAuthenticated ? (
@@ -193,6 +277,50 @@ const Header = () => {
                   {item.label}
                 </Link>
               ))}
+              {isAuthenticated && (hasOrganizations || isPlatformAdmin) && (
+                <Link
+                  to="/dashboard"
+                  className="text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium py-2 transition-colors duration-200 flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                  {t('header.dashboard')}
+                </Link>
+              )}
+              {isAuthenticated && !hasOrganizations && !isPlatformAdmin && (
+                <Link
+                  to="/create-organization"
+                  className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium py-2 transition-colors duration-200 flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  {t('header.createOrganizer')}
+                </Link>
+              )}
             </nav>
           </div>
         )}

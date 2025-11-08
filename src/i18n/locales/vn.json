@@ -10,7 +10,9 @@
     "account": "Tài khoản",
     "myProfile": "Hồ sơ của tôi",
     "myTickets": "Vé của tôi",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "dashboard": "Dashboard",
+    "createOrganizer": "Tạo Organizer"
   },
   "home": {
     "title": "Ticket Event QR Web",
@@ -28,7 +30,9 @@
   "common": {
     "loading": "Đang tải...",
     "error": "Lỗi",
-    "success": "Thành công"
+    "success": "Thành công",
+    "cancel": "Hủy",
+    "back": "Quay lại"
   },
   "footer": {
     "whoWeAre": "Chúng tôi là ai?",
@@ -160,6 +164,78 @@
       "title": "Liên hệ",
       "description": "Trang liên hệ đang được phát triển..."
     }
+  },
+  "organization": {
+    "createTitle": "Tạo Tổ Chức Mới",
+    "createSubtitle": "Tạo tổ chức của bạn để bắt đầu quản lý sự kiện",
+    "name": "Tên tổ chức",
+    "namePlaceholder": "Ví dụ: Tech Events Vietnam",
+    "nameHint": "Tên tổ chức phải có ít nhất 3 ký tự",
+    "nameMinLength": "Tên tổ chức phải có ít nhất 3 ký tự",
+    "slug": "Slug",
+    "slugPlaceholder": "tech-events-vietnam",
+    "slugHint": "Chỉ chứa chữ thường, số và dấu gạch ngang",
+    "slugRequired": "Slug không được để trống",
+    "description": "Mô tả",
+    "descriptionPlaceholder": "Mô tả về tổ chức của bạn...",
+    "contactEmail": "Email liên hệ",
+    "contactEmailPlaceholder": "contact@example.com",
+    "contactEmailRequired": "Email liên hệ không được để trống",
+    "contactPhone": "Số điện thoại",
+    "contactPhonePlaceholder": "0123456789",
+    "address": "Địa chỉ",
+    "addressPlaceholder": "123 Nguyen Hue, District 1, HCM",
+    "logoUrl": "URL Logo",
+    "logoUrlPlaceholder": "https://example.com/logo.png",
+    "createButton": "Tạo Tổ Chức",
+    "createSuccess": "Tạo tổ chức thành công! Đang chuyển về trang chủ...",
+    "createError": "Có lỗi xảy ra khi tạo tổ chức. Vui lòng thử lại.",
+    "fetchError": "Không thể tải danh sách tổ chức",
+    "detailSubtitle": "Chi tiết tổ chức",
+    "status": "Trạng thái",
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động",
+    "owner": "Chủ sở hữu",
+    "manageMembers": "Quản Lý Thành Viên",
+    "edit": "Chỉnh Sửa",
+    "delete": "Xóa",
+    "deleteConfirmTitle": "Xác nhận xóa tổ chức",
+    "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa tổ chức này? Hành động này không thể hoàn tác và sẽ xóa tất cả sự kiện, đơn hàng và vé liên quan.",
+    "deleteConfirm": "Xóa",
+    "deleteError": "Không thể xóa tổ chức"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Quản lý tổ chức và sự kiện của bạn",
+    "noOrganizations": "Bạn chưa có tổ chức nào",
+    "noOrganizationsDescription": "Tạo tổ chức đầu tiên để bắt đầu quản lý sự kiện",
+    "createOrganization": "Tạo Tổ Chức",
+    "viewDetails": "Xem Chi Tiết",
+    "manageMembers": "Quản Lý Thành Viên"
+  },
+  "members": {
+    "title": "Quản Lý Thành Viên",
+    "subtitle": "Quản lý thành viên trong tổ chức của bạn",
+    "membersList": "Danh sách thành viên",
+    "addMember": "Thêm Thành Viên",
+    "email": "Email",
+    "emailPlaceholder": "email@example.com",
+    "role": "Vai trò",
+    "addButton": "Thêm",
+    "noMembers": "Chưa có thành viên nào",
+    "name": "Tên",
+    "joinedAt": "Tham gia",
+    "actions": "Hành động",
+    "remove": "Xóa",
+    "unknown": "Không xác định",
+    "fetchError": "Không thể tải danh sách thành viên",
+    "addSuccess": "Thêm thành viên thành công",
+    "addError": "Không thể thêm thành viên",
+    "updateRoleSuccess": "Cập nhật vai trò thành công",
+    "updateRoleError": "Không thể cập nhật vai trò",
+    "removeSuccess": "Xóa thành viên thành công",
+    "removeError": "Không thể xóa thành viên",
+    "removeConfirm": "Bạn có chắc chắn muốn xóa thành viên này?"
   }
 }
 
