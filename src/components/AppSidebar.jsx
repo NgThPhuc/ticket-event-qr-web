@@ -56,7 +56,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b p-4">
+      <SidebarHeader className="border-b p-4 h-[69px]">
         <div className={`flex items-center w-full ${state === 'collapsed' ? 'justify-center gap-0' : 'justify-start gap-2'}`}>
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 flex-shrink-0">
             <span className="text-lg font-bold text-white">T</span>
@@ -72,7 +72,7 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>{t('sidebar.navigation')}</SidebarGroupLabel>
+          {/* <SidebarGroupLabel>{t('sidebar.navigation')}</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -89,7 +89,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel>{t('sidebar.account')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -109,7 +109,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
       </SidebarContent>
 
       {/* <SidebarFooter className="border-t p-4">
