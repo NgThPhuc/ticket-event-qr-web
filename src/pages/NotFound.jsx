@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Button from '../components/ui/Button';
+import { Button } from '@/components/ui/button';
 
 const NotFound = () => {
   const { t } = useTranslation();
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full text-center">
@@ -47,7 +47,7 @@ const NotFound = () => {
           {/* Action Buttons */}
           <div className="space-y-4">
             <Link to="/">
-              <Button>{t('notFound.goHome')}</Button>
+              <button>{t('notFound.goHome')}</button>
             </Link>
             <div className="flex gap-4 justify-center">
               <Link

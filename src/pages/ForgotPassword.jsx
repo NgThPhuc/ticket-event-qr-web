@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
-import Alert from '../components/ui/Alert';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
@@ -33,7 +33,7 @@ const ForgotPassword = () => {
 
     // Lắng nghe event từ window
     window.addEventListener('passwordResetSuccess', handlePasswordResetSuccess);
-    
+
     // Lắng nghe thay đổi trong localStorage (cho cross-tab communication)
     const handleStorageChange = (e) => {
       if (e.key === 'passwordResetSuccess' && e.newValue === 'true') {
@@ -107,28 +107,33 @@ const ForgotPassword = () => {
         </div>
 
         {alert.message && (
-          <Alert
-            type={alert.type}
-            message={alert.message}
-            onClose={() => setAlert({ type: '', message: '' })}
-          />
+          <Alert variant={alert.type === 'error' ? 'destructive' : 'default'} className="mb-4">
+            <AlertDescription>{alert.message}</AlertDescription>
+          </Alert>
         )}
 
         {!submitted ? (
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <Input
-              label={t('forgotPassword.email')}
-              type="email"
-              name="email"
-              value={email}
-              onChange={handleChange}
-              error={errors.email}
-              placeholder="your@email.com"
-              required
-            />
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                {t('forgotPassword.email')}
+              </label>
+              <Input
+                id="email"
+                type="email"
+                name="email"
+                value={email}
+                onChange={handleChange}
+                placeholder="your@email.com"
+                required
+              />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
+            </div>
 
-            <Button type="submit" loading={loading}>
-              {t('forgotPassword.submit')}
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? t('common.loading') || 'Loading...' : t('forgotPassword.submit')}
             </Button>
 
             <div className="text-center">

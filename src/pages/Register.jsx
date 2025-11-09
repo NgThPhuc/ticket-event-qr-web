@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
-import Alert from '../components/ui/Alert';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const Register = () => {
   const { t } = useTranslation();
@@ -102,62 +102,88 @@ const Register = () => {
         </div>
 
         {alert.message && (
-          <Alert
-            type={alert.type}
-            message={alert.message}
-            onClose={() => setAlert({ type: '', message: '' })}
-          />
+          <Alert variant={alert.type === 'error' ? 'destructive' : 'default'} className="mb-4">
+            <AlertDescription>{alert.message}</AlertDescription>
+          </Alert>
         )}
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-            <Input
-              label={t('register.fullName')}
-              type="text"
-              name="full_name"
-              value={formData.full_name}
-              onChange={handleChange}
-              error={errors.full_name}
-              placeholder="John Doe"
-              required
-            />
+            <div>
+              <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-2">
+                {t('register.fullName')}
+              </label>
+              <Input
+                id="full_name"
+                type="text"
+                name="full_name"
+                value={formData.full_name}
+                onChange={handleChange}
+                placeholder="John Doe"
+                required
+              />
+              {errors.full_name && (
+                <p className="mt-1 text-sm text-red-600">{errors.full_name}</p>
+              )}
+            </div>
 
-            <Input
-              label={t('register.email')}
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              error={errors.email}
-              placeholder="your@email.com"
-              required
-            />
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                {t('register.email')}
+              </label>
+              <Input
+                id="email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="your@email.com"
+                required
+              />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
+            </div>
 
-            <Input
-              label={t('register.password')}
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              error={errors.password}
-              placeholder="••••••••"
-              required
-            />
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                {t('register.password')}
+              </label>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                required
+              />
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              )}
+            </div>
 
-            <Input
-              label={t('register.confirmPassword')}
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              error={errors.confirmPassword}
-              placeholder="••••••••"
-              required
-            />
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                {t('register.confirmPassword')}
+              </label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="••••••••"
+                required
+              />
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+              )}
+            </div>
           </div>
 
-          <Button type="submit" loading={loading}>
-            {t('register.submit')}
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? t('common.loading') || 'Loading...' : t('register.submit')}
           </Button>
         </form>
       </div>

@@ -1,43 +1,19 @@
-const Input = ({ 
-  label, 
-  type = 'text', 
-  name, 
-  value, 
-  onChange, 
-  error, 
-  placeholder,
-  required = false,
-  className = '',
-  ...props 
-}) => {
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+
+const Input = React.forwardRef(({ className, type, ...props }, ref) => {
   return (
-    <div className="mb-4">
-      {label && (
-        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-2">
-          {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
-        </label>
+    <input
+      type={type}
+      className={cn(
+        "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        className
       )}
-      <input
-        type={type}
-        id={name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className={`
-          w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500
-          ${error ? 'border-red-500' : 'border-gray-300'}
-          ${className}
-        `}
-        {...props}
-      />
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
-    </div>
+      ref={ref}
+      {...props} />
   );
-};
+})
+Input.displayName = "Input"
 
-export default Input;
-
+export { Input }

@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import ThemeToggle from './ui/ThemeToggle';
 import LanguageToggle from './ui/LanguageToggle';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import { getMyOrganizations, getAllOrganizations } from '../api/organizations';
 
-const Header = () => {
+const Header = ({ showSidebar = false }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated, user, logout } = useAuth();
@@ -64,10 +65,16 @@ const Header = () => {
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700">
-      <div className="container mx-auto px-4">
+      <div className={showSidebar ? "px-4" : "container mx-auto px-4"}>
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+          {/* Sidebar Trigger - chỉ hiển thị khi showSidebar = true */}
+          {showSidebar && (
+            <SidebarTrigger className="mr-4" />
+          )}
+
+          {/* Logo - ẩn khi showSidebar = true */}
+          {!showSidebar && (
+            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <div className="w-10 h-10 flex items-center justify-center">
               <svg
                 className="w-8 h-8 text-blue-600"
@@ -83,13 +90,15 @@ const Header = () => {
                 />
               </svg>
             </div>
-            <span className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-              Ticketer
-            </span>
-          </Link>
+              <span className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                Ticketer
+              </span>
+            </Link>
+          )}
 
-          {/* Desktop Menu */}
-          <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
+          {/* Desktop Menu - ẩn khi showSidebar = true */}
+          {!showSidebar && (
+            <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
             {menuItems.map((item) => (
               <Link
                 key={item.path}
@@ -99,20 +108,23 @@ const Header = () => {
                 {item.label}
               </Link>
             ))}
-          </nav>
+            </nav>
+          )}
 
           {/* Right Side - Theme Toggle, Language Toggle & Auth Button */}
-          <div className="flex items-center gap-4 md:gap-6">
+          <div className={`flex items-center gap-4 md:gap-6 ${showSidebar ? 'ml-auto' : ''}`}>
             {/* Theme Toggle */}
             <ThemeToggle />
 
             {/* Language Toggle */}
             <LanguageToggle />
 
-            {/* Dashboard Button - Hiển thị khi user có organizations hoặc là PLATFORM_ADMIN */}
-            {isAuthenticated && (hasOrganizations || isPlatformAdmin) && (
+            {/* Dashboard Button - Hiển thị khi user có organizations hoặc là PLATFORM_ADMIN - ẩn khi showSidebar = true */}
+            {!showSidebar && isAuthenticated && (hasOrganizations || isPlatformAdmin) && (
               <Link
                 to="/dashboard"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="hidden md:flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-200"
               >
                 <svg
@@ -132,8 +144,8 @@ const Header = () => {
               </Link>
             )}
 
-            {/* Create Organizer Button - Hiển thị khi user chưa có organizations và không phải PLATFORM_ADMIN */}
-            {isAuthenticated && !hasOrganizations && !isPlatformAdmin && (
+            {/* Create Organizer Button - Hiển thị khi user chưa có organizations và không phải PLATFORM_ADMIN - ẩn khi showSidebar = true */}
+            {!showSidebar && isAuthenticated && !hasOrganizations && !isPlatformAdmin && (
               <Link
                 to="/create-organization"
                 className="hidden md:flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors duration-200"
@@ -155,8 +167,8 @@ const Header = () => {
               </Link>
             )}
 
-            {/* Auth Button */}
-            {isAuthenticated ? (
+            {/* Auth Button - ẩn khi showSidebar = true */}
+            {!showSidebar && isAuthenticated ? (
               <div className="relative group">
                 <button
                   onClick={() => setAccountMenuOpen(!accountMenuOpen)}
@@ -209,7 +221,7 @@ const Header = () => {
                   </div>
                 )}
               </div>
-            ) : (
+            ) : !showSidebar ? (
               <Link
                 to="/login"
                 className="flex items-center gap-2 px-4 md:px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200"
@@ -229,14 +241,15 @@ const Header = () => {
                 </svg>
                 <span className="text-sm font-medium">{t('header.loginRegister')}</span>
               </Link>
-            )}
+            ) : null}
 
-            {/* Mobile Menu Toggle */}
-            <button
-              className="md:hidden p-2 text-gray-700 dark:text-gray-300"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Menu"
-            >
+            {/* Mobile Menu Toggle - ẩn khi showSidebar = true */}
+            {!showSidebar && (
+              <button
+                className="md:hidden p-2 text-gray-700 dark:text-gray-300"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Menu"
+              >
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -259,12 +272,13 @@ const Header = () => {
                   />
                 )}
               </svg>
-            </button>
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
+        {/* Mobile Menu - ẩn khi showSidebar = true */}
+        {!showSidebar && mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
             <nav className="flex flex-col gap-4">
               {menuItems.map((item) => (
@@ -280,6 +294,8 @@ const Header = () => {
               {isAuthenticated && (hasOrganizations || isPlatformAdmin) && (
                 <Link
                   to="/dashboard"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 font-medium py-2 transition-colors duration-200 flex items-center gap-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >

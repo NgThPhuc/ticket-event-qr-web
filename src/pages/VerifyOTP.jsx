@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
-import Alert from '../components/ui/Alert';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const VerifyOTP = () => {
   const { t } = useTranslation();
@@ -100,34 +100,37 @@ const VerifyOTP = () => {
         </div>
 
         {alert.message && (
-          <Alert
-            type={alert.type}
-            message={alert.message}
-            onClose={() => setAlert({ type: '', message: '' })}
-          />
+          <Alert variant={alert.type === 'error' ? 'destructive' : 'default'} className="mb-4">
+            <AlertDescription>{alert.message}</AlertDescription>
+          </Alert>
         )}
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div>
+            <label htmlFor="otpCode" className="block text-sm font-medium text-gray-700 mb-2">
+              {t('verifyOTP.otpCode')}
+            </label>
             <Input
-              label={t('verifyOTP.otpCode')}
+              id="otpCode"
               type="text"
               name="otpCode"
               value={otpCode}
               onChange={handleChange}
-              error={errors.otpCode}
               placeholder="000000"
               required
               maxLength={6}
               className="text-center text-2xl tracking-widest font-mono"
             />
+            {errors.otpCode && (
+              <p className="mt-1 text-sm text-red-600">{errors.otpCode}</p>
+            )}
             <p className="mt-2 text-sm text-gray-500 text-center">
               {t('verifyOTP.enterCode')}
             </p>
           </div>
 
-          <Button type="submit" loading={loading}>
-            {t('verifyOTP.verify')}
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? t('common.loading') || 'Loading...' : t('verifyOTP.verify')}
           </Button>
 
           <div className="text-center">

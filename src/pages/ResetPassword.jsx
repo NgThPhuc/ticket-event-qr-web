@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
-import Alert from '../components/ui/Alert';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const ResetPassword = () => {
   const { t } = useTranslation();
@@ -12,7 +12,7 @@ const ResetPassword = () => {
   const [searchParams] = useSearchParams();
   const { resetPassword } = useAuth();
   const token = searchParams.get('token');
-  
+
   const [formData, setFormData] = useState({
     new_password: '',
     confirm_new_password: '',
@@ -88,11 +88,11 @@ const ResetPassword = () => {
         type: 'success',
         message: result.data?.message || t('resetPassword.success'),
       });
-      
+
       // Gửi event để thông báo cho tab forgot password
       localStorage.setItem('passwordResetSuccess', 'true');
       window.dispatchEvent(new Event('passwordResetSuccess'));
-      
+
       // Đóng tab sau 1.5 giây
       setTimeout(() => {
         window.close();
@@ -113,7 +113,9 @@ const ResetPassword = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-          <Alert type="error" message={t('resetPassword.invalidToken')} />
+          <Alert variant="destructive">
+            <AlertDescription>{t('resetPassword.invalidToken')}</AlertDescription>
+          </Alert>
           <Link
             to="/forgot-password"
             className="block text-center text-blue-600 hover:text-blue-500"
@@ -138,41 +140,53 @@ const ResetPassword = () => {
         </div>
 
         {alert.message && (
-          <Alert
-            type={alert.type}
-            message={alert.message}
-            onClose={() => setAlert({ type: '', message: '' })}
-          />
+          <Alert variant={alert.type === 'error' ? 'destructive' : 'default'} className="mb-4">
+            <AlertDescription>{alert.message}</AlertDescription>
+          </Alert>
         )}
 
         {!success ? (
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
-              <Input
-                label={t('resetPassword.newPassword')}
-                type="password"
-                name="new_password"
-                value={formData.new_password}
-                onChange={handleChange}
-                error={errors.new_password}
-                placeholder="••••••••"
-                required
-              />
+              <div>
+                <label htmlFor="new_password" className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('resetPassword.newPassword')}
+                </label>
+                <Input
+                  id="new_password"
+                  type="password"
+                  name="new_password"
+                  value={formData.new_password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                />
+                {errors.new_password && (
+                  <p className="mt-1 text-sm text-red-600">{errors.new_password}</p>
+                )}
+              </div>
 
-              <Input
-                label={t('resetPassword.confirmNewPassword')}
-                type="password"
-                name="confirm_new_password"
-                value={formData.confirm_new_password}
-                onChange={handleChange}
-                error={errors.confirm_new_password}
-                placeholder="••••••••"
-                required
-              />
+              <div>
+                <label htmlFor="confirm_new_password" className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('resetPassword.confirmNewPassword')}
+                </label>
+                <Input
+                  id="confirm_new_password"
+                  type="password"
+                  name="confirm_new_password"
+                  value={formData.confirm_new_password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                />
+                {errors.confirm_new_password && (
+                  <p className="mt-1 text-sm text-red-600">{errors.confirm_new_password}</p>
+                )}
+              </div>
             </div>
 
-            <Button type="submit" loading={loading}>
-              {t('resetPassword.submit')}
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? t('common.loading') || 'Loading...' : t('resetPassword.submit')}
             </Button>
 
             <div className="text-center">

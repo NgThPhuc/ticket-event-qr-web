@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import Header from '../components/Header';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
-import Alert from '../components/ui/Alert';
+import { DashboardLayout } from '../layouts/DashboardLayout';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { createOrganization } from '../api/organizations';
 
 const CreateOrganization = () => {
@@ -74,7 +74,7 @@ const CreateOrganization = () => {
 
       const result = await createOrganization(formData);
       setSuccess(true);
-      
+
       // Chuyển về trang chủ sau 1.5 giây
       setTimeout(() => {
         navigate('/');
@@ -87,9 +87,8 @@ const CreateOrganization = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <Header />
-      <div className="container mx-auto px-4 py-12">
+    <DashboardLayout>
+      <div className="max-w-3xl mx-auto">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -100,14 +99,14 @@ const CreateOrganization = () => {
             </p>
 
             {error && (
-              <Alert type="error" className="mb-6">
-                {error}
+              <Alert variant="destructive" className="mb-6">
+                <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
 
             {success && (
-              <Alert type="success" className="mb-6">
-                {t('organization.createSuccess')}
+              <Alert className="mb-6">
+                <AlertDescription>{t('organization.createSuccess')}</AlertDescription>
               </Alert>
             )}
 
@@ -216,27 +215,27 @@ const CreateOrganization = () => {
               </div>
 
               <div className="flex gap-4">
-                <Button
+                <button
                   type="button"
                   variant="outline"
                   onClick={() => navigate('/')}
                   className="flex-1"
                 >
                   {t('common.cancel')}
-                </Button>
-                <Button
+                </button>
+                <button
                   type="submit"
                   loading={loading}
                   className="flex-1"
                 >
                   {t('organization.createButton')}
-                </Button>
+                </button>
               </div>
             </form>
           </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 

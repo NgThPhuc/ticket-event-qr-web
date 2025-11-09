@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Alert from '../components/ui/Alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const GoogleCallback = () => {
   const { t } = useTranslation();
@@ -14,7 +14,7 @@ const GoogleCallback = () => {
     if (token) {
       // Lưu token vào localStorage
       localStorage.setItem('access_token', token);
-      
+
       // Lấy thông tin user từ API
       const fetchProfile = async () => {
         try {
@@ -70,7 +70,9 @@ const GoogleCallback = () => {
             {t('googleCallback.processing')}
           </h2>
           {alert.message && (
-            <Alert type={alert.type} message={alert.message} />
+            <Alert variant={alert.type === 'error' ? 'destructive' : 'default'} className="mb-4">
+              <AlertDescription>{alert.message}</AlertDescription>
+            </Alert>
           )}
           {!alert.message && (
             <div className="mt-4">

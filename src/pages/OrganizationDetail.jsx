@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import Header from '../components/Header';
-import Alert from '../components/ui/Alert';
-import Button from '../components/ui/Button';
+import { DashboardLayout } from '../layouts/DashboardLayout';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import { getOrganization, updateOrganization, deleteOrganization } from '../api/organizations';
 
 const OrganizationDetail = () => {
@@ -74,19 +74,18 @@ const OrganizationDetail = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
         <Header />
         <div className="container mx-auto px-4 py-12">
-          <Alert type="error">{error}</Alert>
-          <Button onClick={() => navigate('/dashboard')} className="mt-4">
+          <alert type="error">{error}</alert>
+          <button onClick={() => navigate('/dashboard')} className="mt-4">
             {t('common.back')}
-          </Button>
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <Header />
-      <div className="container mx-auto px-4 py-12">
+    <DashboardLayout>
+      <div className="max-w-6xl mx-auto">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
             <button
@@ -107,8 +106,8 @@ const OrganizationDetail = () => {
           </div>
 
           {error && (
-            <Alert type="error" className="mb-6">
-              {error}
+            <Alert variant="destructive" className="mb-6">
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
@@ -179,11 +178,10 @@ const OrganizationDetail = () => {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     {t('organization.status')}
                   </label>
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                    organization.is_active
-                      ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                      : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
-                  }`}>
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${organization.is_active
+                    ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                    : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                    }`}>
                     {organization.is_active ? t('organization.active') : t('organization.inactive')}
                   </span>
                 </div>
@@ -201,26 +199,26 @@ const OrganizationDetail = () => {
               </div>
 
               <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <Button
+                <button
                   onClick={() => navigate(`/organizations/${organizationId}/members`)}
                   className="flex-1"
                 >
                   {t('organization.manageMembers')}
-                </Button>
-                <Button
+                </button>
+                <button
                   variant="outline"
                   onClick={() => navigate(`/organizations/${organizationId}/edit`)}
                   className="flex-1"
                 >
                   {t('organization.edit')}
-                </Button>
-                <Button
+                </button>
+                <button
                   variant="danger"
                   onClick={() => setShowDeleteConfirm(true)}
                   className="flex-1"
                 >
                   {t('organization.delete')}
-                </Button>
+                </button>
               </div>
             </div>
           )}
@@ -236,14 +234,14 @@ const OrganizationDetail = () => {
                   {t('organization.deleteConfirmMessage')}
                 </p>
                 <div className="flex gap-4">
-                  <Button
+                  <button
                     variant="outline"
                     onClick={() => setShowDeleteConfirm(false)}
                     className="flex-1"
                     disabled={deleting}
                   >
                     {t('common.cancel')}
-                  </Button>
+                  </button>
                   <Button
                     variant="danger"
                     onClick={handleDelete}
@@ -258,7 +256,7 @@ const OrganizationDetail = () => {
           )}
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 

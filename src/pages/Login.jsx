@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
-import Alert from '../components/ui/Alert';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -88,36 +88,48 @@ const Login = () => {
         </div>
 
         {alert.message && (
-          <Alert
-            type={alert.type}
-            message={alert.message}
-            onClose={() => setAlert({ type: '', message: '' })}
-          />
+          <Alert variant={alert.type === 'error' ? 'destructive' : 'default'} className="mb-4">
+            <AlertDescription>{alert.message}</AlertDescription>
+          </Alert>
         )}
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-            <Input
-              label={t('login.email')}
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              error={errors.email}
-              placeholder="your@email.com"
-              required
-            />
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                {t('login.email')}
+              </label>
+              <Input
+                id="email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="your@email.com"
+                required
+              />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
+            </div>
 
-            <Input
-              label={t('login.password')}
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              error={errors.password}
-              placeholder="••••••••"
-              required
-            />
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                {t('login.password')}
+              </label>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                required
+              />
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center justify-end">
@@ -129,8 +141,8 @@ const Login = () => {
             </Link>
           </div>
 
-          <Button type="submit" loading={loading}>
-            {t('login.submit')}
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? t('common.loading') || 'Loading...' : t('login.submit')}
           </Button>
 
           <div className="relative">
@@ -146,6 +158,7 @@ const Login = () => {
             type="button"
             variant="outline"
             onClick={handleGoogleLogin}
+            className="w-full"
           >
             <div className="flex items-center justify-center">
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">

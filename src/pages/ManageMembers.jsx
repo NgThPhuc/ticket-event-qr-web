@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import Header from '../components/Header';
-import Alert from '../components/ui/Alert';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
+import { DashboardLayout } from '../layouts/DashboardLayout';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   getOrganizationMembers,
   addOrganizationMember,
@@ -106,9 +106,8 @@ const ManageMembers = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <Header />
-      <div className="container mx-auto px-4 py-12">
+    <DashboardLayout>
+      <div className="max-w-6xl mx-auto">
         <div className="max-w-6xl mx-auto">
           <div className="mb-6">
             <button
@@ -129,14 +128,14 @@ const ManageMembers = () => {
           </div>
 
           {error && (
-            <Alert type="error" className="mb-6">
-              {error}
+            <Alert variant="destructive" className="mb-6">
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           {success && (
-            <Alert type="success" className="mb-6">
-              {success}
+            <Alert className="mb-6">
+              <AlertDescription>{success}</AlertDescription>
             </Alert>
           )}
 
@@ -145,9 +144,9 @@ const ManageMembers = () => {
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {t('members.membersList')}
               </h2>
-              <Button onClick={() => setShowAddForm(!showAddForm)}>
+              <button onClick={() => setShowAddForm(!showAddForm)}>
                 {showAddForm ? t('common.cancel') : t('members.addMember')}
-              </Button>
+              </button>
             </div>
 
             {showAddForm && (
@@ -183,9 +182,9 @@ const ManageMembers = () => {
                     </select>
                   </div>
                 </div>
-                <Button type="submit" loading={adding} className="mt-4">
+                <button type="submit" loading={adding} className="mt-4">
                   {t('members.addButton')}
-                </Button>
+                </button>
               </form>
             )}
 
@@ -288,7 +287,7 @@ const ManageMembers = () => {
           </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import Header from '../components/Header';
-import Alert from '../components/ui/Alert';
+import { DashboardLayout } from '../layouts/DashboardLayout';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { getMyOrganizations } from '../api/organizations';
 
 const Dashboard = () => {
@@ -64,9 +64,8 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <Header />
-      <div className="container mx-auto px-4 py-12">
+    <DashboardLayout>
+      <div className="max-w-6xl mx-auto">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
@@ -78,8 +77,8 @@ const Dashboard = () => {
           </div>
 
           {error && (
-            <Alert type="error" className="mb-6">
-              {error}
+            <Alert variant="destructive" className="mb-6">
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
@@ -124,62 +123,62 @@ const Dashboard = () => {
                 const orgId = org.organization_id || org._organizationId || org.id;
                 console.log('Using orgId:', orgId, 'from org:', org);
                 return (
-                <div
-                  key={orgId}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-200"
-                >
-                  {org.logo_url && (
-                    <img
-                      src={org.logo_url}
-                      alt={org.name}
-                      className="w-16 h-16 rounded-lg mb-4 object-cover"
-                    />
-                  )}
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                    {org.name}
-                  </h3>
-                  {org.description && (
-                    <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
-                      {org.description}
-                    </p>
-                  )}
-                  <div className="space-y-2 mb-4">
-                    {org.contact_email && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        <span>{org.contact_email}</span>
-                      </div>
+                  <div
+                    key={orgId}
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-200"
+                  >
+                    {org.logo_url && (
+                      <img
+                        src={org.logo_url}
+                        alt={org.name}
+                        className="w-16 h-16 rounded-lg mb-4 object-cover"
+                      />
                     )}
-                    {org.role && (
-                      <div className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">
-                        {org.role}
-                      </div>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                      {org.name}
+                    </h3>
+                    {org.description && (
+                      <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                        {org.description}
+                      </p>
                     )}
+                    <div className="space-y-2 mb-4">
+                      {org.contact_email && (
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                          <span>{org.contact_email}</span>
+                        </div>
+                      )}
+                      {org.role && (
+                        <div className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">
+                          {org.role}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => navigate(`/organizations/${orgId}`)}
+                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                      >
+                        {t('dashboard.viewDetails')}
+                      </button>
+                      <button
+                        onClick={() => navigate(`/organizations/${orgId}/members`)}
+                        className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+                      >
+                        {t('dashboard.manageMembers')}
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => navigate(`/organizations/${orgId}`)}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                    >
-                      {t('dashboard.viewDetails')}
-                    </button>
-                    <button
-                      onClick={() => navigate(`/organizations/${orgId}/members`)}
-                      className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
-                    >
-                      {t('dashboard.manageMembers')}
-                    </button>
-                  </div>
-                </div>
                 );
               })}
             </div>
           )}
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
