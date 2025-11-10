@@ -63,10 +63,10 @@ const GoogleCallback = () => {
   }, [token, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             {t('googleCallback.processing')}
           </h2>
           {alert.message && (
@@ -77,7 +77,7 @@ const GoogleCallback = () => {
           {!alert.message && (
             <div className="mt-4">
               <svg
-                className="animate-spin h-8 w-8 text-blue-600 mx-auto"
+                className="animate-spin h-8 w-8 text-blue-600 dark:text-blue-400 mx-auto"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"

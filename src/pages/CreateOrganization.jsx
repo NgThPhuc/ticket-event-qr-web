@@ -215,21 +215,21 @@ const CreateOrganization = () => {
               </div>
 
               <div className="flex gap-4">
-                <button
+                <Button
                   type="button"
                   variant="outline"
                   onClick={() => navigate('/')}
                   className="flex-1"
                 >
                   {t('common.cancel')}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  loading={loading}
+                  disabled={loading}
                   className="flex-1"
                 >
-                  {t('organization.createButton')}
-                </button>
+                  {loading ? t('common.loading') || 'Loading...' : t('organization.createButton')}
+                </Button>
               </div>
             </form>
           </div>

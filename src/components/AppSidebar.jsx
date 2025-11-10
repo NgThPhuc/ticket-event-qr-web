@@ -1,5 +1,5 @@
-import { Home, Building2, Calendar, Users, Settings, LogOut, Bell, CreditCard, User } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Settings, LogOut, UsersRound, LayoutDashboard, User } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import {
@@ -33,19 +33,14 @@ export function AppSidebar() {
 
   const menuItems = [
     {
-      title: t('header.home'),
-      url: '/',
-      icon: Home,
-    },
-    {
-      title: t('header.dashboard'),
+      title: t('sidebar.dashboard'),
       url: '/dashboard',
-      icon: Building2,
+      icon: LayoutDashboard,
     },
     {
-      title: t('header.events'),
-      url: '/events',
-      icon: Calendar,
+      title: t('sidebar.organizations'),
+      url: '/organizations',
+      icon: UsersRound,
     },
   ];
 
@@ -78,10 +73,10 @@ export function AppSidebar() {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

@@ -236,6 +236,9 @@
     "removeSuccess": "Xóa thành viên thành công",
     "removeError": "Không thể xóa thành viên",
     "removeConfirm": "Bạn có chắc chắn muốn xóa thành viên này?"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "organizations": "Tổ Chức"
   }
 }
-

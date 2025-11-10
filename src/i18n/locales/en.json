@@ -223,6 +223,9 @@
     "removeSuccess": "Member removed successfully",
     "removeError": "Unable to remove member",
     "removeConfirm": "Are you sure you want to remove this member?"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "organizations": "Organizations"
   }
 }
-

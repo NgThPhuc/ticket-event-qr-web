@@ -84,7 +84,7 @@ const Dashboard = () => {
 
           {loading ? (
             <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400"></div>
               <p className="mt-4 text-gray-600 dark:text-gray-400">{t('common.loading')}</p>
             </div>
           ) : organizations.length === 0 ? (
@@ -110,7 +110,7 @@ const Dashboard = () => {
               </p>
               <button
                 onClick={() => navigate('/create-organization')}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                className="px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200"
               >
                 {t('dashboard.createOrganization')}
               </button>
@@ -160,13 +160,13 @@ const Dashboard = () => {
                     <div className="flex gap-2">
                       <button
                         onClick={() => navigate(`/organizations/${orgId}`)}
-                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                        className="flex-1 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200"
                       >
                         {t('dashboard.viewDetails')}
                       </button>
                       <button
                         onClick={() => navigate(`/organizations/${orgId}/members`)}
-                        className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+                        className="flex-1 px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-200"
                       >
                         {t('dashboard.manageMembers')}
                       </button>

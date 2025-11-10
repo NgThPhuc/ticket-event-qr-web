@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { DashboardLayout } from '../layouts/DashboardLayout';
+import Header from '../components/Header';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { getOrganization, updateOrganization, deleteOrganization } from '../api/organizations';
@@ -74,10 +75,12 @@ const OrganizationDetail = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
         <Header />
         <div className="container mx-auto px-4 py-12">
-          <alert type="error">{error}</alert>
-          <button onClick={() => navigate('/dashboard')} className="mt-4">
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+          <Button onClick={() => navigate('/dashboard')} className="mt-4">
             {t('common.back')}
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -199,26 +202,26 @@ const OrganizationDetail = () => {
               </div>
 
               <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <button
+                <Button
                   onClick={() => navigate(`/organizations/${organizationId}/members`)}
                   className="flex-1"
                 >
                   {t('organization.manageMembers')}
-                </button>
-                <button
+                </Button>
+                <Button
                   variant="outline"
                   onClick={() => navigate(`/organizations/${organizationId}/edit`)}
                   className="flex-1"
                 >
                   {t('organization.edit')}
-                </button>
-                <button
-                  variant="danger"
+                </Button>
+                <Button
+                  variant="destructive"
                   onClick={() => setShowDeleteConfirm(true)}
                   className="flex-1"
                 >
                   {t('organization.delete')}
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -234,21 +237,21 @@ const OrganizationDetail = () => {
                   {t('organization.deleteConfirmMessage')}
                 </p>
                 <div className="flex gap-4">
-                  <button
+                  <Button
                     variant="outline"
                     onClick={() => setShowDeleteConfirm(false)}
                     className="flex-1"
                     disabled={deleting}
                   >
                     {t('common.cancel')}
-                  </button>
+                  </Button>
                   <Button
-                    variant="danger"
+                    variant="destructive"
                     onClick={handleDelete}
-                    loading={deleting}
+                    disabled={deleting}
                     className="flex-1"
                   >
-                    {t('organization.deleteConfirm')}
+                    {deleting ? t('common.loading') || 'Loading...' : t('organization.deleteConfirm')}
                   </Button>
                 </div>
               </div>

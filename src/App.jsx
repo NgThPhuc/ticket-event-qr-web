@@ -21,6 +21,7 @@ import CreateOrganization from './pages/CreateOrganization';
 import Dashboard from './pages/Dashboard';
 import OrganizationDetail from './pages/OrganizationDetail';
 import ManageMembers from './pages/ManageMembers';
+import OrganizationManagementPage from './pages/OrganizationManagementPage';
 
 function AppContent() {
   const location = useLocation();
@@ -118,6 +119,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <ManageMembers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizations"
+          element={
+            <ProtectedRoute>
+              <OrganizationManagementPage />
             </ProtectedRoute>
           }
         />
