@@ -1,7 +1,9 @@
-import { Settings, LogOut, UsersRound, LayoutDashboard, User } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Settings, LogOut, UsersRound, LayoutDashboard, User, ChevronRight } from 'lucide-react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import { getMyOrganizations } from '../api/organizations';
 import {
   Sidebar,
   SidebarContent,
@@ -13,9 +15,17 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,19 +38,46 @@ import {
 export function AppSidebar() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const location = useLocation();
+  const { user, logout, isAuthenticated } = useAuth();
   const { state } = useSidebar();
+  const [organizations, setOrganizations] = useState([]);
+
+  // Kiểm tra xem có đang ở trang members không để giữ submenu mở
+  const isMembersPage = location.pathname.includes('/members');
+  const [isOpen, setIsOpen] = useState(isMembersPage);
+
+  // Cập nhật state khi route thay đổi
+  useEffect(() => {
+    setIsOpen(isMembersPage);
+  }, [isMembersPage]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchOrganizations = async () => {
+        try {
+          const data = await getMyOrganizations();
+          const processedData = (data || []).map((org) => {
+            const orgId = org.organization_id || org.id;
+            return {
+              ...org,
+              _organizationId: orgId,
+            };
+          });
+          setOrganizations(processedData);
+        } catch (err) {
+          console.error('Error fetching organizations:', err);
+        }
+      };
+      fetchOrganizations();
+    }
+  }, [isAuthenticated]);
 
   const menuItems = [
     {
       title: t('sidebar.dashboard'),
       url: '/dashboard',
       icon: LayoutDashboard,
-    },
-    {
-      title: t('sidebar.organizations'),
-      url: '/organizations',
-      icon: UsersRound,
     },
   ];
 
@@ -80,6 +117,43 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <Collapsible asChild open={isOpen} onOpenChange={setIsOpen}>
+                <SidebarMenuItem className="group/collapsible">
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton>
+                      <UsersRound />
+                      <span>{t('sidebar.organizations')}</span>
+                      <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-300 ease-in-out group-data-[state=open]/collapsible:rotate-90" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild>
+                          {organizations.length > 0 ? (
+                            <Link to="/organizations/my-organizations">
+                              <span>{t('sidebar.overview') || 'Overviews'}</span>
+                            </Link>
+                          ) : (
+                            <span>{t('sidebar.overview') || 'Overview'}</span>
+                          )}
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild>
+                          {organizations.length > 0 ? (
+                            <Link to={`/organizations/${organizations[0]?.organization_id || organizations[0]?._organizationId || organizations[0]?.id}/members`}>
+                              <span>{t('sidebar.manageMembers') || 'Manage Members'}</span>
+                            </Link>
+                          ) : (
+                            <span>{t('sidebar.manageMembers') || 'Manage Members'}</span>
+                          )}
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

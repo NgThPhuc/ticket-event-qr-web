@@ -6,6 +6,7 @@ import { DashboardLayout } from '../layouts/DashboardLayout';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { MembersDataTable } from '../components/MembersDataTable';
 import {
   getOrganizationMembers,
   addOrganizationMember,
@@ -139,15 +140,10 @@ const ManageMembers = () => {
             </Alert>
           )}
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {t('members.membersList')}
-              </h2>
-              <button onClick={() => setShowAddForm(!showAddForm)}>
-                {showAddForm ? t('common.cancel') : t('members.addMember')}
-              </button>
-            </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+              {t('members.membersList')}
+            </h2>
 
             {showAddForm && (
               <form onSubmit={handleAddMember} className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -182,9 +178,21 @@ const ManageMembers = () => {
                     </select>
                   </div>
                 </div>
-                <button type="submit" loading={adding} className="mt-4">
-                  {t('members.addButton')}
-                </button>
+                <div className="flex gap-2 mt-4">
+                  <Button type="submit" disabled={adding}>
+                    {adding ? t('common.loading') : t('members.addButton')}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setShowAddForm(false);
+                      setFormData({ email: '', role: 'EVENT_MANAGER' });
+                    }}
+                  >
+                    {t('common.cancel')}
+                  </Button>
+                </div>
               </form>
             )}
 
@@ -193,96 +201,16 @@ const ManageMembers = () => {
                 <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 <p className="mt-4 text-gray-600 dark:text-gray-400">{t('common.loading')}</p>
               </div>
-            ) : members.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-600 dark:text-gray-400">{t('members.noMembers')}</p>
-              </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200 dark:border-gray-700">
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {t('members.name')}
-                      </th>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {t('members.email')}
-                      </th>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {t('members.role')}
-                      </th>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {t('members.joinedAt')}
-                      </th>
-                      <th className="text-right py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {t('members.actions')}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {members.map((member) => (
-                      <tr
-                        key={member.id}
-                        className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-                      >
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                              <span className="text-blue-600 dark:text-blue-300 font-medium">
-                                {member.user?.full_name?.charAt(0) || 'U'}
-                              </span>
-                            </div>
-                            <span className="text-gray-900 dark:text-white">
-                              {member.user?.full_name || t('members.unknown')}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="py-3 px-4 text-gray-600 dark:text-gray-400">
-                          {member.user?.email || '-'}
-                        </td>
-                        <td className="py-3 px-4">
-                          {member.user_id === user?.id && member.role === 'ORGANIZER_ADMIN' ? (
-                            <select
-                              value={member.role}
-                              disabled
-                              className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full text-xs font-medium cursor-not-allowed"
-                            >
-                              <option value={member.role}>{member.role}</option>
-                            </select>
-                          ) : (
-                            <select
-                              value={member.role}
-                              onChange={(e) => handleUpdateRole(member.id, e.target.value)}
-                              className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium cursor-pointer"
-                            >
-                              {roles.map((role) => (
-                                <option key={role.value} value={role.value}>
-                                  {role.label}
-                                </option>
-                              ))}
-                            </select>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-gray-600 dark:text-gray-400 text-sm">
-                          {member.joined_at
-                            ? new Date(member.joined_at).toLocaleDateString()
-                            : '-'}
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          {member.user_id !== user?.id && (
-                            <button
-                              onClick={() => handleRemoveMember(member.id)}
-                              className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                            >
-                              {t('members.remove')}
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <MembersDataTable
+                members={members}
+                roles={roles}
+                currentUserId={user?.id}
+                onUpdateRole={handleUpdateRole}
+                onRemoveMember={handleRemoveMember}
+                onAddMember={() => setShowAddForm(true)}
+                t={t}
+              />
             )}
           </div>
         </div>

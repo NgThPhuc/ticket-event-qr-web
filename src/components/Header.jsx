@@ -6,6 +6,7 @@ import ThemeToggle from './ui/ThemeToggle';
 import LanguageToggle from './ui/LanguageToggle';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { getMyOrganizations, getAllOrganizations } from '../api/organizations';
+import { Breadcrumb } from './Breadcrumb';
 
 const Header = ({ showSidebar = false }) => {
   const navigate = useNavigate();
@@ -68,10 +69,20 @@ const Header = ({ showSidebar = false }) => {
       <div className={showSidebar ? "px-4" : "container mx-auto px-4"}>
         {/* <div className="flex items-center justify-between h-16 md:h-20"> */}
         <div className="flex items-center justify-between h-[60px] md:h-[68px]">
-          {/* Sidebar Trigger - chỉ hiển thị khi showSidebar = true */}
-          {showSidebar && (
-            <SidebarTrigger className="mr-4" />
-          )}
+          {/* Left side - Sidebar Trigger và Breadcrumb */}
+          <div className="flex items-center gap-4 flex-1 min-w-0">
+            {/* Sidebar Trigger - chỉ hiển thị khi showSidebar = true */}
+            {showSidebar && (
+              <SidebarTrigger className="flex-shrink-0" />
+            )}
+            
+            {/* Breadcrumb - chỉ hiển thị khi showSidebar = true */}
+            {showSidebar && (
+              <div className="flex-1 min-w-0">
+                <Breadcrumb />
+              </div>
+            )}
+          </div>
 
           {/* Logo - ẩn khi showSidebar = true */}
           {!showSidebar && (

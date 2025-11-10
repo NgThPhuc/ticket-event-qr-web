@@ -9,7 +9,7 @@ export function DashboardLayout({ children }) {
         <AppSidebar />
         <div className="flex flex-1 flex-col bg-gray-50 dark:bg-gray-900">
           <Header showSidebar={true} />
-          <main className="flex-1 p-6 bg-gray-50 dark:bg-gray-900">
+          <main className="flex-1 bg-gray-50 dark:bg-gray-900">
             {children}
           </main>
         </div>

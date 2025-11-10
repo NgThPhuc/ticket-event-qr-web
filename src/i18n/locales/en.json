@@ -226,6 +226,8 @@
   },
   "sidebar": {
     "dashboard": "Dashboard",
-    "organizations": "Organizations"
+    "organizations": "Organizations",
+    "overview": "Overview",
+    "manageMembers": "Manage Members"
   }
 }
