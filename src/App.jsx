@@ -17,13 +17,8 @@ import Events from './pages/Events';
 import Policy from './pages/Policy';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
-import CreateOrganization from './pages/CreateOrganization';
 import Dashboard from './pages/Dashboard';
-import OrganizationDetail from './pages/OrganizationDetail';
-import ManageMembers from './pages/ManageMembers';
-import OrganizationManagementPage from './pages/OrganizationManagementPage';
-import MyOrganizationManagementPage from './pages/MyOrganizationManagementPage';
-
+``
 function AppContent() {
   const location = useLocation();
   const hideFooterPaths = ['/login', '/register', '/verify-otp', '/forgot-password', '/reset-password'];
@@ -90,52 +85,12 @@ function AppContent() {
         <Route path="/policy" element={<Policy />} />
         <Route path="/contact" element={<Contact />} />
 
-        {/* Protected pages - Organizations */}
-        <Route
-          path="/create-organization"
-          element={
-            <ProtectedRoute>
-              <CreateOrganization />
-            </ProtectedRoute>
-          }
-        />
+        {/* Protected pages */}
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/organizations/:organizationId"
-          element={
-            <ProtectedRoute>
-              <OrganizationDetail />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/organizations/:organizationId/members"
-          element={
-            <ProtectedRoute>
-              <ManageMembers />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/organizations"
-          element={
-            <ProtectedRoute>
-              <OrganizationManagementPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/organizations/my-organizations"
-          element={
-            <ProtectedRoute>
-              <MyOrganizationManagementPage />
             </ProtectedRoute>
           }
         />
