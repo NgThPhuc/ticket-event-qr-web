@@ -176,6 +176,8 @@
     "slugPlaceholder": "tech-events-vietnam",
     "slugHint": "Chỉ chứa chữ thường, số và dấu gạch ngang",
     "slugRequired": "Slug không được để trống",
+    "slugInvalid": "Slug chỉ được chứa chữ thường, số và dấu gạch ngang",
+    "nameRequired": "Tên tổ chức không được để trống",
     "description": "Mô tả",
     "descriptionPlaceholder": "Mô tả về tổ chức của bạn...",
     "contactEmail": "Email liên hệ",
@@ -202,7 +204,20 @@
     "deleteConfirmTitle": "Xác nhận xóa tổ chức",
     "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa tổ chức này? Hành động này không thể hoàn tác và sẽ xóa tất cả sự kiện, đơn hàng và vé liên quan.",
     "deleteConfirm": "Xóa",
-    "deleteError": "Không thể xóa tổ chức"
+    "deleteError": "Không thể xóa tổ chức",
+    "details": "Chi tiết",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Cập nhật lần cuối",
+    "members": "Thành viên",
+    "updateButton": "Cập nhật",
+    "updateSuccess": "Cập nhật tổ chức thành công!",
+    "updateError": "Có lỗi xảy ra khi cập nhật tổ chức. Vui lòng thử lại.",
+    "slugReadOnly": "Không thể thay đổi",
+    "slugCannotChange": "Slug không thể thay đổi sau khi tạo",
+    "websiteUrl": "Website URL",
+    "websiteUrlInvalid": "URL website không hợp lệ",
+    "logoUrlInvalid": "URL logo không hợp lệ",
+    "noChanges": "Không có thay đổi nào"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -235,10 +250,48 @@
     "updateRoleError": "Không thể cập nhật vai trò",
     "removeSuccess": "Xóa thành viên thành công",
     "removeError": "Không thể xóa thành viên",
-    "removeConfirm": "Bạn có chắc chắn muốn xóa thành viên này?"
+    "removeConfirm": "Bạn có chắc chắn muốn xóa thành viên này?",
+    "removeConfirmTitle": "Xác nhận xóa thành viên",
+    "addMemberDescription": "Thêm thành viên mới vào tổ chức bằng email",
+    "updateRole": "Cập nhật vai trò",
+    "updateRoleDescription": "Cập nhật vai trò của {{name}}",
+    "emailRequired": "Email không được để trống",
+    "joined": "Tham gia",
+    "status": "Trạng thái"
   },
   "sidebar": {
     "dashboard": "Dashboard",
     "organizations": "Tổ Chức"
+  },
+  "organizationsManagement": {
+    "title": "Quản Lý Tổ Chức",
+    "subtitle": "Quản lý tất cả tổ chức trong hệ thống",
+    "organizationsList": "Danh sách tổ chức",
+    "noOrganizations": "Không có tổ chức nào",
+    "fetchError": "Không thể tải danh sách tổ chức",
+    "deleteSuccess": "Xóa tổ chức thành công",
+    "deleteError": "Không thể xóa tổ chức",
+    "deleteConfirmTitle": "Xác nhận xóa tổ chức",
+    "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa tổ chức \"{{name}}\"? Hành động này không thể hoàn tác và sẽ xóa tất cả sự kiện, đơn hàng và vé liên quan.",
+    "deleteConfirm": "Xóa",
+    "stats": {
+      "totalOrganizations": "Tổng Số Tổ Chức",
+      "totalMembers": "Tổng Số Thành Viên",
+      "activeToday": "Hoạt Động Hôm Nay"
+    },
+    "table": {
+      "organization": "ORGANIZATION",
+      "owner": "OWNER",
+      "members": "MEMBERS",
+      "member": "thành viên",
+      "status": "STATUS",
+      "actions": "ACTIONS"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "members": "Members",
+      "delete": "Delete"
+    }
   }
 }

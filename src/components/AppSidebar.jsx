@@ -3,6 +3,7 @@ import {
   LogOut,
   LayoutDashboard,
   User,
+  Building2,
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +36,12 @@ const MENU_CONFIG = [
     icon: LayoutDashboard,
     titleKey: 'sidebar.dashboard',
     url: '/dashboard',
+  },
+  {
+    key: 'organizations',
+    icon: Building2,
+    titleKey: 'sidebar.organizations',
+    url: '/organizations',
   },
 ];
 

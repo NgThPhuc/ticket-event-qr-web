@@ -18,6 +18,11 @@ import Policy from './pages/Policy';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import Dashboard from './pages/Dashboard';
+import OrganizationsManagement from './pages/OrganizationsManagement';
+import CreateOrganization from './pages/CreateOrganization';
+import OrganizationMembers from './pages/OrganizationMembers';
+import OrganizationDetail from './pages/OrganizationDetail';
+import EditOrganization from './pages/EditOrganization';
 ``
 function AppContent() {
   const location = useLocation();
@@ -91,6 +96,46 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizations"
+          element={
+            <ProtectedRoute>
+              <OrganizationsManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-organization"
+          element={
+            <ProtectedRoute>
+              <CreateOrganization />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizations/:organizationId/edit"
+          element={
+            <ProtectedRoute>
+              <EditOrganization />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizations/:organizationId"
+          element={
+            <ProtectedRoute>
+              <OrganizationDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizations/:organizationId/members"
+          element={
+            <ProtectedRoute>
+              <OrganizationMembers />
             </ProtectedRoute>
           }
         />

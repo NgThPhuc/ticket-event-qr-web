@@ -175,6 +175,8 @@
     "slugPlaceholder": "tech-events-vietnam",
     "slugHint": "Only lowercase letters, numbers, and hyphens",
     "slugRequired": "Slug is required",
+    "slugInvalid": "Slug can only contain lowercase letters, numbers, and hyphens",
+    "nameRequired": "Organization name is required",
     "description": "Description",
     "descriptionPlaceholder": "Description about your organization...",
     "contactEmail": "Contact Email",
@@ -189,7 +191,20 @@
     "createButton": "Create Organization",
     "createSuccess": "Organization created successfully! Redirecting to home...",
     "createError": "An error occurred while creating the organization. Please try again.",
-    "fetchError": "Unable to load organizations list"
+    "fetchError": "Unable to load organizations list",
+    "details": "Details",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "members": "Members",
+    "updateButton": "Update",
+    "updateSuccess": "Organization updated successfully!",
+    "updateError": "An error occurred while updating the organization. Please try again.",
+    "slugReadOnly": "Cannot change",
+    "slugCannotChange": "Slug cannot be changed after creation",
+    "websiteUrl": "Website URL",
+    "websiteUrlInvalid": "Invalid website URL",
+    "logoUrlInvalid": "Invalid logo URL",
+    "noChanges": "No changes made"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -222,12 +237,50 @@
     "updateRoleError": "Unable to update role",
     "removeSuccess": "Member removed successfully",
     "removeError": "Unable to remove member",
-    "removeConfirm": "Are you sure you want to remove this member?"
+    "removeConfirm": "Are you sure you want to remove this member?",
+    "removeConfirmTitle": "Confirm Remove Member",
+    "addMemberDescription": "Add a new member to the organization by email",
+    "updateRole": "Update Role",
+    "updateRoleDescription": "Update role for {{name}}",
+    "emailRequired": "Email is required",
+    "joined": "Joined",
+    "status": "Status"
   },
   "sidebar": {
     "dashboard": "Dashboard",
     "organizations": "Organizations",
     "overview": "Overview",
     "manageMembers": "Manage Members"
+  },
+  "organizationsManagement": {
+    "title": "Organizations Management",
+    "subtitle": "Manage all organizations in the system",
+    "organizationsList": "Organizations List",
+    "noOrganizations": "No organizations found",
+    "fetchError": "Unable to load organizations list",
+    "deleteSuccess": "Organization deleted successfully",
+    "deleteError": "Unable to delete organization",
+    "deleteConfirmTitle": "Confirm Delete Organization",
+    "deleteConfirmMessage": "Are you sure you want to delete organization \"{{name}}\"? This action cannot be undone and will delete all related events, orders and tickets.",
+    "deleteConfirm": "Delete",
+    "stats": {
+      "totalOrganizations": "Total Organizations",
+      "totalMembers": "Total Members",
+      "activeToday": "Active Today"
+    },
+    "table": {
+      "organization": "ORGANIZATION",
+      "owner": "OWNER",
+      "members": "MEMBERS",
+      "member": "member",
+      "status": "STATUS",
+      "actions": "ACTIONS"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "members": "Members",
+      "delete": "Delete"
+    }
   }
 }
