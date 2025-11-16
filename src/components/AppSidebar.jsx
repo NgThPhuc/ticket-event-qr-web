@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   User,
   Building2,
+  Calendar,
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -42,6 +43,12 @@ const MENU_CONFIG = [
     icon: Building2,
     titleKey: 'sidebar.organizations',
     url: '/organizations',
+  },
+  {
+    key: 'events',
+    icon: Calendar,
+    titleKey: 'sidebar.events',
+    url: '/events-management',
   },
 ];
 

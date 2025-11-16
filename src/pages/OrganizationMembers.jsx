@@ -273,7 +273,7 @@ const OrganizationMembers = () => {
               className="gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              {t('common.back') || 'Quay lại'}
+              {t('image.pngimage.png') || 'Quay lại'}
             </Button>
           </div> */}
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">

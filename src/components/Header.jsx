@@ -68,63 +68,56 @@ const Header = ({ showSidebar = false }) => {
     <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700">
       <div className={showSidebar ? "px-4" : "container mx-auto px-4"}>
         {/* <div className="flex items-center justify-between h-16 md:h-20"> */}
-        <div className="flex items-center justify-between h-[60px] md:h-[68px]">
-          {/* Left side - Sidebar Trigger và Breadcrumb */}
-          <div className="flex items-center gap-4 flex-1 min-w-0">
-            {/* Sidebar Trigger - chỉ hiển thị khi showSidebar = true */}
-            {showSidebar && (
+        <div className="flex items-center justify-between h-[60px] md:h-[68px] relative">
+          {/* Left side - Sidebar Trigger và Breadcrumb (khi có sidebar) hoặc Logo (khi không có sidebar) */}
+          {showSidebar ? (
+            <div className="flex items-center gap-4 flex-1 min-w-0">
               <SidebarTrigger className="flex-shrink-0" />
-            )}
-            
-            {/* Breadcrumb - chỉ hiển thị khi showSidebar = true */}
-            {showSidebar && (
               <div className="flex-1 min-w-0">
                 <Breadcrumb />
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <>
+              {/* Logo - bên trái */}
+              <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+                <div className="w-10 h-10 flex items-center justify-center">
+                  <svg
+                    className="w-8 h-8 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+                    />
+                  </svg>
+                </div>
+                <span className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                  Ticketer
+                </span>
+              </Link>
 
-          {/* Logo - ẩn khi showSidebar = true */}
-          {!showSidebar && (
-            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-10 h-10 flex items-center justify-center">
-                <svg
-                  className="w-8 h-8 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
-                  />
-                </svg>
-              </div>
-              <span className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                Ticketer
-              </span>
-            </Link>
-          )}
-
-          {/* Desktop Menu - ẩn khi showSidebar = true */}
-          {!showSidebar && (
-            <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium text-base transition-colors duration-200"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+              {/* Desktop Menu - căn giữa */}
+              <nav className="hidden md:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
+                {menuItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium text-base transition-colors duration-200"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </>
           )}
 
           {/* Right Side - Theme Toggle, Language Toggle & Auth Button */}
-          <div className={`flex items-center gap-4 md:gap-6 ${showSidebar ? 'ml-auto' : ''}`}>
+          <div className="flex items-center gap-4 md:gap-6 flex-shrink-0">
             {/* Theme Toggle */}
             <ThemeToggle />
 

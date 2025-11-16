@@ -40,6 +40,30 @@ export function Breadcrumb() {
     else if (path === '/create-organization') {
       items.push({ label: t('organization.create') || 'Create Organization', path: null });
     }
+    // Events
+    else if (path.startsWith('/events-management') || path.startsWith('/events/') || path === '/create-event') {
+      items.push({ label: t('sidebar.events') || 'Events', path: '/events-management' });
+      
+      // Create Event
+      if (path === '/create-event') {
+        items.push({ label: t('event.createTitle') || 'Create Event', path: null });
+      }
+      // Event Detail
+      else if (params.eventId && !path.includes('/edit')) {
+        items.push({ label: t('event.details') || 'Details', path: null });
+      }
+      // Edit Event
+      else if (path.includes('/edit')) {
+        if (params.eventId) {
+          items.push({ label: t('event.details') || 'Details', path: `/events/${params.eventId}` });
+        }
+        items.push({ label: t('event.editTitle') || 'Edit Event', path: null });
+      }
+      // Events Management/List (default)
+      else if (path === '/events-management') {
+        // Không thêm item thứ 2, chỉ hiển thị "Events"
+      }
+    }
 
     return items;
   };

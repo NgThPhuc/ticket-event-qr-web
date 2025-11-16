@@ -23,13 +23,20 @@ import CreateOrganization from './pages/CreateOrganization';
 import OrganizationMembers from './pages/OrganizationMembers';
 import OrganizationDetail from './pages/OrganizationDetail';
 import EditOrganization from './pages/EditOrganization';
+import EventsPage from './pages/EventsPage';
+import EventDetail from './pages/EventDetail';
+import CreateEvent from './pages/CreateEvent';
+import EditEvent from './pages/EditEvent';
 
 function AppContent() {
   const location = useLocation();
   const hideFooterPaths = ['/login', '/register', '/verify-otp', '/forgot-password', '/reset-password'];
   const isDashboardRoute = location.pathname.startsWith('/dashboard') || 
                            location.pathname.startsWith('/organizations') || 
-                           location.pathname.startsWith('/create-organization');
+                           location.pathname.startsWith('/create-organization') ||
+                           location.pathname.startsWith('/events-management') ||
+                           (location.pathname.startsWith('/events/') && location.pathname !== '/events') ||
+                           location.pathname.startsWith('/create-event');
   const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
 
   return (
@@ -139,6 +146,38 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <OrganizationMembers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/events-management"
+          element={
+            <ProtectedRoute>
+              <EventsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/events/:eventId"
+          element={
+            <ProtectedRoute>
+              <EventDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/events/:eventId/edit"
+          element={
+            <ProtectedRoute>
+              <EditEvent />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-event"
+          element={
+            <ProtectedRoute>
+              <CreateEvent />
             </ProtectedRoute>
           }
         />
