@@ -27,7 +27,10 @@ import EditOrganization from './pages/EditOrganization';
 function AppContent() {
   const location = useLocation();
   const hideFooterPaths = ['/login', '/register', '/verify-otp', '/forgot-password', '/reset-password'];
-  const showFooter = !hideFooterPaths.includes(location.pathname);
+  const isDashboardRoute = location.pathname.startsWith('/dashboard') || 
+                           location.pathname.startsWith('/organizations') || 
+                           location.pathname.startsWith('/create-organization');
+  const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
 
   return (
     <div className="flex flex-col min-h-screen">

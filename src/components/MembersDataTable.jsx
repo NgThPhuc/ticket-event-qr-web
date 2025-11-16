@@ -21,13 +21,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, UserPlus } from 'lucide-react';
 
-const getRoleLabel = (role) => {
-  const roleMap = {
-    'ORGANIZER_ADMIN': 'ORGANIZER_ADMIN',
-    'EVENT_MANAGER': 'Event Manager',
-    'CHECKIN_STAFF': 'Check-in Staff',
-  };
-  return roleMap[role] || role;
+const getRoleLabel = (role, t) => {
+  const roleKey = `roles.${role}`;
+  return t(roleKey) || role;
 };
 
 export function MembersDataTable({
@@ -84,7 +80,7 @@ export function MembersDataTable({
           if (!canEdit) {
             return (
               <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
-                {getRoleLabel(member.role)}
+                {getRoleLabel(member.role, t)}
               </div>
             );
           }
@@ -96,7 +92,7 @@ export function MembersDataTable({
                   variant="outline"
                   className="h-8 gap-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 border-blue-300 dark:border-blue-700"
                 >
-                  {getRoleLabel(member.role)}
+                  {getRoleLabel(member.role, t)}
                   <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>

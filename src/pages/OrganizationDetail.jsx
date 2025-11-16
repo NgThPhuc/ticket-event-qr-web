@@ -28,14 +28,9 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-const getRoleLabel = (role) => {
-  const roleMap = {
-    'ORGANIZER_ADMIN': 'ORGANIZER_ADMIN',
-    'EVENT_MANAGER': 'Event Manager',
-    'CHECKIN_STAFF': 'Check-in Staff',
-    'CUSTOMER': 'Customer',
-  };
-  return roleMap[role] || role;
+const getRoleLabel = (role, t) => {
+  const roleKey = `roles.${role}`;
+  return t(roleKey) || role;
 };
 
 const getRoleBadgeVariant = (role) => {
@@ -398,7 +393,7 @@ const OrganizationDetail = () => {
                           </TableCell>
                           <TableCell>
                             <Badge variant={getRoleBadgeVariant(member.role)}>
-                              {getRoleLabel(member.role)}
+                              {getRoleLabel(member.role, t)}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-muted-foreground">

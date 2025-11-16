@@ -85,9 +85,9 @@ export function AppSidebar() {
           </div>
           {state !== 'collapsed' && (
             <div className="flex flex-col">
-              <span className="text-sm font-semibold">Ticketer</span>
+              <span className="text-sm font-semibold">{t('sidebar.appName')}</span>
               <span className="text-xs text-muted-foreground">
-                Event Management
+                {t('sidebar.appSubtitle')}
               </span>
             </div>
           )}

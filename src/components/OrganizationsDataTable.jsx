@@ -21,14 +21,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Building2, Users, Eye, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-const getRoleLabel = (role) => {
-  const roleMap = {
-    'ORGANIZER_ADMIN': 'ORGANIZER_ADMIN',
-    'EVENT_MANAGER': 'Event Manager',
-    'CHECKIN_STAFF': 'Check-in Staff',
-  };
-  return roleMap[role] || role;
+const getRoleLabel = (role, t) => {
+  const roleKey = `roles.${role}`;
+  return t(roleKey) || role;
 };
 
 export function OrganizationsDataTable({ 
@@ -36,6 +33,8 @@ export function OrganizationsDataTable({
   t 
 }) {
   const navigate = useNavigate();
+  const { t: translate } = useTranslation();
+  const translation = t || translate;
 
   const columns = useMemo(
     () => [
@@ -92,7 +91,7 @@ export function OrganizationsDataTable({
           const role = row.original.role;
           return (
             <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
-              {getRoleLabel(role)}
+              {getRoleLabel(role, translation)}
             </div>
           );
         },

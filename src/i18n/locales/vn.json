@@ -257,11 +257,16 @@
     "updateRoleDescription": "Cập nhật vai trò của {{name}}",
     "emailRequired": "Email không được để trống",
     "joined": "Tham gia",
-    "status": "Trạng thái"
+    "status": "Trạng thái",
+    "members": "thành viên"
   },
   "sidebar": {
     "dashboard": "Dashboard",
-    "organizations": "Tổ Chức"
+    "organizations": "Tổ Chức",
+    "overview": "Tổng quan",
+    "manageMembers": "Quản Lý Thành Viên",
+    "appName": "Ticketer",
+    "appSubtitle": "Quản Lý Sự Kiện"
   },
   "organizationsManagement": {
     "title": "Quản Lý Tổ Chức",
@@ -288,10 +293,17 @@
       "actions": "ACTIONS"
     },
     "actions": {
-      "view": "View",
-      "edit": "Edit",
-      "members": "Members",
-      "delete": "Delete"
+      "view": "Xem",
+      "edit": "Chỉnh sửa",
+      "members": "Thành viên",
+      "delete": "Xóa"
     }
+  },
+  "roles": {
+    "PLATFORM_ADMIN": "Quản Trị Viên Nền Tảng",
+    "ORGANIZER_ADMIN": "Quản Trị Viên Tổ Chức",
+    "EVENT_MANAGER": "Quản Lý Sự Kiện",
+    "CHECKIN_STAFF": "Nhân Viên Check-in",
+    "CUSTOMER": "Khách Hàng"
   }
 }

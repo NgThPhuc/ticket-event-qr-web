@@ -81,10 +81,10 @@ const OrganizationMembers = () => {
 
   // Available roles for dropdown
   const roles = [
-    { value: 'ORGANIZER_ADMIN', label: 'ORGANIZER_ADMIN' },
-    { value: 'EVENT_MANAGER', label: 'Event Manager' },
-    { value: 'CHECKIN_STAFF', label: 'Check-in Staff' },
-    { value: 'CUSTOMER', label: 'Customer' },
+    { value: 'ORGANIZER_ADMIN', label: t('roles.ORGANIZER_ADMIN') },
+    { value: 'EVENT_MANAGER', label: t('roles.EVENT_MANAGER') },
+    { value: 'CHECKIN_STAFF', label: t('roles.CHECKIN_STAFF') },
+    { value: 'CUSTOMER', label: t('roles.CUSTOMER') },
   ];
 
   // Fetch organization and members
