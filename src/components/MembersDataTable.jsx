@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, UserPlus } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 const getRoleLabel = (role, t) => {
   const roleKey = `roles.${role}`;
@@ -138,14 +138,7 @@ export function MembersDataTable({
         id: 'actions',
         header: () => (
           <div className="flex justify-end">
-            <Button
-              onClick={onAddMember}
-              size="sm"
-              className="h-8 gap-1"
-            >
-              <UserPlus className="h-4 w-4" />
-              {t('members.addMember')}
-            </Button>
+            {t('members.actions') || 'Actions'}
           </div>
         ),
         cell: ({ row }) => {

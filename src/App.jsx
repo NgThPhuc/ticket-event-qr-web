@@ -18,12 +18,12 @@ import Policy from './pages/Policy';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import Dashboard from './pages/Dashboard';
-import OrganizationsManagement from './pages/OrganizationsManagement';
+import OrganizationsPage from './pages/OrganizationsPage';
 import CreateOrganization from './pages/CreateOrganization';
 import OrganizationMembers from './pages/OrganizationMembers';
 import OrganizationDetail from './pages/OrganizationDetail';
 import EditOrganization from './pages/EditOrganization';
-``
+
 function AppContent() {
   const location = useLocation();
   const hideFooterPaths = ['/login', '/register', '/verify-otp', '/forgot-password', '/reset-password'];
@@ -106,7 +106,7 @@ function AppContent() {
           path="/organizations"
           element={
             <ProtectedRoute>
-              <OrganizationsManagement />
+              <OrganizationsPage />
             </ProtectedRoute>
           }
         />
