@@ -1,15 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '../contexts/AuthContext';
-import { DashboardLayout } from '../layouts/DashboardLayout';
-import { getEventById, deleteEvent, publishEvent, cancelEvent, completeEvent } from '../api/events';
-import { getMyOrganizations } from '../api/organizations';
-import { ArrowLeft, Calendar, MapPin, Users, Edit, Trash2, Clock, Globe, Send, X, CheckCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +8,41 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  CheckCircle,
+  Clock,
+  Edit,
+  Globe,
+  MapPin,
+  Send,
+  Trash2,
+  Users,
+  X,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  cancelEvent,
+  completeEvent,
+  deleteEvent,
+  getEventById,
+  publishEvent,
+} from "../api/events";
+import { getMyOrganizations } from "../api/organizations";
+import TicketTypesManager from "../components/TicketTypesManager";
+import { useAuth } from "../contexts/AuthContext";
+import { DashboardLayout } from "../layouts/DashboardLayout";
 
 const EventDetail = () => {
   const { t } = useTranslation();
@@ -29,12 +52,12 @@ const EventDetail = () => {
   const [event, setEvent] = useState(null);
   const [organizations, setOrganizations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [alert, setAlert] = useState({ type: '', message: '' });
+  const [error, setError] = useState("");
+  const [alert, setAlert] = useState({ type: "", message: "" });
   const [deleteDialog, setDeleteDialog] = useState({
     open: false,
     eventId: null,
-    eventTitle: '',
+    eventTitle: "",
   });
 
   // Fetch organizations và event data
@@ -46,24 +69,28 @@ const EventDetail = () => {
       }
 
       setLoading(true);
-      setError('');
+      setError("");
       try {
         // Fetch organizations của user (để check permissions)
         try {
           const myOrgs = await getMyOrganizations();
           setOrganizations(myOrgs || []);
         } catch (err) {
-          console.error('Error fetching organizations:', err);
+          console.error("Error fetching organizations:", err);
         }
 
         // Fetch event data
-        const data = await getEventById(eventId, 'organization,creator');
+        const data = await getEventById(eventId, "organization,creator");
         setEvent(data);
       } catch (err) {
-        setError(err.message || t('event.fetchDetailError') || 'Không thể tải thông tin sự kiện');
+        setError(
+          err.message ||
+            t("event.fetchDetailError") ||
+            "Không thể tải thông tin sự kiện"
+        );
         if (err.status === 404) {
           setTimeout(() => {
-            navigate('/events-management');
+            navigate("/events-management");
           }, 2000);
         }
       } finally {
@@ -77,14 +104,14 @@ const EventDetail = () => {
   }, [isAuthenticated, eventId, navigate, t]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return '-';
+    if (!dateString) return "-";
     const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return date.toLocaleDateString("vi-VN", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -104,20 +131,21 @@ const EventDetail = () => {
     try {
       await deleteEvent(deleteDialog.eventId);
       setAlert({
-        type: 'success',
-        message: t('event.deleteSuccess') || 'Xóa sự kiện thành công',
+        type: "success",
+        message: t("event.deleteSuccess") || "Xóa sự kiện thành công",
       });
       setTimeout(() => {
-        navigate('/events-management');
+        navigate("/events-management");
       }, 1000);
     } catch (err) {
       setAlert({
-        type: 'error',
-        message: err.message || t('event.deleteError') || 'Không thể xóa sự kiện',
+        type: "error",
+        message:
+          err.message || t("event.deleteError") || "Không thể xóa sự kiện",
       });
-      setDeleteDialog({ open: false, eventId: null, eventTitle: '' });
+      setDeleteDialog({ open: false, eventId: null, eventTitle: "" });
       setTimeout(() => {
-        setAlert({ type: '', message: '' });
+        setAlert({ type: "", message: "" });
       }, 3000);
     }
   };
@@ -127,25 +155,26 @@ const EventDetail = () => {
   }
 
   // Check permissions
-  const isPlatformAdmin = user?.platform_role === 'PLATFORM_ADMIN';
-  
+  const isPlatformAdmin = user?.platform_role === "PLATFORM_ADMIN";
+
   // Check user role trong organization của event
   const getEventOrgRole = () => {
     if (!event || !organizations.length) return null;
     const eventOrgId = event.organization_id || event.organization?.id;
-    
-    const userOrg = organizations.find(org => {
+
+    const userOrg = organizations.find((org) => {
       const orgId = org.organization?.id || org.organization_id || org.id;
       return orgId === eventOrgId;
     });
-    
+
     return userOrg?.role || null;
   };
 
   const eventOrgRole = getEventOrgRole();
-  const isOrganizerAdmin = isPlatformAdmin || eventOrgRole === 'ORGANIZER_ADMIN';
-  const isEventManager = eventOrgRole === 'EVENT_MANAGER';
-  
+  const isOrganizerAdmin =
+    isPlatformAdmin || eventOrgRole === "ORGANIZER_ADMIN";
+  const isEventManager = eventOrgRole === "EVENT_MANAGER";
+
   // Permissions
   const canEdit = isPlatformAdmin || isOrganizerAdmin || isEventManager;
   const canDelete = isPlatformAdmin || isOrganizerAdmin; // EVENT_MANAGER không thể delete
@@ -155,81 +184,84 @@ const EventDetail = () => {
 
   const handlePublish = async () => {
     if (!event) return;
-    
+
     try {
       await publishEvent(event.id);
       setAlert({
-        type: 'success',
-        message: t('event.publishSuccess') || 'Publish event thành công',
+        type: "success",
+        message: t("event.publishSuccess") || "Publish event thành công",
       });
       // Reload event
-      const data = await getEventById(eventId, 'organization,creator');
+      const data = await getEventById(eventId, "organization,creator");
       setEvent(data);
       setTimeout(() => {
-        setAlert({ type: '', message: '' });
+        setAlert({ type: "", message: "" });
       }, 3000);
     } catch (err) {
       setAlert({
-        type: 'error',
-        message: err.message || t('event.publishError') || 'Không thể publish event',
+        type: "error",
+        message:
+          err.message || t("event.publishError") || "Không thể publish event",
       });
       setTimeout(() => {
-        setAlert({ type: '', message: '' });
+        setAlert({ type: "", message: "" });
       }, 3000);
     }
   };
 
   const handleCancel = async () => {
     if (!event) return;
-    
-    const confirmed = window.confirm('Bạn có chắc chắn muốn hủy sự kiện này?');
+
+    const confirmed = window.confirm("Bạn có chắc chắn muốn hủy sự kiện này?");
     if (!confirmed) return;
-    
+
     try {
-      await cancelEvent(event.id, { reason: 'Cancelled by user' });
+      await cancelEvent(event.id, { reason: "Cancelled by user" });
       setAlert({
-        type: 'success',
-        message: t('event.cancelSuccess') || 'Cancel event thành công',
+        type: "success",
+        message: t("event.cancelSuccess") || "Cancel event thành công",
       });
       // Reload event
-      const data = await getEventById(eventId, 'organization,creator');
+      const data = await getEventById(eventId, "organization,creator");
       setEvent(data);
       setTimeout(() => {
-        setAlert({ type: '', message: '' });
+        setAlert({ type: "", message: "" });
       }, 3000);
     } catch (err) {
       setAlert({
-        type: 'error',
-        message: err.message || t('event.cancelError') || 'Không thể cancel event',
+        type: "error",
+        message:
+          err.message || t("event.cancelError") || "Không thể cancel event",
       });
       setTimeout(() => {
-        setAlert({ type: '', message: '' });
+        setAlert({ type: "", message: "" });
       }, 3000);
     }
   };
 
   const handleComplete = async () => {
     if (!event) return;
-    
+
     try {
       await completeEvent(event.id);
       setAlert({
-        type: 'success',
-        message: t('event.completeSuccess') || 'Complete event thành công',
+        type: "success",
+        message: t("event.completeSuccess") || "Complete event thành công",
       });
       // Reload event
-      const data = await getEventById(eventId, 'organization,creator');
+      const data = await getEventById(eventId, "organization,creator");
       setEvent(data);
       setTimeout(() => {
-        setAlert({ type: '', message: '' });
+        setAlert({ type: "", message: "" });
       }, 3000);
     } catch (err) {
       setAlert({
-        type: 'error',
-        message: err.message || t('event.completeError') || 'Không thể complete event',
+        type: "error",
+        message:
+          err.message || t("event.completeError") || "Không thể complete event",
       });
       setTimeout(() => {
-        setAlert({ type: '', message: '' });
+        setAlert({ type: "", message: "" });
       }, 3000);
     }
   };
@@ -251,13 +283,16 @@ const EventDetail = () => {
             </Button>
           </div> */}
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            {t('event.details') || 'Chi tiết Sự kiện'}
+            {t("event.details") || "Chi tiết Sự kiện"}
           </h1>
         </div>
 
         {/* Alert */}
         {alert.message && (
-          <Alert variant={alert.type === 'error' ? 'destructive' : 'default'} className="mb-6">
+          <Alert
+            variant={alert.type === "error" ? "destructive" : "default"}
+            className="mb-6"
+          >
             <AlertDescription>{alert.message}</AlertDescription>
           </Alert>
         )}
@@ -268,7 +303,7 @@ const EventDetail = () => {
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white"></div>
               <p className="mt-4 text-gray-600 dark:text-gray-400">
-                {t('common.loading') || 'Đang tải...'}
+                {t("common.loading") || "Đang tải..."}
               </p>
             </div>
           </div>
@@ -283,58 +318,72 @@ const EventDetail = () => {
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="text-2xl mb-2">{event.title}</CardTitle>
+                    <CardTitle className="text-2xl mb-2">
+                      {event.title}
+                    </CardTitle>
                     {event.subtitle && (
                       <CardDescription className="text-base mb-4">
                         {event.subtitle}
                       </CardDescription>
                     )}
                     <div className="flex flex-wrap gap-2 mb-4">
-                      <Badge variant={event.status === 'PUBLISHED' ? 'default' : 'secondary'}>
-                        {t(`event.${event.status?.toLowerCase()}`) || event.status}
+                      <Badge
+                        variant={
+                          event.status === "PUBLISHED" ? "default" : "secondary"
+                        }
+                      >
+                        {t(`event.${event.status?.toLowerCase()}`) ||
+                          event.status}
                       </Badge>
                       <Badge variant="outline">
-                        {event.attendance_mode === 'OFFLINE' ? t('event.offline') : 
-                         event.attendance_mode === 'ONLINE' ? t('event.online') : 
-                         t('event.hybrid')}
+                        {event.attendance_mode === "OFFLINE"
+                          ? t("event.offline")
+                          : event.attendance_mode === "ONLINE"
+                          ? t("event.online")
+                          : t("event.hybrid")}
                       </Badge>
                       {event.visibility && (
                         <Badge variant="outline">
-                          {t(`event.${event.visibility?.toLowerCase()}`) || event.visibility}
+                          {t(`event.${event.visibility?.toLowerCase()}`) ||
+                            event.visibility}
                         </Badge>
                       )}
                     </div>
                   </div>
                   {canEdit && (
                     <div className="flex flex-wrap gap-2">
-                      {(event.status === 'DRAFT' || event.status === 'SCHEDULED') && canPublish && (
-                        <Button
-                          variant="default"
-                          onClick={handlePublish}
-                          className="gap-2"
-                        >
-                          <Send className="h-4 w-4" />
-                          {t('event.publish')}
-                        </Button>
-                      )}
-                      {event.status !== 'CANCELLED' && event.status !== 'COMPLETED' && canCancel && (
-                        <Button
-                          variant="outline"
-                          onClick={handleCancel}
-                          className="gap-2"
-                        >
-                          <X className="h-4 w-4" />
-                          {t('event.cancel')}
-                        </Button>
-                      )}
-                      {event.status === 'PUBLISHED' && canComplete && (
+                      {(event.status === "DRAFT" ||
+                        event.status === "SCHEDULED") &&
+                        canPublish && (
+                          <Button
+                            variant="default"
+                            onClick={handlePublish}
+                            className="gap-2"
+                          >
+                            <Send className="h-4 w-4" />
+                            {t("event.publish")}
+                          </Button>
+                        )}
+                      {event.status !== "CANCELLED" &&
+                        event.status !== "COMPLETED" &&
+                        canCancel && (
+                          <Button
+                            variant="outline"
+                            onClick={handleCancel}
+                            className="gap-2"
+                          >
+                            <X className="h-4 w-4" />
+                            {t("event.cancel")}
+                          </Button>
+                        )}
+                      {event.status === "PUBLISHED" && canComplete && (
                         <Button
                           variant="outline"
                           onClick={handleComplete}
                           className="gap-2"
                         >
                           <CheckCircle className="h-4 w-4" />
-                          {t('event.complete')}
+                          {t("event.complete")}
                         </Button>
                       )}
                       <Button
@@ -343,7 +392,7 @@ const EventDetail = () => {
                         className="gap-2"
                       >
                         <Edit className="h-4 w-4" />
-                        {t('event.edit')}
+                        {t("event.edit")}
                       </Button>
                       {canDelete && (
                         <Button
@@ -352,7 +401,7 @@ const EventDetail = () => {
                           className="gap-2"
                         >
                           <Trash2 className="h-4 w-4" />
-                          {t('event.delete')}
+                          {t("event.delete")}
                         </Button>
                       )}
                     </div>
@@ -365,7 +414,7 @@ const EventDetail = () => {
                   {event.description && (
                     <div>
                       <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                        {t('event.description')}
+                        {t("event.description")}
                       </h3>
                       <p className="text-gray-900 dark:text-white whitespace-pre-wrap">
                         {event.description}
@@ -380,7 +429,7 @@ const EventDetail = () => {
                         <Clock className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            {t('event.startAt')}
+                            {t("event.startAt")}
                           </p>
                           <p className="text-gray-900 dark:text-white">
                             {formatDate(event.start_at)}
@@ -393,7 +442,7 @@ const EventDetail = () => {
                         <Clock className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            {t('event.endAt')}
+                            {t("event.endAt")}
                           </p>
                           <p className="text-gray-900 dark:text-white">
                             {formatDate(event.end_at)}
@@ -404,13 +453,14 @@ const EventDetail = () => {
                   </div>
 
                   {/* Location/Online */}
-                  {(event.attendance_mode === 'OFFLINE' || event.attendance_mode === 'HYBRID') && (
+                  {(event.attendance_mode === "OFFLINE" ||
+                    event.attendance_mode === "HYBRID") &&
                     event.venue_name && (
                       <div className="flex items-start gap-3">
                         <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            {t('event.venueName')}
+                            {t("event.venueName")}
                           </p>
                           <p className="text-gray-900 dark:text-white font-medium">
                             {event.venue_name}
@@ -418,7 +468,8 @@ const EventDetail = () => {
                           {event.address_line1 && (
                             <p className="text-gray-900 dark:text-white">
                               {event.address_line1}
-                              {event.address_line2 && `, ${event.address_line2}`}
+                              {event.address_line2 &&
+                                `, ${event.address_line2}`}
                               {event.city && `, ${event.city}`}
                               {event.district && `, ${event.district}`}
                               {event.country && `, ${event.country}`}
@@ -426,16 +477,16 @@ const EventDetail = () => {
                           )}
                         </div>
                       </div>
-                    )
-                  )}
+                    )}
 
-                  {(event.attendance_mode === 'ONLINE' || event.attendance_mode === 'HYBRID') && (
+                  {(event.attendance_mode === "ONLINE" ||
+                    event.attendance_mode === "HYBRID") &&
                     event.meeting_url && (
                       <div className="flex items-start gap-3">
                         <Globe className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            {t('event.meetingUrl')}
+                            {t("event.meetingUrl")}
                           </p>
                           <a
                             href={event.meeting_url}
@@ -447,13 +498,13 @@ const EventDetail = () => {
                           </a>
                           {event.stream_platform && (
                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                              {t('event.streamPlatform')}: {event.stream_platform}
+                              {t("event.streamPlatform")}:{" "}
+                              {event.stream_platform}
                             </p>
                           )}
                         </div>
                       </div>
-                    )
-                  )}
+                    )}
 
                   {/* Organization */}
                   {event.organization && (
@@ -461,7 +512,7 @@ const EventDetail = () => {
                       <Users className="h-5 w-5 text-gray-400 mt-0.5" />
                       <div>
                         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                          {t('organization.name')}
+                          {t("organization.name")}
                         </p>
                         <p className="text-gray-900 dark:text-white">
                           {event.organization.name}
@@ -475,7 +526,7 @@ const EventDetail = () => {
                     {event.capacity_total && (
                       <div>
                         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                          {t('event.capacityTotal')}
+                          {t("event.capacityTotal")}
                         </p>
                         <p className="text-gray-900 dark:text-white">
                           {event.capacity_total.toLocaleString()}
@@ -485,7 +536,7 @@ const EventDetail = () => {
                     {event.category && (
                       <div>
                         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                          {t('event.category')}
+                          {t("event.category")}
                         </p>
                         <p className="text-gray-900 dark:text-white">
                           {event.category}
@@ -495,7 +546,7 @@ const EventDetail = () => {
                     {event.created_at && (
                       <div>
                         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                          {t('event.createdAt')}
+                          {t("event.createdAt")}
                         </p>
                         <p className="text-gray-900 dark:text-white">
                           {formatDate(event.created_at)}
@@ -505,7 +556,7 @@ const EventDetail = () => {
                     {event.updated_at && (
                       <div>
                         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                          {t('event.updatedAt')}
+                          {t("event.updatedAt")}
                         </p>
                         <p className="text-gray-900 dark:text-white">
                           {formatDate(event.updated_at)}
@@ -516,31 +567,46 @@ const EventDetail = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Ticket Types Manager */}
+            <TicketTypesManager
+              eventId={eventId}
+              eventStartAt={event.start_at}
+              canManage={canEdit}
+            />
           </div>
         ) : null}
 
         {/* Delete Confirmation Dialog */}
-        <AlertDialog open={deleteDialog.open} onOpenChange={(open) => {
-          if (!open) {
-            setDeleteDialog({ open: false, eventId: null, eventTitle: '' });
-          }
-        }}>
+        <AlertDialog
+          open={deleteDialog.open}
+          onOpenChange={(open) => {
+            if (!open) {
+              setDeleteDialog({ open: false, eventId: null, eventTitle: "" });
+            }
+          }}
+        >
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>
-                {t('event.deleteConfirmTitle') || 'Xác nhận xóa sự kiện'}
+                {t("event.deleteConfirmTitle") || "Xác nhận xóa sự kiện"}
               </AlertDialogTitle>
               <AlertDialogDescription>
-                {t('event.deleteConfirmMessage', { title: deleteDialog.eventTitle }) || 
+                {t("event.deleteConfirmMessage", {
+                  title: deleteDialog.eventTitle,
+                }) ||
                   `Bạn có chắc chắn muốn xóa sự kiện "${deleteDialog.eventTitle}"? Hành động này không thể hoàn tác.`}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>
-                {t('common.cancel') || 'Hủy'}
+                {t("common.cancel") || "Hủy"}
               </AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
-                {t('event.deleteConfirm') || 'Xóa'}
+              <AlertDialogAction
+                onClick={confirmDelete}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {t("event.deleteConfirm") || "Xóa"}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -551,4 +617,3 @@ const EventDetail = () => {
 };
 
 export default EventDetail;
-
