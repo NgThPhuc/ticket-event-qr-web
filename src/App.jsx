@@ -1,32 +1,33 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import Footer from './components/Footer';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import PublicRoute from './routes/PublicRoute';
-import Footer from './components/Footer';
 
 // Pages
+import Contact from './pages/Contact';
+import CreateEvent from './pages/CreateEvent';
+import CreateOrganization from './pages/CreateOrganization';
+import Dashboard from './pages/Dashboard';
+import EditEvent from './pages/EditEvent';
+import EditOrganization from './pages/EditOrganization';
+import EventDetail from './pages/EventDetail';
+import Events from './pages/Events';
+import EventsPage from './pages/EventsPage';
+import ForgotPassword from './pages/ForgotPassword';
+import GoogleCallback from './pages/GoogleCallback';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Register from './pages/Register';
-import VerifyOTP from './pages/VerifyOTP';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import GoogleCallback from './pages/GoogleCallback';
-import Events from './pages/Events';
-import Policy from './pages/Policy';
-import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
-import Dashboard from './pages/Dashboard';
-import OrganizationsPage from './pages/OrganizationsPage';
-import CreateOrganization from './pages/CreateOrganization';
-import OrganizationMembers from './pages/OrganizationMembers';
 import OrganizationDetail from './pages/OrganizationDetail';
-import EditOrganization from './pages/EditOrganization';
-import EventsPage from './pages/EventsPage';
-import EventDetail from './pages/EventDetail';
-import CreateEvent from './pages/CreateEvent';
-import EditEvent from './pages/EditEvent';
+import OrganizationMembers from './pages/OrganizationMembers';
+import OrganizationsPage from './pages/OrganizationsPage';
+import Policy from './pages/Policy';
+import PublicEventDetail from './pages/PublicEventDetail';
+import Register from './pages/Register';
+import ResetPassword from './pages/ResetPassword';
+import VerifyOTP from './pages/VerifyOTP';
 
 function AppContent() {
   const location = useLocation();
@@ -97,6 +98,7 @@ function AppContent() {
 
         {/* Public pages with header */}
         <Route path="/events" element={<Events />} />
+        <Route path="/e/:slug" element={<PublicEventDetail />} />
         <Route path="/policy" element={<Policy />} />
         <Route path="/contact" element={<Contact />} />
 

@@ -82,7 +82,7 @@ export const getEventBySlug = async (slug, expand = '') => {
     console.log('Endpoint /events/slug/:slug không khả dụng, thử lấy từ /events/public');
     
     // Fallback: Lấy từ /events/public và filter theo slug
-    const response = await fetch(`${API_BASE_URL}/events/public?limit=1000`, {
+    const response = await fetch(`${API_BASE_URL}/events/public?limit=100`, {
       method: 'GET',
       headers: getHeaders(false), // Public endpoint - không cần auth
     });

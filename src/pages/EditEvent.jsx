@@ -18,6 +18,7 @@ import { getEventById, patchEvent } from "../api/events";
 import { getAllOrganizations, getMyOrganizations } from "../api/organizations";
 import { useAuth } from "../contexts/AuthContext";
 import { DashboardLayout } from "../layouts/DashboardLayout";
+import ImageUploader from "../components/ImageUploader";
 
 const EditEvent = () => {
     const { t } = useTranslation();
@@ -349,6 +350,8 @@ const EditEvent = () => {
                 payload.capacity_total = parseInt(formData.capacity_total);
             if (formData.category?.trim())
                 payload.category = formData.category.trim();
+            if (formData.cover_image_url)
+                payload.cover_image_url = formData.cover_image_url;
 
             await patchEvent(eventId, payload);
 
@@ -524,6 +527,18 @@ const EditEvent = () => {
                                 onChange={handleChange}
                                 placeholder={t("event.descriptionPlaceholder")}
                                 rows={4}
+                            />
+                        </div>
+
+                        
+                        
+                        {/* Cover Image Upload */}
+                        <div className="border-t pt-4">
+                            <ImageUploader
+                                currentImageUrl={event?.cover_image_url}
+                                onImageUploaded={(url) => setFormData({...formData, cover_image_url: url})}
+                                label={t("event.coverImage") || "Ảnh bìa sự kiện"}
+                                disabled={submitting}
                             />
                         </div>
 

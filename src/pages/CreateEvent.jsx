@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "../api/events";
 import { getAllOrganizations, getMyOrganizations } from "../api/organizations";
+import ImageUploader from "../components/ImageUploader";
 import { useAuth } from "../contexts/AuthContext";
 import { DashboardLayout } from "../layouts/DashboardLayout";
 
@@ -391,6 +392,15 @@ const CreateEvent = () => {
                                 onChange={handleChange}
                                 placeholder={t("event.descriptionPlaceholder")}
                                 rows={4}
+                            />
+                        </div>
+
+                        {/* Cover Image Upload */}
+                        <div className="border-t pt-4">
+                            <ImageUploader
+                                onImageUploaded={(url) => setFormData({...formData, cover_image_url: url})}
+                                label={t("event.coverImage") || "Ảnh bìa sự kiện"}
+                                disabled={loading}
                             />
                         </div>
 

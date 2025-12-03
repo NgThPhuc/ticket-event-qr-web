@@ -1,43 +1,43 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import {
-  CheckCircle,
-  Clock,
-  Edit,
-  Globe,
-  MapPin,
-  Send,
-  Trash2,
-  Users,
-  X,
+    CheckCircle,
+    Clock,
+    Edit,
+    Globe,
+    MapPin,
+    Send,
+    Trash2,
+    Users,
+    X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  cancelEvent,
-  completeEvent,
-  deleteEvent,
-  getEventById,
-  publishEvent,
+    cancelEvent,
+    completeEvent,
+    deleteEvent,
+    getEventById,
+    publishEvent,
 } from "../api/events";
 import { getMyOrganizations } from "../api/organizations";
 import TicketTypesManager from "../components/TicketTypesManager";
