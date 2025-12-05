@@ -46,6 +46,7 @@ const CreateEvent = () => {
         stream_platform: "",
         capacity_total: "",
         category: "",
+        cover_image_url: "",
     });
     const [errors, setErrors] = useState({});
     const [alert, setAlert] = useState({ type: "", message: "" });
@@ -211,7 +212,9 @@ const CreateEvent = () => {
                 payload.subtitle = formData.subtitle.trim();
             if (formData.description?.trim())
                 payload.description = formData.description.trim();
-
+            if (formData.cover_image_url) {
+                payload.cover_image_url = formData.cover_image_url;
+            }
             if (
                 formData.attendance_mode === "OFFLINE" ||
                 formData.attendance_mode === "HYBRID"
