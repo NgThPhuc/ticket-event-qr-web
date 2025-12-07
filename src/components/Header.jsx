@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '../contexts/AuthContext';
-import ThemeToggle from './ui/ThemeToggle';
-import LanguageToggle from './ui/LanguageToggle';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { getMyOrganizations, getAllOrganizations } from '../api/organizations';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link, useNavigate } from 'react-router-dom';
+import { getAllOrganizations, getMyOrganizations } from '../api/organizations';
+import { useAuth } from '../contexts/AuthContext';
 import { Breadcrumb } from './Breadcrumb';
+import LanguageToggle from './ui/LanguageToggle';
+import ThemeToggle from './ui/ThemeToggle';
 
 const Header = ({ showSidebar = false }) => {
   const navigate = useNavigate();
@@ -208,7 +208,7 @@ const Header = ({ showSidebar = false }) => {
                       {t('header.myProfile')}
                     </Link>
                     <Link
-                      to="/my-tickets"
+                      to="/orders"
                       className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                       onClick={() => setAccountMenuOpen(false)}
                     >
