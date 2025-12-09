@@ -1,6 +1,4 @@
-import { getBaseURL, getHeaders, handleResponse } from './config';
-
-const API_BASE_URL = getBaseURL();
+import { API_BASE_URL, getHeaders, handleResponse } from './config';
 
 /**
  * Khởi tạo thanh toán và lấy payment URL từ VNPAY
@@ -11,14 +9,20 @@ const API_BASE_URL = getBaseURL();
  * @returns {Promise<Object>} { payment_url, transaction_id, expires_at, ... }
  */
 export const initiatePayment = async (orderId, returnUrl, cancelUrl = null) => {
+  const payload = {
+    payment_method: 'VNPAY',
+    return_url: returnUrl,
+  };
+  
+  // Only include cancel_url if provided (theo Backend doc: cancel_url là OPTIONAL)
+  if (cancelUrl) {
+    payload.cancel_url = cancelUrl;
+  }
+  
   const response = await fetch(`${API_BASE_URL}/orders/${orderId}/payment/initiate`, {
     method: 'POST',
     headers: getHeaders(true),
-    body: JSON.stringify({
-      payment_method: 'VNPAY',
-      return_url: returnUrl,
-      cancel_url: cancelUrl
-    }),
+    body: JSON.stringify(payload),
   });
   
   return handleResponse(response);

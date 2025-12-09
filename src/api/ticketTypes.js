@@ -78,9 +78,11 @@ export const getTicketTypes = async (eventId, params = {}) => {
     queryString.toString() ? `?${queryString.toString()}` : ""
   }`;
 
+  // Gửi token nếu có, nhưng vẫn cho phép public access
+  const token = localStorage.getItem('access_token');
   const response = await fetch(url, {
     method: "GET",
-    headers: getHeaders(true), // Cần auth token
+    headers: getHeaders(!!token), // Gửi auth nếu có token
   });
 
   return handleResponse(response);

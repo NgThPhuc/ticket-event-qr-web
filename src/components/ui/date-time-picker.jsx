@@ -38,7 +38,14 @@ export function DateTimePicker({ date, setDate, label }) {
     combinedDate.setHours(hours);
     combinedDate.setMinutes(minutes);
 
-    setDate(combinedDate.toISOString());
+    // Return datetime-local format (YYYY-MM-DDTHH:mm) instead of ISO UTC
+    const year = combinedDate.getFullYear();
+    const month = String(combinedDate.getMonth() + 1).padStart(2, '0');
+    const day = String(combinedDate.getDate()).padStart(2, '0');
+    const hoursStr = String(combinedDate.getHours()).padStart(2, '0');
+    const minutesStr = String(combinedDate.getMinutes()).padStart(2, '0');
+    
+    setDate(`${year}-${month}-${day}T${hoursStr}:${minutesStr}`);
   };
 
   const handleDateSelect = (newDate) => {
@@ -58,42 +65,40 @@ export function DateTimePicker({ date, setDate, label }) {
   };
 
   return (
-    <div className="flex gap-4 items-end">
-      <div className="flex flex-col gap-2">
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "w-[240px] justify-between font-normal",
-                !selectedDate && "text-muted-foreground"
-              )}
-            >
+    <div className="flex gap-2 items-center">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            className={cn(
+              "flex-1 justify-between font-normal min-w-0",
+              !selectedDate && "text-muted-foreground"
+            )}
+          >
+            <span className="truncate">
               {selectedDate ? format(selectedDate, "PPP") : "Select date"}
-              <ChevronDownIcon className="h-4 w-4 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={handleDateSelect}
-              captionLayout="dropdown"
-              fromYear={2024}
-              toYear={2030}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
+            </span>
+            <ChevronDownIcon className="h-4 w-4 opacity-50 flex-shrink-0 ml-2" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={handleDateSelect}
+            captionLayout="dropdown"
+            fromYear={2024}
+            toYear={2030}
+          />
+        </PopoverContent>
+      </Popover>
 
-      <div className="flex flex-col gap-2">
-        <Input
-          type="time"
-          value={timeValue}
-          onChange={handleTimeChange}
-          className="w-[120px]"
-        />
-      </div>
+      <Input
+        type="time"
+        value={timeValue}
+        onChange={handleTimeChange}
+        className="w-[110px] flex-shrink-0"
+      />
     </div>
   );
 }

@@ -65,9 +65,11 @@ export const getEventBySlug = async (slug, expand = '') => {
   // Thử endpoint /events/slug/:slug trước
   try {
     const queryString = expand ? `?expand=${expand}` : '';
+    // Gửi token nếu có (để access full data), nhưng vẫn cho phép public access
+    const token = localStorage.getItem('access_token');
     const response = await fetch(`${API_BASE_URL}/events/slug/${slug}${queryString}`, {
       method: 'GET',
-      headers: getHeaders(false), // Public endpoint - không cần auth
+      headers: getHeaders(!!token), // Gửi auth nếu có token
     });
 
     if (response.ok) {

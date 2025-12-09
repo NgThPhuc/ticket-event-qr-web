@@ -24,7 +24,7 @@ const PaymentReturn = () => {
     }
 
     let pollCount = 0;
-    const maxPolls = 15; // 15 polls × 2 seconds = 30 seconds timeout
+    const maxPolls = 20; // 20 polls × 3 seconds = 60 seconds timeout (theo Backend doc)
     
     const checkStatus = async () => {
       try {
@@ -84,7 +84,7 @@ const PaymentReturn = () => {
         if (shouldStop) {
           clearInterval(interval);
         }
-      }, 2000); // Poll every 2 seconds
+      }, 3000); // Poll every 3 seconds (theo Backend recommendations)
 
       // Cleanup
       return () => clearInterval(interval);

@@ -53,6 +53,18 @@ const TicketTypesManager = ({ eventId, eventStartAt, canManage = false }) => {
         refund_policy_deadline: "",
     });
 
+    // Helper: Convert UTC string to local datetime-local format (YYYY-MM-DDTHH:mm)
+    const utcToLocal = (utcString) => {
+        if (!utcString) return "";
+        const date = new Date(utcString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
     useEffect(() => {
         if (eventId) {
             loadTicketTypes();
@@ -114,13 +126,9 @@ const TicketTypesManager = ({ eventId, eventStartAt, canManage = false }) => {
             quantity_total: ticket.quantity_total?.toString() || "",
             per_order_min: ticket.per_order_min?.toString() || "1",
             per_order_max: ticket.per_order_max?.toString() || "10",
-            sale_start_at: ticket.sale_start_at
-                ? ticket.sale_start_at.slice(0, 16)
-                : "",
-            sale_end_at: ticket.sale_end_at ? ticket.sale_end_at.slice(0, 16) : "",
-            refund_policy_deadline: ticket.refund_policy_deadline
-                ? ticket.refund_policy_deadline.slice(0, 16)
-                : "",
+            sale_start_at: utcToLocal(ticket.sale_start_at),
+            sale_end_at: utcToLocal(ticket.sale_end_at),
+            refund_policy_deadline: utcToLocal(ticket.refund_policy_deadline),
         });
         setDialogOpen(true);
     };
@@ -515,7 +523,7 @@ const TicketTypesManager = ({ eventId, eventStartAt, canManage = false }) => {
                             </div>
 
                             {/* Sale Dates */}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-4">
                                 <div>
                                     <Label htmlFor="sale_start_at">
                                         {t("ticketTypes.saleStartAt")} <span className="text-red-500">*</span>

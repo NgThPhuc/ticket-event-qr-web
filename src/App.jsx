@@ -28,6 +28,15 @@ import PublicEventDetail from './pages/PublicEventDetail';
 import Register from './pages/Register';
 import ResetPassword from './pages/ResetPassword';
 import VerifyOTP from './pages/VerifyOTP';
+import OrderTracking from './pages/OrderTracking';
+import PaymentReturn from './pages/PaymentReturn';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFailure from './pages/PaymentFailure';
+import PaymentError from './pages/PaymentError';
+import CheckoutPage from './pages/CheckoutPage';
+import OrderSuccess from './pages/OrderSuccess';
+import MyOrders from './pages/MyOrders';
+import OrderDetail from './pages/OrderDetail';
 
 function AppContent() {
   const location = useLocation();
@@ -37,7 +46,10 @@ function AppContent() {
                            location.pathname.startsWith('/create-organization') ||
                            location.pathname.startsWith('/events-management') ||
                            (location.pathname.startsWith('/events/') && location.pathname !== '/events') ||
-                           location.pathname.startsWith('/create-event');
+                           location.pathname.startsWith('/create-event') ||
+                           location.pathname.startsWith('/checkout') ||
+                           location.pathname.startsWith('/order-success') ||
+                           location.pathname.startsWith('/orders');
   const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
 
   return (
@@ -101,8 +113,45 @@ function AppContent() {
         <Route path="/e/:slug" element={<PublicEventDetail />} />
         <Route path="/policy" element={<Policy />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/track-order" element={<OrderTracking />} />
+        <Route path="/payment/return" element={<PaymentReturn />} />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/failure" element={<PaymentFailure />} />
+        <Route path="/payment/error" element={<PaymentError />} />
 
         {/* Protected pages */}
+        <Route
+          path="/checkout/:eventId"
+          element={
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/order-success/:orderId"
+          element={
+            <ProtectedRoute>
+              <OrderSuccess />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <MyOrders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders/:orderId"
+          element={
+            <ProtectedRoute>
+              <OrderDetail />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/dashboard"
           element={

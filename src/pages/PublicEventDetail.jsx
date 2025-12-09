@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getEventBySlug } from "../api/events";
+import { getTicketTypes } from "../api/ticketTypes";
 import Header from "../components/Header";
 import TicketCard from "../components/TicketCard";
 
@@ -28,7 +29,9 @@ const PublicEventDetail = () => {
   const navigate = useNavigate();
   const { slug } = useParams();
   const [event, setEvent] = useState(null);
+  const [ticketTypes, setTicketTypes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingTickets, setLoadingTickets] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -38,8 +41,43 @@ const PublicEventDetail = () => {
       try {
         setLoading(true);
         setError("");
-        const data = await getEventBySlug(slug, "organization,ticket_types");
+        // Load event data (with organization)
+        const data = await getEventBySlug(slug, "organization");
         setEvent(data);
+        
+        // Load ticket types separately
+        if (data && data.id) {
+          setLoadingTickets(true);
+          try {
+            const tickets = await getTicketTypes(data.id, { only_on_sale_now: false });
+            
+            // Calculate is_on_sale for each ticket based on sale period
+            const now = new Date();
+            const ticketsWithSaleStatus = Array.isArray(tickets) 
+              ? tickets.map(ticket => {
+                  const saleStart = ticket.sale_start_at ? new Date(ticket.sale_start_at) : null;
+                  const saleEnd = ticket.sale_end_at ? new Date(ticket.sale_end_at) : null;
+                  
+                  const is_on_sale = ticket.is_active &&
+                    (!saleStart || now >= saleStart) &&
+                    (!saleEnd || now <= saleEnd);
+                  
+                  return {
+                    ...ticket,
+                    is_on_sale
+                  };
+                })
+              : [];
+            
+            setTicketTypes(ticketsWithSaleStatus);
+          } catch (ticketErr) {
+            console.error("Error fetching ticket types:", ticketErr);
+            // Không set error vì ticket types là optional
+            setTicketTypes([]);
+          } finally {
+            setLoadingTickets(false);
+          }
+        }
       } catch (err) {
         console.error("Error fetching event:", err);
         setError(
@@ -177,7 +215,7 @@ const PublicEventDetail = () => {
   }
 
   const attendanceMode = getAttendanceModeInfo(event.attendance_mode);
-  const hasTickets = event.ticket_types && event.ticket_types.length > 0;
+  const hasTickets = ticketTypes && ticketTypes.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -300,15 +338,24 @@ const PublicEventDetail = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {event.ticket_types.map((ticket) => (
-                      <TicketCard
-                        key={ticket.id}
-                        ticket={ticket}
-                        onBuyClick={handleBuyTicket}
-                      />
-                    ))}
-                  </div>
+                  {loadingTickets ? (
+                    <div className="text-center py-8">
+                      <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {t("common.loading") || "Đang tải..."}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {ticketTypes.map((ticket) => (
+                        <TicketCard
+                          key={ticket.id}
+                          ticket={ticket}
+                          onBuyClick={handleBuyTicket}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}
