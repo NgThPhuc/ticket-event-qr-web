@@ -30,6 +30,7 @@ import ResetPassword from './pages/ResetPassword';
 import VerifyOTP from './pages/VerifyOTP';
 import OrderTracking from './pages/OrderTracking';
 import PaymentReturn from './pages/PaymentReturn';
+import PaymentResult from './pages/PaymentResult';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentFailure from './pages/PaymentFailure';
 import PaymentError from './pages/PaymentError';
@@ -115,6 +116,7 @@ function AppContent() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/track-order" element={<OrderTracking />} />
         <Route path="/payment/return" element={<PaymentReturn />} />
+        <Route path="/payment/result" element={<PaymentResult />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/failure" element={<PaymentFailure />} />
         <Route path="/payment/error" element={<PaymentError />} />

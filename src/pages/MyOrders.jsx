@@ -18,8 +18,8 @@ const MyOrders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filters, setFilters] = useState({
-    status: '',
-    payment_status: '',
+    status: 'all',
+    payment_status: 'all',
     page: 1,
     limit: 20
   });
@@ -33,11 +33,13 @@ const MyOrders = () => {
     try {
       setLoading(true);
       setError('');
+      console.log('[MyOrders] Fetching orders with filters:', filters);
       const data = await getMyOrders(filters);
+      console.log('[MyOrders] Orders data:', data);
       setOrders(data.data || []);
       setMeta(data.meta || null);
     } catch (err) {
-      console.error('Error fetching orders:', err);
+      console.error('[MyOrders] Error fetching orders:', err);
       setError(err.message || t('order.errors.orderNotFound'));
     } finally {
       setLoading(false);
@@ -106,7 +108,7 @@ const MyOrders = () => {
                     <SelectValue placeholder={t('order.allStatuses')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">{t('order.allStatuses')}</SelectItem>
+                    <SelectItem value="all">{t('order.allStatuses')}</SelectItem>
                     <SelectItem value="PENDING">{t('order.status.PENDING')}</SelectItem>
                     <SelectItem value="CONFIRMED">{t('order.status.CONFIRMED')}</SelectItem>
                     <SelectItem value="CANCELLED">{t('order.status.CANCELLED')}</SelectItem>
@@ -122,7 +124,7 @@ const MyOrders = () => {
                     <SelectValue placeholder={t('order.allPaymentStatuses')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">{t('order.allPaymentStatuses')}</SelectItem>
+                    <SelectItem value="all">{t('order.allPaymentStatuses')}</SelectItem>
                     <SelectItem value="UNPAID">{t('order.paymentStatus.UNPAID')}</SelectItem>
                     <SelectItem value="PAID">{t('order.paymentStatus.PAID')}</SelectItem>
                     <SelectItem value="REFUNDED">{t('order.paymentStatus.REFUNDED')}</SelectItem>

@@ -25,8 +25,10 @@ export const getMyOrders = async (params = {}) => {
   const queryString = new URLSearchParams();
   
   Object.keys(params).forEach((key) => {
-    if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
-      queryString.append(key, params[key]);
+    const value = params[key];
+    // Skip undefined, null, empty strings, and "all" (used for "All" filter option)
+    if (value !== undefined && value !== null && value !== '' && value !== 'all') {
+      queryString.append(key, value);
     }
   });
 

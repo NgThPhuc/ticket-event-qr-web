@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { getOrderById } from "../api/orders";
 import { initiatePayment } from "../api/payment";
 import Header from "../components/Header";
+import PaymentMethodSelector from "../components/PaymentMethodSelector";
 
 const OrderSuccess = () => {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ const OrderSuccess = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('PAYOS'); // Default: PayOS (recommended)
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -67,11 +69,23 @@ const OrderSuccess = () => {
     try {
       setPaymentLoading(true);
       
-      const returnUrl = `${window.location.origin}/payment/return?order_id=${orderId}`;
+      // Determine return URL based on payment method
+      const returnUrl = paymentMethod === 'PAYOS'
+        ? `${window.location.origin}/payment/result`
+        : `${window.location.origin}/payment/return?order_id=${orderId}`;
       
-      const { payment_url } = await initiatePayment(orderId, returnUrl);
+      const cancelUrl = paymentMethod === 'PAYOS'
+        ? `${window.location.origin}/payment/result`
+        : undefined;
       
-      // Redirect to VNPAY
+      const { payment_url } = await initiatePayment(
+        orderId, 
+        returnUrl,
+        cancelUrl,
+        paymentMethod
+      );
+      
+      // Redirect to payment gateway (VNPAY or PayOS)
       window.location.href = payment_url;
     } catch (error) {
       console.error('Error initiating payment:', error);
@@ -190,13 +204,20 @@ const OrderSuccess = () => {
 
           {/* Payment Notice & Button */}
           {order.payment_status === 'UNPAID' && order.total_amount > 0 && (
-            <div className="space-y-4">
+            <div className="space-y-6">
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
                   <p className="font-semibold mb-2">{t('order.paymentNote')}</p>
                 </AlertDescription>
               </Alert>
+              
+              {/* Payment Method Selector */}
+              <PaymentMethodSelector
+                value={paymentMethod}
+                onChange={setPaymentMethod}
+                disabled={paymentLoading}
+              />
               
               <Button
                 onClick={handlePayment}
