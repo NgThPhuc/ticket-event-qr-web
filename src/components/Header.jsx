@@ -1,5 +1,5 @@
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAllOrganizations, getMyOrganizations } from '../api/organizations';
@@ -16,6 +16,7 @@ const Header = ({ showSidebar = false }) => {
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [hasOrganizations, setHasOrganizations] = useState(false);
   const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
+  const lastCheckedUserId = useRef(null);
 
   const menuItems = [
     { label: t('header.home'), path: '/' },
@@ -28,14 +29,19 @@ const Header = ({ showSidebar = false }) => {
     await logout();
     setHasOrganizations(false);
     setIsPlatformAdmin(false);
-    // Vẫn ở lại trang chủ sau khi đăng xuất
+    lastCheckedUserId.current = null;
   };
 
   // Kiểm tra xem user có organizations không
   // PLATFORM_ADMIN luôn hiển thị Dashboard, không cần check organizations
   useEffect(() => {
+    // Tránh duplicate call - chỉ gọi khi user thực sự thay đổi
+    const currentUserId = user?.id || null;
+    if (lastCheckedUserId.current === currentUserId) return;
+    lastCheckedUserId.current = currentUserId;
+
     const checkOrganizations = async () => {
-      if (isAuthenticated) {
+      if (isAuthenticated && user) {
         // Kiểm tra xem có phải PLATFORM_ADMIN không bằng cách thử gọi API /organizations
         // (chỉ PLATFORM_ADMIN mới có quyền truy cập endpoint này)
         try {
@@ -214,6 +220,14 @@ const Header = ({ showSidebar = false }) => {
                     >
                       {t('header.myTickets')}
                     </Link>
+                    <Link
+                      to="/settings"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      onClick={() => setAccountMenuOpen(false)}
+                    >
+                      {t('header.settings')}
+                    </Link>
+                    <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
                     <button
                       onClick={() => {
                         handleLogout();

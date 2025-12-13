@@ -1,12 +1,11 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Building2, Calendar, Globe, MapPin, Monitor, Users } from "lucide-react";
+import { Calendar, Clock, Globe, MapPin, Monitor, Ticket } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 /**
  * EventCard Component
- * Card hiển thị sự kiện trong danh sách
+ * Card hiển thị sự kiện trong danh sách với design modern
  * 
  * @param {Object} event - Thông tin event
  */
@@ -23,163 +22,185 @@ const EventCard = ({ event }) => {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('vi-VN', {
-      year: 'numeric',
       month: 'short',
       day: 'numeric',
+    });
+  };
+
+  // Format time
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('vi-VN', {
       hour: '2-digit',
       minute: '2-digit',
     });
   };
 
-  // Get attendance mode icon
-  const getAttendanceModeIcon = (mode) => {
+  // Format price
+  const formatPrice = (price) => {
+    if (!price || price === 0) return t('ticket.free') || 'Miễn phí';
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  // Get attendance mode icon and label
+  const getAttendanceMode = (mode) => {
     switch (mode) {
       case 'ONLINE':
-        return <Monitor className="h-4 w-4" />;
+        return { icon: Monitor, label: t('event.online') || 'Online', color: 'text-blue-600' };
       case 'OFFLINE':
-        return <MapPin className="h-4 w-4" />;
+        return { icon: MapPin, label: t('event.offline') || 'Offline', color: 'text-green-600' };
       case 'HYBRID':
-        return <Globe className="h-4 w-4" />;
+        return { icon: Globe, label: t('event.hybrid') || 'Hybrid', color: 'text-purple-600' };
       default:
-        return <MapPin className="h-4 w-4" />;
+        return { icon: MapPin, label: mode, color: 'text-primary' };
     }
   };
 
-  // Get attendance mode label
-  const getAttendanceModeLabel = (mode) => {
-    switch (mode) {
-      case 'ONLINE':
-        return t('event.online') || 'Trực tuyến';
-      case 'OFFLINE':
-        return t('event.offline') || 'Tại địa điểm';
-      case 'HYBRID':
-        return t('event.hybrid') || 'Kết hợp';
-      default:
-        return mode;
+  const attendanceMode = getAttendanceMode(event.attendance_mode);
+  const AttendanceIcon = attendanceMode.icon;
+
+  // Get location text
+  const getLocationText = () => {
+    if (event.attendance_mode === 'ONLINE') {
+      return t('home.featured.online') || 'Sự kiện trực tuyến';
     }
+    if (event.venue_name) return event.venue_name;
+    if (event.city) return event.city;
+    return t('home.featured.locationTBA') || 'Địa điểm sẽ thông báo';
   };
 
   return (
-    <Card 
-      className="overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group border-2 hover:border-primary/50"
+    <div 
+      className="group bg-white dark:bg-gray-900 rounded-[1.5rem] p-3 shadow-lg hover:shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer border border-gray-100 dark:border-gray-800 hover:border-primary/30 dark:hover:border-primary/30"
       onClick={handleClick}
     >
-      {/* Cover Image */}
-      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5">
+      {/* Image Section with Hover Effect */}
+      <div className="relative overflow-hidden rounded-xl h-44">
         {event.cover_image_url ? (
-          <img
+          <img 
             src={event.cover_image_url}
             alt={event.title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             loading="lazy"
+            className="w-full h-full object-cover transform transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-110"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Calendar className="h-16 w-16 text-muted-foreground/30" />
+          <div className="w-full h-full bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-600 flex items-center justify-center">
+            <Calendar className="h-12 w-12 text-white/40" />
           </div>
         )}
         
-        {/* Category badge overlay */}
+        {/* Overlay on hover */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"></div>
+        
+        {/* Date Badge - Top Left */}
+        <div className="absolute top-3 left-3">
+          <div className="bg-white dark:bg-gray-900 rounded-xl px-3 py-2 shadow-lg backdrop-blur-sm">
+            <p className="text-xs font-bold text-primary uppercase tracking-wide">
+              {formatDate(event.start_at)}
+            </p>
+          </div>
+        </div>
+
+        {/* Attendance Mode Badge - Top Right */}
+        <div className="absolute top-3 right-3">
+          <Badge 
+            variant="secondary" 
+            className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-xs font-medium gap-1 shadow-sm"
+          >
+            <AttendanceIcon className={`h-3 w-3 ${attendanceMode.color}`} />
+            {attendanceMode.label}
+          </Badge>
+        </div>
+
+        {/* Category Badge - Bottom Left */}
         {event.category && (
-          <div className="absolute top-3 right-3">
-            <Badge variant="secondary" className="bg-white/90 dark:bg-gray-900/90 backdrop-blur">
+          <div className="absolute bottom-3 left-3">
+            <Badge className="bg-primary/90 hover:bg-primary text-white shadow-lg">
               {event.category}
             </Badge>
           </div>
         )}
       </div>
 
-      <CardHeader className="pb-3">
-        <div className="space-y-2">
-          {/* Title */}
-          <h3 className="text-lg font-bold line-clamp-2 group-hover:text-primary transition-colors">
-            {event.title}
-          </h3>
-          
-          {/* Subtitle */}
-          {event.subtitle && (
-            <p className="text-sm text-muted-foreground line-clamp-1">
-              {event.subtitle}
-            </p>
-          )}
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-3 pb-3">
-        {/* Date */}
-        <div className="flex items-start gap-2 text-sm">
-          <Calendar className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-          <div className="flex-1">
-            <p className="font-medium text-foreground">
-              {formatDate(event.start_at)}
-            </p>
-            {event.end_at && (
-              <p className="text-xs text-muted-foreground">
-                {t('event.until') || 'đến'} {formatDate(event.end_at)}
-              </p>
-            )}
+      {/* Content Section */}
+      <div className="mt-4 px-1">
+        {/* Metadata (Time & Location) */}
+        <div className="flex items-center flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground mb-3">
+          <div className="flex items-center">
+            <Clock className="w-4 h-4 text-primary mr-1.5 flex-shrink-0" />
+            <span className="text-xs">{formatTime(event.start_at)}</span>
+          </div>
+          <div className="flex items-center min-w-0">
+            <MapPin className="w-4 h-4 text-primary mr-1.5 flex-shrink-0" />
+            <span className="truncate text-xs">{getLocationText()}</span>
           </div>
         </div>
 
-        {/* Location/Mode */}
-        <div className="flex items-start gap-2 text-sm">
-          {getAttendanceModeIcon(event.attendance_mode)}
-          <div className="flex-1">
-            {event.attendance_mode === 'ONLINE' ? (
-              <p className="text-muted-foreground">{getAttendanceModeLabel(event.attendance_mode)}</p>
-            ) : (
-              <>
-                <p className="font-medium text-foreground line-clamp-1">
-                  {event.venue_name || getAttendanceModeLabel(event.attendance_mode)}
-                </p>
-                {event.city && (
-                  <p className="text-xs text-muted-foreground">
-                    {event.district && `${event.district}, `}{event.city}
-                  </p>
-                )}
-              </>
-            )}
-          </div>
-        </div>
+        {/* Title */}
+        <h3 className="text-lg font-bold text-foreground leading-tight mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
+          {event.title}
+        </h3>
 
-        {/* Organization */}
+        {/* Description/Subtitle */}
+        {event.subtitle && (
+          <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
+            {event.subtitle}
+          </p>
+        )}
+
+        {/* Organizer */}
         {event.organization && (
-          <div className="flex items-center gap-2 text-sm">
-            <Building2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-              {event.organization.logo_url && (
-                <img
-                  src={event.organization.logo_url}
-                  alt={event.organization.name}
-                  className="h-5 w-5 rounded-full object-cover flex-shrink-0"
-                />
-              )}
-              <span className="text-muted-foreground truncate">
-                {event.organization.name}
-              </span>
-            </div>
+          <div className="flex items-center gap-2 mb-4">
+            {event.organization.logo_url ? (
+              <img
+                src={event.organization.logo_url}
+                alt={event.organization.name}
+                className="h-6 w-6 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-800"
+              />
+            ) : (
+              <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-xs font-bold text-primary">
+                  {event.organization.name?.charAt(0)}
+                </span>
+              </div>
+            )}
+            <span className="text-xs text-muted-foreground truncate">
+              {event.organization.name}
+            </span>
           </div>
         )}
-      </CardContent>
 
-      <CardFooter className="pt-3 border-t">
-        <div className="flex items-center justify-between w-full">
-          {/* Attendance mode badge */}
-          <Badge variant="outline" className="gap-1">
-            {getAttendanceModeIcon(event.attendance_mode)}
-            {getAttendanceModeLabel(event.attendance_mode)}
-          </Badge>
+        {/* Divider Line */}
+        <div className="border-t border-gray-100 dark:border-gray-800 mb-4"></div>
 
-          {/* Capacity indicator */}
-          {event.capacity_total && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Users className="h-3 w-3" />
-              <span>{event.capacity_total.toLocaleString()}</span>
-            </div>
-          )}
+        {/* Price & CTA Button */}
+        <div className="flex items-center justify-between gap-3">
+          {/* Price */}
+          <div className="flex items-center gap-2">
+            <Ticket className="w-4 h-4 text-primary" />
+            <span className="font-bold text-primary">
+              {event.min_price ? formatPrice(event.min_price) : (t('ticket.free') || 'Miễn phí')}
+            </span>
+          </div>
+
+          {/* Button with Hover Effect */}
+          <button className="group/btn relative bg-primary text-white rounded-full overflow-hidden shadow-md hover:shadow-lg transform transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] px-5 py-2.5">
+            {/* Hover background layer */}
+            <div className="absolute top-0 bottom-0 left-1/2 w-0 bg-primary/80 dark:bg-white/20 group-hover/btn:w-full transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] -translate-x-1/2 rounded-full"></div>
+            
+            {/* Button content */}
+            <span className="relative z-10 text-sm font-semibold whitespace-nowrap">
+              {t('home.featured.details') || 'Chi tiết'}
+            </span>
+          </button>
         </div>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 };
 

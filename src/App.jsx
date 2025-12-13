@@ -38,6 +38,8 @@ import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccess from './pages/OrderSuccess';
 import MyOrders from './pages/MyOrders';
 import OrderDetail from './pages/OrderDetail';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 
 function AppContent() {
   const location = useLocation();
@@ -50,7 +52,9 @@ function AppContent() {
                            location.pathname.startsWith('/create-event') ||
                            location.pathname.startsWith('/checkout') ||
                            location.pathname.startsWith('/order-success') ||
-                           location.pathname.startsWith('/orders');
+                           location.pathname.startsWith('/orders') ||
+                           location.pathname.startsWith('/profile') ||
+                           location.pathname.startsWith('/settings');
   const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
 
   return (
@@ -151,6 +155,22 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <OrderDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
             </ProtectedRoute>
           }
         />

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import * as authAPI from '../api/auth';
 
 const AuthContext = createContext(null);
@@ -15,9 +15,14 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const isInitialized = useRef(false);
 
   // Kiểm tra authentication khi component mount
   useEffect(() => {
+    // Tránh duplicate call trong StrictMode
+    if (isInitialized.current) return;
+    isInitialized.current = true;
+
     const initAuth = async () => {
       const token = authAPI.getToken();
       const savedUser = authAPI.getCurrentUser();

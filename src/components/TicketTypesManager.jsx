@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Edit, Plus, ToggleLeft, ToggleRight, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
     createTicketType,
@@ -52,6 +52,7 @@ const TicketTypesManager = ({ eventId, eventStartAt, canManage = false }) => {
         sale_end_at: "",
         refund_policy_deadline: "",
     });
+    const lastLoadedEventId = useRef(null);
 
     // Helper: Convert UTC string to local datetime-local format (YYYY-MM-DDTHH:mm)
     const utcToLocal = (utcString) => {
@@ -66,7 +67,9 @@ const TicketTypesManager = ({ eventId, eventStartAt, canManage = false }) => {
     };
 
     useEffect(() => {
-        if (eventId) {
+        // Tránh duplicate call trong StrictMode
+        if (eventId && lastLoadedEventId.current !== eventId) {
+            lastLoadedEventId.current = eventId;
             loadTicketTypes();
         }
     }, [eventId]);

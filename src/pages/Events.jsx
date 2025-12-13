@@ -8,7 +8,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Calendar as CalendarIcon, Filter, Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getPublicEvents } from '../api/events';
 import EventCard from '../components/EventCard';
@@ -25,8 +25,15 @@ const Events = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [attendanceMode, setAttendanceMode] = useState('all');
     const [category, setCategory] = useState('all');
+    const abortControllerRef = useRef(null);
 
     useEffect(() => {
+        // Cancel previous request
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+        abortControllerRef.current = new AbortController();
+
         const fetchEvents = async () => {
             setLoading(true);
             setError('');
@@ -53,6 +60,7 @@ const Events = () => {
                 setEvents(response.data || []);
                 setTotalPages(response.meta?.totalPages || 1);
             } catch (err) {
+                if (err.name === 'AbortError') return;
                 setError(err.message || t('eventsPage.loadError'));
                 setEvents([]);
             } finally {
@@ -61,6 +69,12 @@ const Events = () => {
         };
 
         fetchEvents();
+
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
     }, [page, searchQuery, attendanceMode, category, limit, t]);
 
     const handleSearch = (e) => {

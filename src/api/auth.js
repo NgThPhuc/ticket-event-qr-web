@@ -153,3 +153,40 @@ export const getCurrentUser = () => {
   return userStr ? JSON.parse(userStr) : null;
 };
 
+/**
+ * Cập nhật thông tin profile
+ * @param {Object} data - { full_name, phone, avatar_url }
+ * @returns {Promise}
+ */
+export const updateProfile = async (data) => {
+  const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.PROFILE}`, {
+    method: 'PUT',
+    headers: getHeaders(true),
+    body: JSON.stringify(data),
+  });
+
+  const result = await handleResponse(response);
+  
+  // Cập nhật user trong localStorage
+  if (result) {
+    localStorage.setItem('user', JSON.stringify(result));
+  }
+
+  return result;
+};
+
+/**
+ * Đổi mật khẩu
+ * @param {Object} data - { current_password, new_password, confirm_new_password }
+ * @returns {Promise}
+ */
+export const changePassword = async (data) => {
+  const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+    method: 'POST',
+    headers: getHeaders(true),
+    body: JSON.stringify(data),
+  });
+
+  return handleResponse(response);
+};
+

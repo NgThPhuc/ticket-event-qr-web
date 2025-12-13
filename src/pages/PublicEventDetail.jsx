@@ -1,31 +1,30 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
     AlertCircle,
     Building2,
     Calendar,
+    CheckCircle2,
     Clock,
     ExternalLink,
     Globe,
-    Mail,
     MapPin,
-    Phone,
     Share2,
     Tag,
-    Users,
+    Ticket,
+    Users
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getEventBySlug } from "../api/events";
 import { getTicketTypes } from "../api/ticketTypes";
 import Header from "../components/Header";
-import TicketCard from "../components/TicketCard";
 
 const PublicEventDetail = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { slug } = useParams();
   const [event, setEvent] = useState(null);
@@ -33,46 +32,44 @@ const PublicEventDetail = () => {
   const [loading, setLoading] = useState(true);
   const [loadingTickets, setLoadingTickets] = useState(false);
   const [error, setError] = useState("");
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const hasFetched = useRef(false);
+  const ticketSectionRef = useRef(null);
+
+  const locale = i18n.language === "vn" ? "vi-VN" : "en-US";
 
   useEffect(() => {
+    if (hasFetched.current) return;
+
     const fetchEvent = async () => {
       if (!slug) return;
+      hasFetched.current = true;
 
       try {
         setLoading(true);
         setError("");
-        // Load event data (with organization)
         const data = await getEventBySlug(slug, "organization");
         setEvent(data);
-        
-        // Load ticket types separately
+
         if (data && data.id) {
           setLoadingTickets(true);
           try {
             const tickets = await getTicketTypes(data.id, { only_on_sale_now: false });
-            
-            // Calculate is_on_sale for each ticket based on sale period
             const now = new Date();
-            const ticketsWithSaleStatus = Array.isArray(tickets) 
-              ? tickets.map(ticket => {
+            const ticketsWithSaleStatus = Array.isArray(tickets)
+              ? tickets.map((ticket) => {
                   const saleStart = ticket.sale_start_at ? new Date(ticket.sale_start_at) : null;
                   const saleEnd = ticket.sale_end_at ? new Date(ticket.sale_end_at) : null;
-                  
-                  const is_on_sale = ticket.is_active &&
-                    (!saleStart || now >= saleStart) &&
-                    (!saleEnd || now <= saleEnd);
-                  
-                  return {
-                    ...ticket,
-                    is_on_sale
-                  };
+                  const is_on_sale =
+                    ticket.is_active && (!saleStart || now >= saleStart) && (!saleEnd || now <= saleEnd);
+                  return { ...ticket, is_on_sale };
                 })
               : [];
-            
             setTicketTypes(ticketsWithSaleStatus);
+            const available = ticketsWithSaleStatus.find((t) => t.is_on_sale && !t.is_sold_out);
+            if (available) setSelectedTicket(available);
           } catch (ticketErr) {
             console.error("Error fetching ticket types:", ticketErr);
-            // Không set error vì ticket types là optional
             setTicketTypes([]);
           } finally {
             setLoadingTickets(false);
@@ -80,9 +77,7 @@ const PublicEventDetail = () => {
         }
       } catch (err) {
         console.error("Error fetching event:", err);
-        setError(
-          err.message || t("event.fetchDetailError") || "Không thể tải thông tin sự kiện"
-        );
+        setError(err.message || t("event.fetchDetailError"));
       } finally {
         setLoading(false);
       }
@@ -93,100 +88,60 @@ const PublicEventDetail = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) return "-";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
+    return new Date(dateString).toLocaleDateString(locale, {
       weekday: "long",
-      year: "numeric",
+      day: "numeric",
       month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const formatShortDate = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
       year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   };
 
-  const handleBuyTicket = (ticket) => {
-    // Check if user is logged in
+  const formatTime = (dateString) => {
+    if (!dateString) return "-";
+    return new Date(dateString).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const formatPrice = (price) => {
+    if (!price || price === 0) return t("ticket.free");
+    return new Intl.NumberFormat(locale, { style: "currency", currency: "VND", maximumFractionDigits: 0 }).format(price);
+  };
+
+  const handleBuyTicket = () => {
+    if (!selectedTicket) return;
     const token = localStorage.getItem("access_token");
     if (!token) {
-      // Redirect to login with return URL
       navigate(`/login?redirect=/e/${slug}`);
       return;
     }
-
-    // Navigate to checkout page với event và ticket info
-    navigate(`/checkout/${event.id}`, {
-      state: { event, selectedTicket: ticket },
-    });
+    navigate(`/checkout/${event.id}`, { state: { event, selectedTicket } });
   };
 
-  const handleShare = () => {
+  const scrollToTickets = () => {
+    ticketSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
     if (navigator.share) {
-      navigator
-        .share({
-          title: event.title,
-          text: event.subtitle || event.description,
-          url: window.location.href,
-        })
-        .catch((err) => console.log("Error sharing:", err));
+      try {
+        await navigator.share({ title: event.title, url });
+      } catch (err) {
+        console.log("Error sharing:", err);
+      }
     } else {
-      // Fallback: Copy to clipboard
-      navigator.clipboard.writeText(window.location.href);
-      alert(t("common.linkCopied") || "Đã sao chép link!");
-    }
-  };
-
-  // Get attendance mode info
-  const getAttendanceModeInfo = (mode) => {
-    switch (mode) {
-      case "ONLINE":
-        return {
-          icon: <Globe className="h-5 w-5" />,
-          label: t("event.online") || "Trực tuyến",
-          color: "text-blue-600 dark:text-blue-400",
-        };
-      case "OFFLINE":
-        return {
-          icon: <MapPin className="h-5 w-5" />,
-          label: t("event.offline") || "Tại địa điểm",
-          color: "text-green-600 dark:text-green-400",
-        };
-      case "HYBRID":
-        return {
-          icon: <Globe className="h-5 w-5" />,
-          label: t("event.hybrid") || "Kết hợp",
-          color: "text-purple-600 dark:text-purple-400",
-        };
-      default:
-        return {
-          icon: <MapPin className="h-5 w-5" />,
-          label: mode,
-          color: "text-gray-600 dark:text-gray-400",
-        };
+      await navigator.clipboard.writeText(url);
+      alert(t("common.linkCopied"));
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
         <Header />
-        <div className="flex items-center justify-center py-20">
+        <div className="flex items-center justify-center py-32">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            <p className="mt-4 text-muted-foreground">
-              {t("common.loading") || "Đang tải..."}
-            </p>
+            <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+            <p className="mt-4 text-muted-foreground">{t("common.loading")}</p>
           </div>
         </div>
       </div>
@@ -195,412 +150,315 @@ const PublicEventDetail = () => {
 
   if (error || !event) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
         <Header />
         <div className="container mx-auto px-4 py-12">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              {error || t("event.notFound") || "Không tìm thấy sự kiện"}
-            </AlertDescription>
+            <AlertDescription>{error || t("event.notFound")}</AlertDescription>
           </Alert>
           <div className="mt-6 text-center">
-            <Button onClick={() => navigate("/events")}>
-              {t("common.backToList") || "Quay lại danh sách"}
-            </Button>
+            <Button onClick={() => navigate("/events")}>{t("common.backToList")}</Button>
           </div>
         </div>
       </div>
     );
   }
 
-  const attendanceMode = getAttendanceModeInfo(event.attendance_mode);
   const hasTickets = ticketTypes && ticketTypes.length > 0;
+  const availableTickets = ticketTypes.filter((t) => t.is_on_sale && !t.is_sold_out);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <Header />
 
-      {/* Hero Section - Cover Image */}
-      <div className="relative h-[400px] bg-gradient-to-br from-primary/20 to-primary/5">
-        {event.cover_image_url ? (
-          <img
-            src={event.cover_image_url}
-            alt={event.title}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Calendar className="h-32 w-32 text-muted-foreground/20" />
-          </div>
+      {/* Cover Image */}
+      <div className="relative h-[300px] md:h-[400px] bg-gradient-to-br from-violet-600 to-indigo-700">
+        {event.cover_image_url && (
+          <img src={event.cover_image_url} alt={event.title} className="absolute inset-0 w-full h-full object-cover" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+        {/* Share Button */}
+        <div className="absolute top-4 right-4">
+          <Button variant="secondary" size="sm" className="bg-white/90 hover:bg-white" onClick={handleShare}>
+            <Share2 className="h-4 w-4 mr-1" />
+            {t("common.share")}
+          </Button>
+        </div>
+
+        {/* Title Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+          <div className="container mx-auto">
+            <div className="flex flex-wrap gap-2 mb-3">
+              {event.category && (
+                <Badge className="bg-white/20 text-white backdrop-blur-sm border-0">
+                  <Tag className="h-3 w-3 mr-1" />
+                  {event.category}
+                </Badge>
+              )}
+              <Badge className="bg-white/20 text-white backdrop-blur-sm border-0">
+                {event.attendance_mode === "ONLINE" ? (
+                  <><Globe className="h-3 w-3 mr-1" />{t("event.online")}</>
+                ) : event.attendance_mode === "HYBRID" ? (
+                  <><Globe className="h-3 w-3 mr-1" />{t("event.hybrid")}</>
+                ) : (
+                  <><MapPin className="h-3 w-3 mr-1" />{t("event.offline")}</>
+                )}
+              </Badge>
+            </div>
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">{event.title}</h1>
+            {event.subtitle && <p className="text-white/80 text-lg">{event.subtitle}</p>}
+          </div>
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 -mt-32 relative z-10 pb-12">
+      <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Main Info */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Title Card */}
-            <Card className="border-2">
-              <CardHeader>
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <CardTitle className="text-3xl md:text-4xl mb-3">
-                      {event.title}
-                    </CardTitle>
-                    {event.subtitle && (
-                      <CardDescription className="text-lg">
-                        {event.subtitle}
-                      </CardDescription>
-                    )}
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {event.category && (
-                        <Badge variant="secondary" className="gap-1">
-                          <Tag className="h-3 w-3" />
-                          {event.category}
-                        </Badge>
-                      )}
-                      <Badge variant="outline" className="gap-1">
-                        {attendanceMode.icon}
-                        {attendanceMode.label}
-                      </Badge>
-                      {event.tags && event.tags.map((tag) => (
-                        <Badge key={tag} variant="outline">
-                          #{tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleShare}
-                    className="flex-shrink-0"
-                  >
-                    <Share2 className="h-4 w-4" />
-                  </Button>
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Quick Info Bar */}
+            <div className="flex flex-wrap gap-6 p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
+                  <Calendar className="h-6 w-6 text-violet-600" />
                 </div>
-              </CardHeader>
-            </Card>
-
-            {/* Description */}
-            {event.description && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl">
-                    {t("event.aboutEvent") || "Về sự kiện"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                    {event.description}
+                <div>
+                  <p className="text-xs text-muted-foreground">{t("event.date")}</p>
+                  <p className="font-semibold text-sm">{formatDate(event.start_at)}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                  <Clock className="h-6 w-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">{t("event.time")}</p>
+                  <p className="font-semibold text-sm">
+                    {formatTime(event.start_at)}
+                    {event.end_at && ` - ${formatTime(event.end_at)}`}
                   </p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
+              {event.venue_name && (
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                    <MapPin className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">{t("event.venue")}</p>
+                    <p className="font-semibold text-sm">{event.venue_name}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* About */}
+            {event.description && (
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+                <h2 className="text-xl font-bold mb-4">{t("event.aboutEvent")}</h2>
+                <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{event.description}</p>
+              </div>
             )}
 
             {/* Gallery */}
             {event.gallery && event.gallery.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl">
-                    {t("event.gallery") || "Hình ảnh"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {event.gallery.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image}
-                        alt={`${event.title} - ${index + 1}`}
-                        className="w-full h-48 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer"
-                        loading="lazy"
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+                <h2 className="text-xl font-bold mb-4">{t("event.gallery")}</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {event.gallery.map((image, index) => (
+                    <div key={index} className="relative rounded-xl overflow-hidden aspect-video">
+                      <img src={image} alt={`${event.title} - ${index + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
 
             {/* Tickets Section */}
-            {hasTickets && (
-              <Card className="border-2 border-primary/20">
-                <CardHeader>
-                  <CardTitle className="text-2xl flex items-center gap-2">
-                    <Users className="h-6 w-6" />
-                    {t("event.ticketTypes") || "Loại vé"}
-                  </CardTitle>
-                  <CardDescription>
-                    {t("event.selectTicket") || "Chọn loại vé phù hợp với bạn"}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {loadingTickets ? (
-                    <div className="text-center py-8">
-                      <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {t("common.loading") || "Đang tải..."}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {ticketTypes.map((ticket) => (
-                        <TicketCard
-                          key={ticket.id}
-                          ticket={ticket}
-                          onBuyClick={handleBuyTicket}
-                        />
-                      ))}
-                    </div>
+            <div ref={ticketSectionRef} className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm scroll-mt-24">
+              <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
+                <Ticket className="h-5 w-5 text-primary" />
+                {t("event.ticketTypes")}
+              </h2>
+              <p className="text-muted-foreground text-sm mb-6">{t("event.selectTicket")}</p>
+
+              {loadingTickets ? (
+                <div className="text-center py-8">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              ) : hasTickets ? (
+                <div className="space-y-3">
+                  {ticketTypes.map((ticket) => {
+                    const isSelected = selectedTicket?.id === ticket.id;
+                    const isAvailable = ticket.is_on_sale && !ticket.is_sold_out && ticket.is_active;
+
+                    return (
+                      <div
+                        key={ticket.id}
+                        onClick={() => isAvailable && setSelectedTicket(ticket)}
+                        className={`
+                          relative p-4 rounded-xl border-2 transition-all cursor-pointer
+                          ${isSelected
+                            ? "border-primary bg-primary/5 ring-2 ring-primary/20"
+                            : isAvailable
+                              ? "border-gray-200 dark:border-gray-800 hover:border-primary/50"
+                              : "border-gray-200 dark:border-gray-800 opacity-50 cursor-not-allowed"
+                          }
+                        `}
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-semibold">{ticket.name}</h3>
+                              {ticket.is_sold_out && <Badge variant="destructive" className="text-xs">{t("ticket.soldOut")}</Badge>}
+                              {!ticket.is_active && <Badge variant="secondary" className="text-xs">{t("ticketTypes.status.unavailable")}</Badge>}
+                            </div>
+                            {ticket.description && (
+                              <p className="text-sm text-muted-foreground line-clamp-1">{ticket.description}</p>
+                            )}
+                            <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Users className="h-3 w-3" />
+                                {ticket.quantity_sold || 0}/{ticket.quantity_total}
+                              </span>
+                              <span>{ticket.per_order_min}-{ticket.per_order_max} {t("ticket.tickets")}/{t("order.ticket")}</span>
+                            </div>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p className={`text-xl font-bold ${ticket.is_free ? "text-green-600" : "text-primary"}`}>
+                              {ticket.is_free ? t("ticket.free") : formatPrice(ticket.price)}
+                            </p>
+                          </div>
+                          {isSelected && (
+                            <div className="absolute top-3 right-3">
+                              <CheckCircle2 className="h-5 w-5 text-primary" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {availableTickets.length > 0 && (
+                    <Button
+                      size="lg"
+                      className="w-full mt-4 py-6 text-base font-semibold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
+                      onClick={handleBuyTicket}
+                      disabled={!selectedTicket}
+                    >
+                      <Ticket className="h-5 w-5 mr-2" />
+                      {selectedTicket
+                        ? `${t("event.buyTicket")} - ${selectedTicket.is_free ? t("ticket.free") : formatPrice(selectedTicket.price)}`
+                        : t("event.selectTicketFirst")}
+                    </Button>
                   )}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Ticket className="h-10 w-10 mx-auto mb-3 opacity-30" />
+                  <p>{t("event.noTickets")}</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column - Sidebar */}
+          <div className="space-y-4">
+            {/* CTA Card */}
+            {availableTickets.length > 0 && (
+              <Card className="sticky top-24 bg-gradient-to-br from-violet-600 to-purple-600 text-white border-0 overflow-hidden">
+                <CardContent className="p-6">
+                  <p className="text-white/80 text-sm mb-1">{t("eventDetail.priceFrom")}</p>
+                  <p className="text-3xl font-bold mb-4">
+                    {ticketTypes.some((t) => t.is_free) ? t("ticket.free") : formatPrice(Math.min(...ticketTypes.map((t) => t.price || 0)))}
+                  </p>
+                  <Button size="lg" className="w-full bg-white text-purple-700 hover:bg-white/90 font-semibold" onClick={scrollToTickets}>
+                    <Ticket className="h-5 w-5 mr-2" />
+                    {t("event.getTickets")}
+                  </Button>
                 </CardContent>
               </Card>
             )}
-          </div>
 
-          {/* Right Column - Details Sidebar */}
-          <div className="space-y-6">
             {/* Date & Time */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  {t("event.dateAndTime") || "Ngày & Giờ"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    {t("event.start") || "Bắt đầu"}
-                  </p>
-                  <p className="font-medium">{formatDate(event.start_at)}</p>
-                </div>
-                {event.end_at && (
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      {t("event.end") || "Kết thúc"}
-                    </p>
-                    <p className="font-medium">{formatDate(event.end_at)}</p>
-                  </div>
-                )}
-                {event.timezone && (
-                  <p className="text-xs text-muted-foreground">
-                    {event.timezone}
-                  </p>
-                )}
+              <CardContent className="p-5">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  {t("event.dateAndTime")}
+                </h3>
+                <p className="font-medium">{formatDate(event.start_at)}</p>
+                <p className="text-sm text-muted-foreground">
+                  {formatTime(event.start_at)}
+                  {event.end_at && ` - ${formatTime(event.end_at)}`}
+                </p>
+                {event.timezone && <p className="text-xs text-muted-foreground mt-1">{event.timezone}</p>}
               </CardContent>
             </Card>
 
             {/* Location */}
-            {(event.attendance_mode === "OFFLINE" ||
-              event.attendance_mode === "HYBRID") &&
-              event.venue_name && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <MapPin className="h-5 w-5" />
-                      {t("event.location") || "Địa điểm"}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <p className="font-medium">{event.venue_name}</p>
-                    {event.address_line1 && (
-                      <p className="text-sm text-muted-foreground">
-                        {event.address_line1}
-                        {event.address_line2 && `, ${event.address_line2}`}
-                      </p>
-                    )}
-                    {(event.district || event.city || event.country) && (
-                      <p className="text-sm text-muted-foreground">
-                        {[event.district, event.city, event.country]
-                          .filter(Boolean)
-                          .join(", ")}
-                      </p>
-                    )}
-                    {event.postal_code && (
-                      <p className="text-sm text-muted-foreground">
-                        {event.postal_code}
-                      </p>
-                    )}
-                    {/* Map integration placeholder */}
-                    {event.geo_lat && event.geo_lng && (
-                      <div className="mt-4 h-48 bg-muted rounded-lg flex items-center justify-center">
-                        <p className="text-muted-foreground text-sm">
-                          {t("event.mapPlaceholder") || "Bản đồ (tích hợp sau)"}
-                        </p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              )}
-
-            {/* Online Meeting */}
-            {(event.attendance_mode === "ONLINE" ||
-              event.attendance_mode === "HYBRID") &&
-              event.meeting_url && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Globe className="h-5 w-5" />
-                      {t("event.onlineMeeting") || "Tham gia trực tuyến"}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    {event.stream_platform && (
-                      <p className="text-sm text-muted-foreground">
-                        {t("event.platform") || "Nền tảng"}:{" "}
-                        {event.stream_platform}
-                      </p>
-                    )}
-                    <Button
-                      variant="outline"
-                      className="w-full gap-2"
-                      asChild
-                    >
-                      <a
-                        href={event.meeting_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                        {t("event.joinMeeting") || "Tham gia"}
+            {event.venue_name && (
+              <Card>
+                <CardContent className="p-5">
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    {t("event.location")}
+                  </h3>
+                  <p className="font-medium">{event.venue_name}</p>
+                  {event.address_line1 && <p className="text-sm text-muted-foreground">{event.address_line1}</p>}
+                  {(event.district || event.city) && (
+                    <p className="text-sm text-muted-foreground">
+                      {[event.district, event.city, event.country].filter(Boolean).join(", ")}
+                    </p>
+                  )}
+                  {event.geo_lat && event.geo_lng && (
+                    <Button variant="outline" size="sm" className="w-full mt-3" asChild>
+                      <a href={`https://www.google.com/maps?q=${event.geo_lat},${event.geo_lng}`} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-4 w-4 mr-1" />
+                        {t("event.viewOnMap")}
                       </a>
                     </Button>
-                  </CardContent>
-                </Card>
-              )}
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Online */}
+            {event.meeting_url && (
+              <Card>
+                <CardContent className="p-5">
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Globe className="h-4 w-4 text-primary" />
+                    {t("event.onlineMeeting")}
+                  </h3>
+                  {event.stream_platform && <p className="text-sm text-muted-foreground mb-2">{t("event.platform")}: {event.stream_platform}</p>}
+                  <Button className="w-full" asChild>
+                    <a href={event.meeting_url} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="h-4 w-4 mr-1" />
+                      {t("event.joinMeeting")}
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Organizer */}
             {event.organization && (
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Building2 className="h-5 w-5" />
-                    {t("event.organizer") || "Ban tổ chức"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="p-5">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-3">{t("event.organizedBy")}</p>
                   <div className="flex items-center gap-3">
-                    {event.organization.logo_url && (
-                      <img
-                        src={event.organization.logo_url}
-                        alt={event.organization.name}
-                        className="h-12 w-12 rounded-full object-cover"
-                      />
+                    {event.organization.logo_url ? (
+                      <img src={event.organization.logo_url} alt={event.organization.name} className="h-10 w-10 rounded-full object-cover" />
+                    ) : (
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Building2 className="h-5 w-5 text-primary" />
+                      </div>
                     )}
-                    <div>
-                      <p className="font-medium">{event.organization.name}</p>
-                      {event.organization.description && (
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {event.organization.description}
-                        </p>
-                      )}
-                    </div>
+                    <p className="font-medium">{event.organization.name}</p>
                   </div>
-                  {event.organization.website && (
-                    <Button variant="outline" size="sm" className="w-full gap-2" asChild>
-                      <a
-                        href={event.organization.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                        {t("common.website") || "Website"}
-                      </a>
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Contact Info */}
-            {(event.contact_email || event.contact_phone || event.website_url) && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    {t("event.contactInfo") || "Thông tin liên hệ"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {event.contact_email && (
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <a
-                        href={`mailto:${event.contact_email}`}
-                        className="text-sm hover:underline"
-                      >
-                        {event.contact_email}
-                      </a>
-                    </div>
-                  )}
-                  {event.contact_phone && (
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-muted-foreground" />
-                      <a
-                        href={`tel:${event.contact_phone}`}
-                        className="text-sm hover:underline"
-                      >
-                        {event.contact_phone}
-                      </a>
-                    </div>
-                  )}
-                  {event.website_url && (
-                    <div className="flex items-center gap-2">
-                      <Globe className="h-4 w-4 text-muted-foreground" />
-                      <a
-                        href={event.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm hover:underline"
-                      >
-                        {t("common.website") || "Website"}
-                      </a>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Additional Info */}
-            {(event.capacity_total ||
-              event.age_restriction ||
-              event.refund_policy) && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    {t("event.additionalInfo") || "Thông tin thêm"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 text-sm">
-                  {event.capacity_total && (
-                    <div>
-                      <p className="text-muted-foreground">
-                        {t("event.capacity") || "Sức chứa"}:
-                      </p>
-                      <p className="font-medium">
-                        {event.capacity_total.toLocaleString()} {t("common.people") || "người"}
-                      </p>
-                    </div>
-                  )}
-                  {event.age_restriction && (
-                    <div>
-                      <p className="text-muted-foreground">
-                        {t("event.ageRestriction") || "Độ tuổi"}:
-                      </p>
-                      <p className="font-medium">{event.age_restriction}</p>
-                    </div>
-                  )}
-                  {event.refund_policy && (
-                    <div>
-                      <p className="text-muted-foreground">
-                        {t("event.refundPolicy") || "Chính sách hoàn tiền"}:
-                      </p>
-                      <p className="text-xs">{event.refund_policy}</p>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             )}
