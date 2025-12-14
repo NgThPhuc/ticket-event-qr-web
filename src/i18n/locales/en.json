@@ -122,7 +122,8 @@
         "website": "Website",
         "people": "people",
         "optional": "Optional",
-        "locale": "en-US"
+        "locale": "en-US",
+        "rateLimit": "You are doing that too quickly. Please try again in a few seconds."
     },
     "footer": {
         "whoWeAre": "Who we are?",

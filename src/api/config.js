@@ -34,9 +34,26 @@ export const getHeaders = (includeAuth = false) => {
 
 // Helper function để xử lý response
 export const handleResponse = async (response) => {
-  const data = await response.json();
+  // Đọc body an toàn (tránh lỗi khi không phải JSON)
+  let data;
+  try {
+    data = await response.json();
+  } catch (e) {
+    data = {};
+  }
 
   if (!response.ok) {
+    // Rate limit (HTTP 429)
+    if (response.status === 429) {
+      const retryAfter = response.headers?.get?.("Retry-After");
+      throw {
+        message: data.message || 'Bạn thao tác quá nhanh, vui lòng thử lại sau ít giây.',
+        status: 429,
+        retryAfter,
+        errors: data.message instanceof Array ? data.message : [],
+      };
+    }
+
     const error = {
       message: data.message || 'Đã có lỗi xảy ra',
       status: response.status,

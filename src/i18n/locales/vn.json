@@ -122,7 +122,8 @@
         "website": "Website",
         "people": "người",
         "optional": "Tùy chọn",
-        "locale": "vi-VN"
+        "locale": "vi-VN",
+        "rateLimit": "Bạn thao tác quá nhanh, vui lòng thử lại sau ít giây."
     },
     "footer": {
         "whoWeAre": "Chúng tôi là ai?",
