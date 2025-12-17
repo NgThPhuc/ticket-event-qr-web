@@ -308,7 +308,19 @@
         "websiteUrl": "Website URL",
         "websiteUrlInvalid": "URL website không hợp lệ",
         "logoUrlInvalid": "URL logo không hợp lệ",
-        "noChanges": "Không có thay đổi nào"
+        "noChanges": "Không có thay đổi nào",
+        "bankInfoTitle": "Thông tin ngân hàng để nhận payout",
+        "bankInfoHint": "Vui lòng nhập đầy đủ thông tin ngân hàng. Nền tảng chỉ trả tiền khi tổ chức có đủ 3 trường này và đã được bật payout.",
+        "bankAccountNumber": "Số tài khoản ngân hàng",
+        "bankAccountName": "Tên chủ tài khoản",
+        "bankAccountNamePlaceholder": "Nguyen Van A",
+        "bankName": "Ngân hàng",
+        "bankNamePlaceholder": "Vietcombank, Techcombank...",
+        "payoutSectionTitle": "Thanh toán cho tổ chức (Payout)",
+        "payoutStatusLabel": "Trạng thái payout",
+        "payoutStatusEnabled": "Đang bật payout",
+        "payoutStatusDisabled": "Chưa bật payout",
+        "bankWarningMissing": "Chưa đủ điều kiện nhận payout. Vui lòng đảm bảo đã nhập đủ thông tin ngân hàng và được nền tảng bật payout."
     },
     "dashboard": {
         "title": "Dashboard",
@@ -411,7 +423,72 @@
             "view": "Xem",
             "edit": "Chỉnh sửa",
             "members": "Thành viên",
-            "delete": "Xóa"
+            "delete": "Xóa",
+            "enablePayout": "Bật payout",
+            "disablePayout": "Tắt payout"
+        },
+        "table": {
+            "organization": "ORGANIZATION",
+            "owner": "OWNER",
+            "members": "MEMBERS",
+            "member": "thành viên",
+            "status": "STATUS",
+            "actions": "ACTIONS",
+            "payout": "PAYOUT"
+        },
+        "payout": {
+            "title": "Payout cho tổ chức",
+            "description": "Chạy chu kỳ payout để chuyển tiền từ pending -> available -> paid out cho các tổ chức đủ điều kiện.",
+            "enabled": "Payout đã bật",
+            "disabled": "Payout đã tắt",
+            "pending": "Pending",
+            "available": "Available",
+            "totalPaidOut": "Total paid out",
+            "runButton": "Chạy payout",
+            "running": "Đang chạy payout...",
+            "helper": "Hiện tại payout được chạy thủ công cho mục đích demo. Có thể chuyển sang cron job ở môi trường production.",
+            "runSuccess": "Đã chạy payout: matured={{matured}}, paid_out={{paid_out}}, skipped={{skipped}}",
+            "runError": "Không thể chạy payout. Vui lòng thử lại.",
+            "toggleOnSuccess": "Đã bật payout cho tổ chức.",
+            "toggleOffSuccess": "Đã tắt payout cho tổ chức.",
+            "toggleError": "Không thể thay đổi trạng thái payout cho tổ chức.",
+            "skipped": "Skipped"
+        }
+    },
+    "revenueShares": {
+        "title": "Revenue Shares",
+        "subtitle": "Theo dõi các khoản chia doanh thu cho tổ chức theo từng trạng thái payout.",
+        "fetchError": "Không thể tải danh sách revenue shares",
+        "stats": {
+            "totalShares": "Tổng RevenueShares",
+            "totalNetAmount": "Tổng net amount",
+            "currentFilter": "Bộ lọc hiện tại"
+        },
+        "filters": {
+            "all": "Tất cả trạng thái"
+        },
+        "status": {
+            "PENDING": "PENDING",
+            "AVAILABLE": "AVAILABLE",
+            "PAID_OUT": "PAID_OUT",
+            "CANCELLED": "CANCELLED"
+        },
+        "actions": {
+            "showPendingOnly": "Chỉ xem PENDING",
+            "showAll": "Xem tất cả"
+        },
+        "empty": {
+            "title": "Chưa có revenue share nào.",
+            "description": "Khi có đơn hàng hoàn tất, hệ thống sẽ tạo các RevenueShare tương ứng theo tổ chức."
+        },
+        "table": {
+            "id": "ID",
+            "organization": "Tổ chức",
+            "event": "Sự kiện",
+            "netAmount": "Net amount",
+            "status": "Trạng thái",
+            "availableAt": "Available at",
+            "createdAt": "Tạo lúc"
         }
     },
     "roles": {

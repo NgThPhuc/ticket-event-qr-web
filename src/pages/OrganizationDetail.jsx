@@ -280,6 +280,54 @@ const OrganizationDetail = () => {
                     )}
                   </div>
 
+                  {/* Payout & Bank Info */}
+                  <div className="pt-4 border-t">
+                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
+                      {t('organization.payoutSectionTitle') || 'Thanh toán cho tổ chức (Payout)'}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400 mb-1">
+                          {t('organization.payoutStatusLabel') || 'Trạng thái payout'}
+                        </p>
+                        <Badge
+                          variant={organization.payout_enabled ? 'default' : 'secondary'}
+                          className={organization.payout_enabled ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
+                        >
+                          {organization.payout_enabled
+                            ? t('organization.payoutStatusEnabled') || 'Đang bật payout'
+                            : t('organization.payoutStatusDisabled') || 'Chưa bật payout'}
+                        </Badge>
+                        {!organization.payout_enabled || !organization.bank_account_number || !organization.bank_account_name || !organization.bank_name ? (
+                          <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
+                            {t('organization.bankWarningMissing') || 'Chưa đủ điều kiện nhận payout. Vui lòng đảm bảo đã nhập đủ thông tin ngân hàng và được nền tảng bật payout.'}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      <div className="space-y-1 text-sm text-gray-900 dark:text-white">
+                        <p>
+                          <span className="font-medium">
+                            {t('organization.bankAccountNumber') || 'Số tài khoản'}:
+                          </span>{' '}
+                          {organization.bank_account_number || '-'}
+                        </p>
+                        <p>
+                          <span className="font-medium">
+                            {t('organization.bankAccountName') || 'Chủ tài khoản'}:
+                          </span>{' '}
+                          {organization.bank_account_name || '-'}
+                        </p>
+                        <p>
+                          <span className="font-medium">
+                            {t('organization.bankName') || 'Ngân hàng'}:
+                          </span>{' '}
+                          {organization.bank_name || '-'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Owner Information */}
                   <div className="pt-4 border-t">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

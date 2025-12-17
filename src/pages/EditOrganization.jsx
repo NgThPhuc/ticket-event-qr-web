@@ -25,6 +25,9 @@ const EditOrganization = () => {
     contact_phone: '',
     address: '',
     website_url: '',
+    bank_account_number: '',
+    bank_account_name: '',
+    bank_name: '',
   });
   const [errors, setErrors] = useState({});
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -60,6 +63,9 @@ const EditOrganization = () => {
           contact_phone: data.contact_phone || '',
           address: data.address || '',
           website_url: data.website_url || '',
+          bank_account_number: data.bank_account_number || '',
+          bank_account_name: data.bank_account_name || '',
+          bank_name: data.bank_name || '',
         });
       } catch (err) {
         setAlert({
@@ -150,6 +156,15 @@ const EditOrganization = () => {
       }
       if (formData.website_url.trim() !== (organization?.website_url || '')) {
         payload.website_url = formData.website_url.trim();
+      }
+      if (formData.bank_account_number.trim() !== (organization?.bank_account_number || '')) {
+        payload.bank_account_number = formData.bank_account_number.trim();
+      }
+      if (formData.bank_account_name.trim() !== (organization?.bank_account_name || '')) {
+        payload.bank_account_name = formData.bank_account_name.trim();
+      }
+      if (formData.bank_name.trim() !== (organization?.bank_name || '')) {
+        payload.bank_name = formData.bank_name.trim();
       }
 
       // Nếu không có gì thay đổi
@@ -398,6 +413,73 @@ const EditOrganization = () => {
                   onChange={handleChange}
                   placeholder={t('organization.addressPlaceholder')}
                 />
+              </div>
+
+              {/* Bank Info for Payout */}
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                  {t('organization.bankInfoTitle') || 'Thông tin ngân hàng để nhận payout'}
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  {t('organization.bankInfoHint') || 'Vui lòng nhập đầy đủ thông tin ngân hàng. Nền tảng chỉ trả tiền khi tổ chức có đủ 3 trường này và đã được bật payout.'}
+                </p>
+
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="bank_account_number" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      {t('organization.bankAccountNumber') || 'Số tài khoản ngân hàng'}
+                    </Label>
+                    <Input
+                      id="bank_account_number"
+                      type="text"
+                      name="bank_account_number"
+                      value={formData.bank_account_number}
+                      onChange={handleChange}
+                      placeholder="0123456789"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="bank_account_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      {t('organization.bankAccountName') || 'Tên chủ tài khoản'}
+                    </Label>
+                    <Input
+                      id="bank_account_name"
+                      type="text"
+                      name="bank_account_name"
+                      value={formData.bank_account_name}
+                      onChange={handleChange}
+                      placeholder={t('organization.bankAccountNamePlaceholder') || 'Nguyen Van A'}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="bank_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      {t('organization.bankName') || 'Ngân hàng'}
+                    </Label>
+                    <Input
+                      id="bank_name"
+                      type="text"
+                      name="bank_name"
+                      value={formData.bank_name}
+                      onChange={handleChange}
+                      placeholder={t('organization.bankNamePlaceholder') || 'Vietcombank, Techcombank...'}
+                    />
+                  </div>
+
+                  {organization && (
+                    <div className="mt-2 text-sm">
+                      <span className="font-medium text-gray-700 dark:text-gray-300">
+                        {t('organization.payoutStatusLabel') || 'Trạng thái payout:'}
+                      </span>{' '}
+                      <span className={organization.payout_enabled ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-gray-500 dark:text-gray-400'}>
+                        {organization.payout_enabled
+                          ? t('organization.payoutStatusEnabled') || 'Đang bật payout'
+                          : t('organization.payoutStatusDisabled') || 'Chưa bật payout'}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="flex gap-4 pt-4">

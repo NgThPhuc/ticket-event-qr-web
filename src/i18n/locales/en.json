@@ -298,6 +298,18 @@
         "websiteUrlInvalid": "Invalid website URL",
         "logoUrlInvalid": "Invalid logo URL",
         "noChanges": "No changes made",
+        "bankInfoTitle": "Bank information for payout",
+        "bankInfoHint": "Please provide full bank information. The platform only pays out when all 3 fields are filled and payout is enabled by the platform.",
+        "bankAccountNumber": "Bank account number",
+        "bankAccountName": "Account holder name",
+        "bankAccountNamePlaceholder": "Nguyen Van A",
+        "bankName": "Bank name",
+        "bankNamePlaceholder": "Vietcombank, Techcombank...",
+        "payoutSectionTitle": "Organization payout",
+        "payoutStatusLabel": "Payout status",
+        "payoutStatusEnabled": "Payout enabled",
+        "payoutStatusDisabled": "Payout disabled",
+        "bankWarningMissing": "Not yet eligible for payout. Please ensure bank information is complete and payout is enabled by the platform.",
         "status": "Status",
         "active": "Active",
         "inactive": "Inactive",
@@ -413,7 +425,72 @@
             "view": "View",
             "edit": "Edit",
             "members": "Members",
-            "delete": "Delete"
+            "delete": "Delete",
+            "enablePayout": "Enable payout",
+            "disablePayout": "Disable payout"
+        },
+        "table": {
+            "organization": "ORGANIZATION",
+            "owner": "OWNER",
+            "members": "MEMBERS",
+            "member": "member",
+            "status": "STATUS",
+            "actions": "ACTIONS",
+            "payout": "PAYOUT"
+        },
+        "payout": {
+            "title": "Payout for organizations",
+            "description": "Run payout cycle to move money from pending -> available -> paid out for eligible organizations.",
+            "enabled": "Payout enabled",
+            "disabled": "Payout disabled",
+            "pending": "Pending",
+            "available": "Available",
+            "totalPaidOut": "Total paid out",
+            "runButton": "Run payout",
+            "running": "Running payout...",
+            "helper": "Currently payout is triggered manually for demo purposes. In production this can be moved to a cron job.",
+            "runSuccess": "Payout run: matured={{matured}}, paid_out={{paid_out}}, skipped={{skipped}}",
+            "runError": "Unable to run payout. Please try again.",
+            "toggleOnSuccess": "Payout enabled for organization.",
+            "toggleOffSuccess": "Payout disabled for organization.",
+            "toggleError": "Unable to change payout status for organization.",
+            "skipped": "Skipped"
+        }
+    },
+    "revenueShares": {
+        "title": "Revenue Shares",
+        "subtitle": "Monitor revenue shares for organizations by payout status.",
+        "fetchError": "Unable to load revenue shares list",
+        "stats": {
+            "totalShares": "Total RevenueShares",
+            "totalNetAmount": "Total net amount",
+            "currentFilter": "Current filter"
+        },
+        "filters": {
+            "all": "All statuses"
+        },
+        "status": {
+            "PENDING": "PENDING",
+            "AVAILABLE": "AVAILABLE",
+            "PAID_OUT": "PAID_OUT",
+            "CANCELLED": "CANCELLED"
+        },
+        "actions": {
+            "showPendingOnly": "Show PENDING only",
+            "showAll": "Show all"
+        },
+        "empty": {
+            "title": "No revenue shares yet.",
+            "description": "When orders are completed, the system will create RevenueShare records per organization."
+        },
+        "table": {
+            "id": "ID",
+            "organization": "Organization",
+            "event": "Event",
+            "netAmount": "Net amount",
+            "status": "Status",
+            "availableAt": "Available at",
+            "createdAt": "Created at"
         }
     },
     "roles": {

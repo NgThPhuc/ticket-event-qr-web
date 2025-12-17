@@ -23,6 +23,7 @@ export function PlatformOrganizationsDataTable({
   onEdit,
   onMembers,
   onDelete,
+  onTogglePayout,
 }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -87,6 +88,49 @@ export function PlatformOrganizationsDataTable({
                 ? t('organization.active') || 'Active' 
                 : t('organization.inactive') || 'Inactive'}
             </span>
+          );
+        },
+      },
+      {
+        accessorKey: 'payout',
+        header: t('organizationsManagement.table.payout') || 'PAYOUT',
+        cell: ({ row }) => {
+          const org = row.original;
+          const enabled = org.payout_enabled;
+          const pending = org.pending_balance ?? 0;
+          const available = org.available_balance ?? 0;
+          const totalPaidOut = org.total_paid_out ?? 0;
+
+          return (
+            <div className="space-y-1 text-xs text-gray-700 dark:text-gray-300">
+              <div>
+                <span
+                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                    enabled
+                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-100'
+                      : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                  }`}
+                >
+                  {enabled
+                    ? t('organizationsManagement.payout.enabled') || 'Payout enabled'
+                    : t('organizationsManagement.payout.disabled') || 'Payout disabled'}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span>
+                  {t('organizationsManagement.payout.pending') || 'Pending'}:{' '}
+                  <span className="font-medium">{pending.toLocaleString('vi-VN')}</span>
+                </span>
+                <span>
+                  {t('organizationsManagement.payout.available') || 'Available'}:{' '}
+                  <span className="font-medium">{available.toLocaleString('vi-VN')}</span>
+                </span>
+                <span>
+                  {t('organizationsManagement.payout.totalPaidOut') || 'Paid out'}:{' '}
+                  <span className="font-medium">{totalPaidOut.toLocaleString('vi-VN')}</span>
+                </span>
+              </div>
+            </div>
           );
         },
       },
@@ -157,6 +201,18 @@ export function PlatformOrganizationsDataTable({
                 <Trash2 className="h-4 w-4" />
                 {t('organizationsManagement.actions.delete') || 'Delete'}
               </Button>
+              {onTogglePayout && (
+                <Button
+                  variant={org.payout_enabled ? 'outline' : 'default'}
+                  size="sm"
+                  onClick={() => onTogglePayout(org)}
+                  className="h-8 gap-1"
+                >
+                  {org.payout_enabled
+                    ? t('organizationsManagement.actions.disablePayout') || 'Tắt payout'
+                    : t('organizationsManagement.actions.enablePayout') || 'Bật payout'}
+                </Button>
+              )}
             </div>
           );
         },

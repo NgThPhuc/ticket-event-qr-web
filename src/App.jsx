@@ -40,6 +40,7 @@ import MyOrders from './pages/MyOrders';
 import OrderDetail from './pages/OrderDetail';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import RevenueSharesManagement from './pages/RevenueSharesManagement';
 
 function AppContent() {
   const location = useLocation();
@@ -54,7 +55,8 @@ function AppContent() {
                            location.pathname.startsWith('/order-success') ||
                            location.pathname.startsWith('/orders') ||
                            location.pathname.startsWith('/profile') ||
-                           location.pathname.startsWith('/settings');
+                           location.pathname.startsWith('/settings') ||
+                           location.pathname.startsWith('/admin/revenue-shares');
   const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
 
   return (
@@ -227,6 +229,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <EventsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/revenue-shares"
+          element={
+            <ProtectedRoute>
+              <RevenueSharesManagement />
             </ProtectedRoute>
           }
         />
