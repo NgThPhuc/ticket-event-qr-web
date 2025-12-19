@@ -6,6 +6,10 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import PublicRoute from './routes/PublicRoute';
 
 // Pages
+import CheckInDashboard from './pages/CheckInDashboard';
+import CheckInHistory from './pages/CheckInHistory';
+import CheckInScanner from './pages/CheckInScanner';
+import CheckoutPage from './pages/CheckoutPage';
 import Contact from './pages/Contact';
 import CreateEvent from './pages/CreateEvent';
 import CreateOrganization from './pages/CreateOrganization';
@@ -19,31 +23,30 @@ import ForgotPassword from './pages/ForgotPassword';
 import GoogleCallback from './pages/GoogleCallback';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import MyOrders from './pages/MyOrders';
+import MyRefunds from './pages/MyRefunds';
 import NotFound from './pages/NotFound';
+import OrderDetail from './pages/OrderDetail';
+import OrderSuccess from './pages/OrderSuccess';
+import OrderTracking from './pages/OrderTracking';
 import OrganizationDetail from './pages/OrganizationDetail';
 import OrganizationMembers from './pages/OrganizationMembers';
 import OrganizationsPage from './pages/OrganizationsPage';
-import Policy from './pages/Policy';
-import PublicEventDetail from './pages/PublicEventDetail';
-import Register from './pages/Register';
-import ResetPassword from './pages/ResetPassword';
-import VerifyOTP from './pages/VerifyOTP';
-import OrderTracking from './pages/OrderTracking';
-import PaymentReturn from './pages/PaymentReturn';
-import PaymentResult from './pages/PaymentResult';
-import PaymentSuccess from './pages/PaymentSuccess';
-import PaymentFailure from './pages/PaymentFailure';
 import PaymentError from './pages/PaymentError';
-import CheckoutPage from './pages/CheckoutPage';
-import OrderSuccess from './pages/OrderSuccess';
-import MyOrders from './pages/MyOrders';
-import OrderDetail from './pages/OrderDetail';
+import PaymentFailure from './pages/PaymentFailure';
+import PaymentResult from './pages/PaymentResult';
+import PaymentReturn from './pages/PaymentReturn';
+import PaymentSuccess from './pages/PaymentSuccess';
+import Policy from './pages/Policy';
 import Profile from './pages/Profile';
-import Settings from './pages/Settings';
-import RevenueSharesManagement from './pages/RevenueSharesManagement';
-import MyRefunds from './pages/MyRefunds';
+import PublicEventDetail from './pages/PublicEventDetail';
 import RefundDetail from './pages/RefundDetail';
 import RefundsManagement from './pages/RefundsManagement';
+import Register from './pages/Register';
+import ResetPassword from './pages/ResetPassword';
+import RevenueSharesManagement from './pages/RevenueSharesManagement';
+import Settings from './pages/Settings';
+import VerifyOTP from './pages/VerifyOTP';
 
 function AppContent() {
   const location = useLocation();
@@ -60,7 +63,8 @@ function AppContent() {
                            location.pathname.startsWith('/profile') ||
                            location.pathname.startsWith('/settings') ||
                            location.pathname.startsWith('/admin/revenue-shares') ||
-                           location.pathname.startsWith('/refunds');
+                           location.pathname.startsWith('/refunds') ||
+                           location.pathname.startsWith('/check-in');
   const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
 
   return (
@@ -265,6 +269,30 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <RefundsManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/check-in"
+          element={
+            <ProtectedRoute>
+              <CheckInDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/check-in/scanner"
+          element={
+            <ProtectedRoute>
+              <CheckInScanner />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/check-in/history/:eventId"
+          element={
+            <ProtectedRoute>
+              <CheckInHistory />
             </ProtectedRoute>
           }
         />

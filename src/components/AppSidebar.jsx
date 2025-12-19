@@ -1,35 +1,36 @@
 import {
-  Settings,
-  LogOut,
-  LayoutDashboard,
-  User,
-  Building2,
-  Calendar,
-} from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '../contexts/AuthContext';
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarRail,
-  useSidebar,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarRail,
+    useSidebar,
 } from '@/components/ui/sidebar';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+    Building2,
+    Calendar,
+    LayoutDashboard,
+    LogOut,
+    QrCode,
+    Settings,
+    User,
+} from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const MENU_CONFIG = [
   {
@@ -49,6 +50,12 @@ const MENU_CONFIG = [
     icon: Calendar,
     titleKey: 'sidebar.events',
     url: '/events-management',
+  },
+  {
+    key: 'checkin',
+    icon: QrCode,
+    titleKey: 'sidebar.checkin',
+    url: '/check-in',
   },
 ];
 
