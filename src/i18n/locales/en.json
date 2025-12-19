@@ -967,5 +967,93 @@
         "confirmDelete": "Delete Account",
         "deleteNotImplemented": "Delete account feature is not yet supported. Please contact support.",
         "backToProfile": "Back to Profile"
+    },
+    "refunds": {
+        "fetchError": "Cannot load refunds list",
+        "unknownEvent": "Unknown event",
+        "orderNumber": "Order Number",
+        "reason": "Reason",
+        "viewDetail": "View Detail",
+        "automatic": "Automatic",
+        "manual": "Manual",
+        "filters": {
+            "all": "All",
+            "pending": "Pending",
+            "processing": "Processing",
+            "completed": "Completed",
+            "failed": "Failed"
+        },
+        "myRefunds": {
+            "title": "My Refunds",
+            "subtitle": "View your refund history",
+            "totalRefunds": "Total Refunds",
+            "completed": "Completed",
+            "pending": "Pending",
+            "refundsList": "Refunds List",
+            "refundsListDesc": "View details of your refund requests",
+            "noRefunds": "You don't have any refund requests yet"
+        },
+        "detail": {
+            "title": "Refund Detail",
+            "subtitle": "Detailed information about the refund request",
+            "fetchError": "Cannot load refund detail",
+            "refundInfo": "Refund Information",
+            "refundAmount": "Refund Amount",
+            "refundType": "Refund Type",
+            "paymentMethod": "Payment Method",
+            "externalRefundId": "External Refund ID",
+            "processedAt": "Processed At",
+            "orderInfo": "Order Information",
+            "orderAmount": "Order Total Amount",
+            "paymentStatus": "Payment Status",
+            "createdAt": "Order Created At",
+            "eventInfo": "Event Information",
+            "eventTitle": "Event Title",
+            "viewEvent": "View Event",
+            "ticketsInfo": "Tickets Information",
+            "timeline": "Timeline",
+            "created": "Request Created",
+            "processing": "Processing",
+            "completed": "Completed",
+            "failed": "Failed",
+            "customerInfo": "Customer Information",
+            "customerName": "Customer Name",
+            "customerEmail": "Email"
+        },
+        "management": {
+            "title": "Refunds Management",
+            "subtitle": "Manage all refund requests in the system",
+            "totalRefunds": "Total",
+            "pending": "Pending",
+            "completed": "Completed",
+            "totalAmount": "Total Amount",
+            "refundsList": "Refunds List",
+            "refundsListDesc": "View and manage refund requests",
+            "searchPlaceholder": "Search...",
+            "noRefunds": "No refund requests found"
+        },
+        "table": {
+            "orderNumber": "Order Number",
+            "customer": "Customer",
+            "event": "Event",
+            "amount": "Amount",
+            "status": "Status",
+            "paymentMethod": "Payment Method",
+            "createdAt": "Created At",
+            "actions": "Actions"
+        }
+    },
+    "event": {
+        "cancelConfirmTitle": "Confirm Cancel Event",
+        "cancelConfirmMessage": "Are you sure you want to cancel this event?",
+        "cancelWarning": "Important Notice:",
+        "cancelWarning1": "All customers who purchased tickets will receive 100% automatic refund",
+        "cancelWarning2": "The event cannot be restored after cancellation",
+        "cancelWarning3": "Email notifications will be automatically sent to customers",
+        "cancelReason": "Cancellation Reason (optional)",
+        "cancelReasonPlaceholder": "Enter cancellation reason...",
+        "cancelConfirm": "Cancel Event",
+        "refundsProcessed": "Automatically created {{count}} refund requests.",
+        "refundsTotalAmount": "Total refund amount: {{amount}}"
     }
 }

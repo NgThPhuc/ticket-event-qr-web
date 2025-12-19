@@ -76,7 +76,7 @@ const EventCard = ({ event }) => {
 
   return (
     <div 
-      className="group bg-white dark:bg-gray-900 rounded-[1.5rem] p-3 shadow-lg hover:shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer border border-gray-100 dark:border-gray-800 hover:border-primary/30 dark:hover:border-primary/30"
+      className="group bg-white dark:bg-gray-900 rounded-[1.5rem] p-3 shadow-lg hover:shadow-2xl transition-all duration-500 ease-in-out cursor-pointer border border-gray-100 dark:border-gray-800 hover:border-primary/30 dark:hover:border-primary/30"
       onClick={handleClick}
     >
       {/* Image Section with Hover Effect */}
@@ -86,7 +86,7 @@ const EventCard = ({ event }) => {
             src={event.cover_image_url}
             alt={event.title}
             loading="lazy"
-            className="w-full h-full object-cover transform transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-110"
+            className="w-full h-full object-cover transform transition-transform duration-700 ease-in-out group-hover:scale-110"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-600 flex items-center justify-center">
@@ -95,7 +95,7 @@ const EventCard = ({ event }) => {
         )}
         
         {/* Overlay on hover */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"></div>
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500 ease-in-out"></div>
         
         {/* Date Badge - Top Left */}
         <div className="absolute top-3 left-3">
@@ -189,9 +189,9 @@ const EventCard = ({ event }) => {
           </div>
 
           {/* Button with Hover Effect */}
-          <button className="group/btn relative bg-primary text-white rounded-full overflow-hidden shadow-md hover:shadow-lg transform transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] px-5 py-2.5">
+          <button className="group/btn relative bg-primary text-white rounded-full overflow-hidden shadow-md hover:shadow-lg transform transition-all duration-500 ease-in-out px-5 py-2.5">
             {/* Hover background layer */}
-            <div className="absolute top-0 bottom-0 left-1/2 w-0 bg-primary/80 dark:bg-white/20 group-hover/btn:w-full transition-[width] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] -translate-x-1/2 rounded-full"></div>
+            <div className="absolute top-0 bottom-0 left-1/2 w-0 bg-primary/80 dark:bg-white/20 group-hover/btn:w-full transition-[width] duration-500 ease-in-out -translate-x-1/2 rounded-full"></div>
             
             {/* Button content */}
             <span className="relative z-10 text-sm font-semibold whitespace-nowrap">

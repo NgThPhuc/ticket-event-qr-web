@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
     Card,
     CardContent,
@@ -209,24 +211,35 @@ const EventDetail = () => {
     }
   };
 
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const [canceling, setCanceling] = useState(false);
+  const [cancelResult, setCancelResult] = useState(null);
+
   const handleCancel = async () => {
     if (!event) return;
+    setShowCancelDialog(true);
+  };
 
-    const confirmed = window.confirm("Bạn có chắc chắn muốn hủy sự kiện này?");
-    if (!confirmed) return;
+  const confirmCancel = async () => {
+    if (!event) return;
 
+    setCanceling(true);
     try {
-      await cancelEvent(event.id, { reason: "Cancelled by user" });
+      const response = await cancelEvent(event.id, { reason: cancelReason || "Cancelled by organizer" });
+      setCancelResult(response);
       setAlert({
         type: "success",
         message: t("event.cancelSuccess") || "Cancel event thành công",
       });
+      setShowCancelDialog(false);
       // Reload event
       const data = await getEventById(eventId, "organization,creator");
       setEvent(data);
       setTimeout(() => {
         setAlert({ type: "", message: "" });
-      }, 3000);
+        setCancelResult(null);
+      }, 5000);
     } catch (err) {
       setAlert({
         type: "error",
@@ -236,6 +249,8 @@ const EventDetail = () => {
       setTimeout(() => {
         setAlert({ type: "", message: "" });
       }, 3000);
+    } finally {
+      setCanceling(false);
     }
   };
 
@@ -576,6 +591,103 @@ const EventDetail = () => {
             />
           </div>
         ) : null}
+
+        {/* Cancel Event Dialog */}
+        <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+          <AlertDialogContent className="max-w-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {t("event.cancelConfirmTitle") || "Xác nhận hủy sự kiện"}
+              </AlertDialogTitle>
+              <AlertDialogDescription className="space-y-4">
+                <div>
+                  {t("event.cancelConfirmMessage") ||
+                    "Bạn có chắc chắn muốn hủy sự kiện này không?"}
+                </div>
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 space-y-2">
+                  <p className="font-semibold text-yellow-900 dark:text-yellow-200">
+                    ⚠️ {t("event.cancelWarning") || "Lưu ý quan trọng:"}
+                  </p>
+                  <ul className="list-disc list-inside text-sm text-yellow-800 dark:text-yellow-300 space-y-1">
+                    <li>
+                      {t("event.cancelWarning1") ||
+                        "Tất cả khách hàng đã mua vé sẽ được hoàn tiền 100% tự động"}
+                    </li>
+                    <li>
+                      {t("event.cancelWarning2") ||
+                        "Sự kiện sẽ không thể khôi phục sau khi hủy"}
+                    </li>
+                    <li>
+                      {t("event.cancelWarning3") ||
+                        "Email thông báo sẽ được gửi tự động cho khách hàng"}
+                    </li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {t("event.cancelReason") || "Lý do hủy sự kiện (tùy chọn)"}
+                  </label>
+                  <Textarea
+                    value={cancelReason}
+                    onChange={(e) => setCancelReason(e.target.value)}
+                    placeholder={t("event.cancelReasonPlaceholder") || "Nhập lý do hủy sự kiện..."}
+                    rows={3}
+                  />
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => {
+                setShowCancelDialog(false);
+                setCancelReason("");
+              }}>
+                {t("common.cancel") || "Hủy"}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={confirmCancel}
+                disabled={canceling}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {canceling
+                  ? t("common.loading") || "Đang xử lý..."
+                  : t("event.cancelConfirm") || "Hủy sự kiện"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Cancel Success Alert */}
+        {cancelResult && cancelResult.refunds_processed > 0 && (
+          <Alert className="fixed bottom-4 right-4 max-w-md z-50 border-green-200 bg-green-50 dark:bg-green-900/20">
+            <AlertDescription className="space-y-2">
+              <p className="font-semibold text-green-900 dark:text-green-200">
+                ✅ {t("event.cancelSuccess") || "Sự kiện đã được hủy thành công"}
+              </p>
+              <div className="text-sm text-green-800 dark:text-green-300 space-y-1">
+                <p>
+                  {t("event.refundsProcessed", {
+                    count: cancelResult.refunds_processed,
+                  }) ||
+                    `Đã tự động tạo ${cancelResult.refunds_processed} yêu cầu hoàn tiền.`}
+                </p>
+                <p>
+                  {t("event.refundsTotalAmount", {
+                    amount: new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                      maximumFractionDigits: 0,
+                    }).format(cancelResult.refunds_total_amount || 0),
+                  }) ||
+                    `Tổng số tiền hoàn lại: ${new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                      maximumFractionDigits: 0,
+                    }).format(cancelResult.refunds_total_amount || 0)}`}
+                </p>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Delete Confirmation Dialog */}
         <AlertDialog

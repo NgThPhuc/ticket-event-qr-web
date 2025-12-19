@@ -41,6 +41,9 @@ import OrderDetail from './pages/OrderDetail';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import RevenueSharesManagement from './pages/RevenueSharesManagement';
+import MyRefunds from './pages/MyRefunds';
+import RefundDetail from './pages/RefundDetail';
+import RefundsManagement from './pages/RefundsManagement';
 
 function AppContent() {
   const location = useLocation();
@@ -56,7 +59,8 @@ function AppContent() {
                            location.pathname.startsWith('/orders') ||
                            location.pathname.startsWith('/profile') ||
                            location.pathname.startsWith('/settings') ||
-                           location.pathname.startsWith('/admin/revenue-shares');
+                           location.pathname.startsWith('/admin/revenue-shares') ||
+                           location.pathname.startsWith('/refunds');
   const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
 
   return (
@@ -237,6 +241,30 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <RevenueSharesManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/refunds"
+          element={
+            <ProtectedRoute>
+              <MyRefunds />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/refunds/:refundId"
+          element={
+            <ProtectedRoute>
+              <RefundDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/refunds"
+          element={
+            <ProtectedRoute>
+              <RefundsManagement />
             </ProtectedRoute>
           }
         />

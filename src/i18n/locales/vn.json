@@ -933,5 +933,93 @@
         "confirmDelete": "Xóa tài khoản",
         "deleteNotImplemented": "Tính năng xóa tài khoản chưa được hỗ trợ. Vui lòng liên hệ hỗ trợ.",
         "backToProfile": "Quay lại trang cá nhân"
+    },
+    "refunds": {
+        "fetchError": "Không thể tải danh sách hoàn tiền",
+        "unknownEvent": "Sự kiện không xác định",
+        "orderNumber": "Mã đơn hàng",
+        "reason": "Lý do",
+        "viewDetail": "Xem chi tiết",
+        "automatic": "Tự động",
+        "manual": "Thủ công",
+        "filters": {
+            "all": "Tất cả",
+            "pending": "Chờ xử lý",
+            "processing": "Đang xử lý",
+            "completed": "Đã hoàn tiền",
+            "failed": "Thất bại"
+        },
+        "myRefunds": {
+            "title": "Hoàn tiền của tôi",
+            "subtitle": "Xem lịch sử hoàn tiền của bạn",
+            "totalRefunds": "Tổng số hoàn tiền",
+            "completed": "Đã hoàn tiền",
+            "pending": "Đang xử lý",
+            "refundsList": "Danh sách hoàn tiền",
+            "refundsListDesc": "Xem chi tiết các yêu cầu hoàn tiền của bạn",
+            "noRefunds": "Bạn chưa có yêu cầu hoàn tiền nào"
+        },
+        "detail": {
+            "title": "Chi tiết hoàn tiền",
+            "subtitle": "Thông tin chi tiết về yêu cầu hoàn tiền",
+            "fetchError": "Không thể tải chi tiết hoàn tiền",
+            "refundInfo": "Thông tin hoàn tiền",
+            "refundAmount": "Số tiền hoàn lại",
+            "refundType": "Loại hoàn tiền",
+            "paymentMethod": "Phương thức thanh toán",
+            "externalRefundId": "Mã giao dịch hoàn tiền",
+            "processedAt": "Thời gian xử lý",
+            "orderInfo": "Thông tin đơn hàng",
+            "orderAmount": "Tổng tiền đơn hàng",
+            "paymentStatus": "Trạng thái thanh toán",
+            "createdAt": "Ngày tạo đơn hàng",
+            "eventInfo": "Thông tin sự kiện",
+            "eventTitle": "Tên sự kiện",
+            "viewEvent": "Xem sự kiện",
+            "ticketsInfo": "Thông tin vé",
+            "timeline": "Timeline",
+            "created": "Yêu cầu được tạo",
+            "processing": "Đang xử lý",
+            "completed": "Đã hoàn tiền",
+            "failed": "Hoàn tiền thất bại",
+            "customerInfo": "Thông tin khách hàng",
+            "customerName": "Tên khách hàng",
+            "customerEmail": "Email"
+        },
+        "management": {
+            "title": "Quản lý hoàn tiền",
+            "subtitle": "Quản lý tất cả yêu cầu hoàn tiền trong hệ thống",
+            "totalRefunds": "Tổng số",
+            "pending": "Chờ xử lý",
+            "completed": "Đã hoàn tiền",
+            "totalAmount": "Tổng tiền",
+            "refundsList": "Danh sách hoàn tiền",
+            "refundsListDesc": "Xem và quản lý các yêu cầu hoàn tiền",
+            "searchPlaceholder": "Tìm kiếm...",
+            "noRefunds": "Không có yêu cầu hoàn tiền nào"
+        },
+        "table": {
+            "orderNumber": "Mã đơn hàng",
+            "customer": "Khách hàng",
+            "event": "Sự kiện",
+            "amount": "Số tiền",
+            "status": "Trạng thái",
+            "paymentMethod": "Phương thức",
+            "createdAt": "Ngày tạo",
+            "actions": "Thao tác"
+        }
+    },
+    "event": {
+        "cancelConfirmTitle": "Xác nhận hủy sự kiện",
+        "cancelConfirmMessage": "Bạn có chắc chắn muốn hủy sự kiện này không?",
+        "cancelWarning": "Lưu ý quan trọng:",
+        "cancelWarning1": "Tất cả khách hàng đã mua vé sẽ được hoàn tiền 100% tự động",
+        "cancelWarning2": "Sự kiện sẽ không thể khôi phục sau khi hủy",
+        "cancelWarning3": "Email thông báo sẽ được gửi tự động cho khách hàng",
+        "cancelReason": "Lý do hủy sự kiện (tùy chọn)",
+        "cancelReasonPlaceholder": "Nhập lý do hủy sự kiện...",
+        "cancelConfirm": "Hủy sự kiện",
+        "refundsProcessed": "Đã tự động tạo {{count}} yêu cầu hoàn tiền.",
+        "refundsTotalAmount": "Tổng số tiền hoàn lại: {{amount}}"
     }
 }
