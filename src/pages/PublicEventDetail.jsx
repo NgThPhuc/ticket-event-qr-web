@@ -9,14 +9,11 @@ import {
     CheckCircle2,
     ChevronDown,
     ChevronUp,
-    Clock,
     ExternalLink,
     Globe,
     MapPin,
     Share2,
-    Tag,
-    Ticket,
-    Users
+    Ticket
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -170,48 +167,124 @@ const PublicEventDetail = () => {
 
   const hasTickets = ticketTypes && ticketTypes.length > 0;
   const availableTickets = ticketTypes.filter((t) => t.is_on_sale && !t.is_sold_out);
+  const lowestPrice = hasTickets 
+    ? Math.min(...ticketTypes.filter(t => t.price > 0).map((t) => t.price || Infinity))
+    : 0;
+  const hasFreeTicket = ticketTypes.some((t) => t.is_free);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
       <Header />
 
-      {/* Cover Image */}
-      <div className="relative h-[300px] md:h-[400px] bg-gradient-to-br from-violet-600 to-indigo-700">
-        {event.cover_image_url && (
-          <img src={event.cover_image_url} alt={event.title} className="absolute inset-0 w-full h-full object-cover" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+      {/* Hero Section - Ticketbox style */}
+      <div className="bg-gray-900">
+        <div className="container mx-auto px-4 py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
+            
+            {/* Left Column - Event Info - 4 parts */}
+            <Card className="lg:col-span-4 border-0 shadow-xl overflow-hidden flex flex-col">
+              <CardContent className="p-6 flex flex-col flex-1">
+                {/* Top Content */}
+                <div className="space-y-4">
+                  {/* Location Badge */}
+                  {event.city && (
+                    <Badge variant="outline" className="text-xs">
+                      [{event.city}]
+                    </Badge>
+                  )}
+                  
+                  {/* Title */}
+                  <h1 className="text-2xl font-bold leading-tight">{event.title}</h1>
+                  {event.subtitle && (
+                    <p className="text-muted-foreground">{event.subtitle}</p>
+                  )}
 
-        {/* Share Button */}
-        <div className="absolute top-4 right-4">
-          <Button variant="secondary" size="sm" className="bg-white/90 hover:bg-white" onClick={handleShare}>
-            <Share2 className="h-4 w-4 mr-1" />
-            {t("common.share")}
-          </Button>
-        </div>
+                  {/* Date & Time */}
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="flex items-center justify-center w-8 h-8 bg-violet-100 dark:bg-violet-900/30 rounded">
+                      <Calendar className="h-4 w-4 text-violet-600" />
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">
+                        {formatTime(event.start_at)} - {event.end_at ? formatTime(event.end_at) : "..."}, {formatDate(event.start_at)}
+                      </p>
+                    </div>
+                  </div>
 
-        {/* Title Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-          <div className="container mx-auto">
-            <div className="flex flex-wrap gap-2 mb-3">
-              {event.category && (
-                <Badge className="bg-white/20 text-white backdrop-blur-sm border-0">
-                  <Tag className="h-3 w-3 mr-1" />
-                  {event.category}
-                </Badge>
+                  {/* Location */}
+                  {event.venue_name && (
+                    <div className="flex items-start gap-3 text-sm">
+                      <div className="flex items-center justify-center w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded flex-shrink-0">
+                        <MapPin className="h-4 w-4 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-green-600">{event.venue_name}</p>
+                        <p className="text-muted-foreground text-xs">
+                          {[event.address_line1, event.district, event.city].filter(Boolean).join(", ")}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Bottom Section - Fixed at bottom */}
+                <div className="mt-auto pt-4 space-y-4">
+                  {/* Price Section - Clickable */}
+                  <div 
+                    className="flex items-center gap-2 pt-4 border-t cursor-pointer group"
+                    onClick={scrollToTickets}
+                  >
+                    <span className="text-muted-foreground">{t("eventDetail.priceFrom")}</span>
+                    <span className="text-2xl font-bold text-primary">
+                      {hasFreeTicket ? t("ticket.free") : (lowestPrice !== Infinity ? formatPrice(lowestPrice) : "-")}
+                    </span>
+                    <ChevronDown className="h-5 w-5 text-primary group-hover:translate-y-0.5 transition-transform" />
+                  </div>
+
+                  {/* CTA Button */}
+                  <Button 
+                    size="lg" 
+                    className="w-full py-6 text-base font-semibold"
+                    variant={availableTickets.length > 0 ? "default" : "outline"}
+                    onClick={scrollToTickets}
+                    disabled={!hasTickets}
+                  >
+                    {availableTickets.length > 0 ? t("event.getTickets") : t("event.noTicketsAvailable")}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Right Column - Cover Image - 6 parts */}
+            <div className="lg:col-span-6 relative rounded-2xl overflow-hidden shadow-xl">
+              {event.cover_image_url ? (
+                <img 
+                  src={event.cover_image_url} 
+                  alt={event.title} 
+                  className="w-full h-auto object-contain"
+                />
+              ) : (
+                <div className="w-full aspect-video bg-gradient-to-br from-violet-600 to-purple-700 flex items-center justify-center">
+                  <Calendar className="h-20 w-20 text-white/30" />
+                </div>
               )}
-              <Badge className="bg-white/20 text-white backdrop-blur-sm border-0">
-                {event.attendance_mode === "ONLINE" ? (
-                  <><Globe className="h-3 w-3 mr-1" />{t("event.online")}</>
-                ) : event.attendance_mode === "HYBRID" ? (
-                  <><Globe className="h-3 w-3 mr-1" />{t("event.hybrid")}</>
-                ) : (
-                  <><MapPin className="h-3 w-3 mr-1" />{t("event.offline")}</>
-                )}
-              </Badge>
+              {/* Date Overlay on Cover */}
+              <div className="absolute top-4 right-4 bg-gray-900/80 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-center">
+                <p className="text-lg font-bold">
+                  {new Date(event.start_at).toLocaleDateString(locale, { day: "2-digit", month: "2-digit", year: "numeric" })}
+                </p>
+                <p className="text-xs text-white/70">{event.venue_name}</p>
+              </div>
+              {/* Share Button */}
+              <Button 
+                variant="secondary" 
+                size="icon"
+                className="absolute top-4 left-4 bg-white/90 hover:bg-white rounded-full"
+                onClick={handleShare}
+              >
+                <Share2 className="h-4 w-4" />
+              </Button>
             </div>
-            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">{event.title}</h1>
-            {event.subtitle && <p className="text-white/80 text-lg">{event.subtitle}</p>}
           </div>
         </div>
       </div>
@@ -220,42 +293,7 @@ const PublicEventDetail = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Quick Info Bar */}
-            <div className="flex flex-wrap gap-6 p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
-                  <Calendar className="h-6 w-6 text-violet-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">{t("event.date")}</p>
-                  <p className="font-semibold text-sm">{formatDate(event.start_at)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                  <Clock className="h-6 w-6 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">{t("event.time")}</p>
-                  <p className="font-semibold text-sm">
-                    {formatTime(event.start_at)}
-                    {event.end_at && ` - ${formatTime(event.end_at)}`}
-                  </p>
-                </div>
-              </div>
-              {event.venue_name && (
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                    <MapPin className="h-6 w-6 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">{t("event.venue")}</p>
-                    <p className="font-semibold text-sm">{event.venue_name}</p>
-                  </div>
-                </div>
-              )}
-            </div>
+          <div className="lg:col-span-2 space-y-6">
 
             {/* About */}
             {event.description && (
@@ -308,154 +346,109 @@ const PublicEventDetail = () => {
               </div>
             )}
 
-            {/* Tickets Section */}
-            <div ref={ticketSectionRef} className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm scroll-mt-24">
-              <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
-                <Ticket className="h-5 w-5 text-primary" />
-                {t("event.ticketTypes")}
-              </h2>
-              <p className="text-muted-foreground text-sm mb-6">{t("event.selectTicket")}</p>
-
-              {loadingTickets ? (
-                <div className="text-center py-8">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                </div>
-              ) : hasTickets ? (
-                <div className="space-y-3">
-                  {ticketTypes.map((ticket) => {
-                    const isSelected = selectedTicket?.id === ticket.id;
-                    const isAvailable = ticket.is_on_sale && !ticket.is_sold_out && ticket.is_active;
-
-                    return (
-                      <div
-                        key={ticket.id}
-                        onClick={() => isAvailable && setSelectedTicket(ticket)}
-                        className={`
-                          relative p-4 rounded-xl border-2 transition-all cursor-pointer
-                          ${isSelected
-                            ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                            : isAvailable
-                              ? "border-gray-200 dark:border-gray-800 hover:border-primary/50"
-                              : "border-gray-200 dark:border-gray-800 opacity-50 cursor-not-allowed"
-                          }
-                        `}
-                      >
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold">{ticket.name}</h3>
-                              {ticket.is_sold_out && <Badge variant="destructive" className="text-xs">{t("ticket.soldOut")}</Badge>}
-                              {!ticket.is_active && <Badge variant="secondary" className="text-xs">{t("ticketTypes.status.unavailable")}</Badge>}
-                            </div>
-                            {ticket.description && (
-                              <p className="text-sm text-muted-foreground line-clamp-1">{ticket.description}</p>
-                            )}
-                            <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Users className="h-3 w-3" />
-                                {ticket.quantity_sold || 0}/{ticket.quantity_total}
-                              </span>
-                              <span>{ticket.per_order_min}-{ticket.per_order_max} {t("ticket.tickets")}/{t("order.ticket")}</span>
-                            </div>
-                          </div>
-                          <div className="text-right flex-shrink-0">
-                            <p className={`text-xl font-bold ${ticket.is_free ? "text-green-600" : "text-primary"}`}>
-                              {ticket.is_free ? t("ticket.free") : formatPrice(ticket.price)}
-                            </p>
-                          </div>
-                          {isSelected && (
-                            <div className="absolute top-3 right-3">
-                              <CheckCircle2 className="h-5 w-5 text-primary" />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-
-                  {availableTickets.length > 0 && (
-                    <Button
-                      size="lg"
-                      className="w-full mt-4 py-6 text-base font-semibold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
-                      onClick={handleBuyTicket}
-                      disabled={!selectedTicket}
-                    >
-                      <Ticket className="h-5 w-5 mr-2" />
-                      {selectedTicket
-                        ? `${t("event.buyTicket")} - ${selectedTicket.is_free ? t("ticket.free") : formatPrice(selectedTicket.price)}`
-                        : t("event.selectTicketFirst")}
-                    </Button>
+            {/* Organizer - Moved to main content */}
+            {event.organization && (
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+                <h2 className="text-xl font-bold mb-4">{t("event.organizedBy")}</h2>
+                <div className="flex items-start gap-4">
+                  {event.organization.logo_url ? (
+                    <img src={event.organization.logo_url} alt={event.organization.name} className="h-16 w-16 rounded-xl object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="h-16 w-16 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Building2 className="h-8 w-8 text-primary" />
+                    </div>
                   )}
+                  <div className="min-w-0">
+                    <p className="font-bold text-lg">{event.organization.name}</p>
+                    {event.organization.description && (
+                      <p className="text-sm text-muted-foreground mt-1">{event.organization.description}</p>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Ticket className="h-10 w-10 mx-auto mb-3 opacity-30" />
-                  <p>{t("event.noTickets")}</p>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Right Column - Sidebar */}
           <div className="space-y-4">
-            {/* CTA Card */}
-            {availableTickets.length > 0 && (
-              <Card className="sticky top-24 bg-gradient-to-br from-violet-600 to-purple-600 text-white border-0 overflow-hidden">
-                <CardContent className="p-6">
-                  <p className="text-white/80 text-sm mb-1">{t("eventDetail.priceFrom")}</p>
-                  <p className="text-3xl font-bold mb-4">
-                    {ticketTypes.some((t) => t.is_free) ? t("ticket.free") : formatPrice(Math.min(...ticketTypes.map((t) => t.price || 0)))}
-                  </p>
-                  <Button size="lg" className="w-full bg-white text-purple-700 hover:bg-white/90 font-semibold" onClick={scrollToTickets}>
-                    <Ticket className="h-5 w-5 mr-2" />
-                    {t("event.getTickets")}
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Date & Time */}
-            <Card>
+            {/* Tickets Section */}
+            <Card ref={ticketSectionRef} className="sticky top-24 scroll-mt-24">
               <CardContent className="p-5">
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-primary" />
-                  {t("event.dateAndTime")}
-                </h3>
-                <p className="font-medium">{formatDate(event.start_at)}</p>
-                <p className="text-sm text-muted-foreground">
-                  {formatTime(event.start_at)}
-                  {event.end_at && ` - ${formatTime(event.end_at)}`}
-                </p>
-                {event.timezone && <p className="text-xs text-muted-foreground mt-1">{event.timezone}</p>}
+                <h2 className="text-lg font-bold mb-2 flex items-center gap-2">
+                  <Ticket className="h-5 w-5 text-primary" />
+                  {t("event.ticketTypes")}
+                </h2>
+                <p className="text-muted-foreground text-sm mb-4">{t("event.selectTicket")}</p>
+
+                {loadingTickets ? (
+                  <div className="text-center py-6">
+                    <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                  </div>
+                ) : hasTickets ? (
+                  <div className="space-y-2">
+                    {ticketTypes.map((ticket) => {
+                      const isSelected = selectedTicket?.id === ticket.id;
+                      const isAvailable = ticket.is_on_sale && !ticket.is_sold_out && ticket.is_active;
+
+                      return (
+                        <div
+                          key={ticket.id}
+                          onClick={() => isAvailable && setSelectedTicket(ticket)}
+                          className={`
+                            relative p-3 rounded-lg border-2 transition-all cursor-pointer
+                            ${isSelected
+                              ? "border-primary bg-primary/5"
+                              : isAvailable
+                                ? "border-gray-200 dark:border-gray-700 hover:border-primary/50"
+                                : "border-gray-200 dark:border-gray-700 opacity-50 cursor-not-allowed"
+                            }
+                          `}
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1">
+                                <h3 className="font-medium text-sm">{ticket.name}</h3>
+                                {ticket.is_sold_out && <Badge variant="destructive" className="text-xs">{t("ticket.soldOut")}</Badge>}
+                              </div>
+                              <p className="text-xs text-muted-foreground">
+                                {ticket.quantity_sold || 0}/{ticket.quantity_total} · {ticket.per_order_min}-{ticket.per_order_max} vé/đơn
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <p className={`font-bold ${ticket.is_free ? "text-green-600" : "text-primary"}`}>
+                                {ticket.is_free ? t("ticket.free") : formatPrice(ticket.price)}
+                              </p>
+                              {isSelected && (
+                                <CheckCircle2 className="h-5 w-5 text-primary" />
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {availableTickets.length > 0 && (
+                      <Button
+                        size="lg"
+                        className="w-full mt-3 py-5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
+                        onClick={handleBuyTicket}
+                        disabled={!selectedTicket}
+                      >
+                        <Ticket className="h-4 w-4 mr-2" />
+                        {selectedTicket
+                          ? `${t("event.buyTicket")} - ${selectedTicket.is_free ? t("ticket.free") : formatPrice(selectedTicket.price)}`
+                          : t("event.selectTicketFirst")}
+                      </Button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-6 text-muted-foreground">
+                    <Ticket className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                    <p className="text-sm">{t("event.noTickets")}</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
-
-            {/* Location */}
-            {event.venue_name && (
-              <Card>
-                <CardContent className="p-5">
-                  <h3 className="font-semibold mb-3 flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-primary" />
-                    {t("event.location")}
-                  </h3>
-                  <p className="font-medium">{event.venue_name}</p>
-                  {event.address_line1 && <p className="text-sm text-muted-foreground">{event.address_line1}</p>}
-                  {(event.district || event.city) && (
-                    <p className="text-sm text-muted-foreground">
-                      {[event.district, event.city, event.country].filter(Boolean).join(", ")}
-                    </p>
-                  )}
-                  {event.geo_lat && event.geo_lng && (
-                    <Button variant="outline" size="sm" className="w-full mt-3" asChild>
-                      <a href={`https://www.google.com/maps?q=${event.geo_lat},${event.geo_lng}`} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-1" />
-                        {t("event.viewOnMap")}
-                      </a>
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            )}
 
             {/* Online */}
             {event.meeting_url && (
@@ -472,25 +465,6 @@ const PublicEventDetail = () => {
                       {t("event.joinMeeting")}
                     </a>
                   </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Organizer */}
-            {event.organization && (
-              <Card>
-                <CardContent className="p-5">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-3">{t("event.organizedBy")}</p>
-                  <div className="flex items-center gap-3">
-                    {event.organization.logo_url ? (
-                      <img src={event.organization.logo_url} alt={event.organization.name} className="h-10 w-10 rounded-full object-cover" />
-                    ) : (
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Building2 className="h-5 w-5 text-primary" />
-                      </div>
-                    )}
-                    <p className="font-medium">{event.organization.name}</p>
-                  </div>
                 </CardContent>
               </Card>
             )}
