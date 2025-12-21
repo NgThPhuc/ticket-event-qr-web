@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getMyOrganizations, getAllOrganizations } from '../api/organizations';
-import OrganizationsManagement from './OrganizationsManagement';
 import { DashboardLayout } from '../layouts/DashboardLayout';
-import { useTranslation } from 'react-i18next';
+import OrganizationsManagement from './OrganizationsManagement';
 
 /**
  * Component wrapper cho route /organizations
@@ -16,56 +15,41 @@ const OrganizationsPage = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
+
+  // Kiểm tra PLATFORM_ADMIN trực tiếp từ user object
+  const isPlatformAdmin = user?.platform_role === 'PLATFORM_ADMIN';
 
   useEffect(() => {
-    const checkRoleAndRedirect = async () => {
-      if (authLoading || !isAuthenticated) {
-        setLoading(false);
+    if (authLoading || !isAuthenticated) {
+      setLoading(false);
+      return;
+    }
+
+    // Nếu là PLATFORM_ADMIN, hiển thị OrganizationsManagement
+    if (isPlatformAdmin) {
+      setLoading(false);
+      return;
+    }
+
+    // Sử dụng user.organizations từ profile thay vì gọi API
+    const userOrgs = user?.organizations || [];
+    
+    if (userOrgs.length > 0) {
+      // Lấy organization đầu tiên từ profile
+      const firstOrg = userOrgs[0];
+      const orgId = firstOrg.id;
+      
+      if (orgId) {
+        // Redirect đến trang detail của organization
+        navigate(`/organizations/${orgId}`, { replace: true });
         return;
       }
+    }
 
-      try {
-        // Kiểm tra xem có phải PLATFORM_ADMIN không
-        try {
-          await getAllOrganizations();
-          // Nếu thành công, đây là PLATFORM_ADMIN
-          setIsPlatformAdmin(true);
-          setLoading(false);
-          return;
-        } catch (error) {
-          // Không phải PLATFORM_ADMIN
-          setIsPlatformAdmin(false);
-        }
-
-        // Lấy organizations của user
-        const myOrgs = await getMyOrganizations();
-        
-        if (myOrgs && myOrgs.length > 0) {
-          // Lấy organization đầu tiên
-          // Response structure: [{ id: "member-id", role: "...", organization: { id: "org-id", ... } }]
-          const firstOrg = myOrgs[0];
-          const orgId = firstOrg.organization?.id || firstOrg.organization_id || firstOrg.id;
-          
-          if (orgId) {
-            // Redirect đến trang detail của organization
-            navigate(`/organizations/${orgId}`, { replace: true });
-            return;
-          }
-        }
-
-        // Nếu không có organization nào, redirect về dashboard
-        navigate('/dashboard', { replace: true });
-      } catch (error) {
-        console.error('Error checking organizations:', error);
-        navigate('/dashboard', { replace: true });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkRoleAndRedirect();
-  }, [authLoading, isAuthenticated, user, navigate]);
+    // Nếu không có organization nào, redirect về dashboard
+    navigate('/dashboard', { replace: true });
+    setLoading(false);
+  }, [authLoading, isAuthenticated, user, navigate, isPlatformAdmin]);
 
   // Nếu đang loading, hiển thị loading state
   if (loading || authLoading) {

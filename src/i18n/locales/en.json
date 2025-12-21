@@ -123,7 +123,15 @@
         "people": "people",
         "optional": "Optional",
         "locale": "en-US",
-        "rateLimit": "You are doing that too quickly. Please try again in a few seconds."
+        "rateLimit": "You are doing that too quickly. Please try again in a few seconds.",
+        "imageUpload": {
+            "label": "Image",
+            "hint": "JPG, PNG, WEBP. Max 5MB",
+            "uploading": "Uploading image...",
+            "preview": "Preview"
+        },
+        "showMore": "Show more",
+        "showLess": "Show less"
     },
     "footer": {
         "whoWeAre": "Who we are?",
@@ -280,6 +288,7 @@
         "addressPlaceholder": "123 Nguyen Hue, District 1, HCM",
         "logoUrl": "Logo URL",
         "logoUrlPlaceholder": "https://example.com/logo.png",
+        "logo": "Organization Logo",
         "createButton": "Create Organization",
         "createSuccess": "Organization created successfully! Redirecting to home...",
         "createError": "An error occurred while creating the organization. Please try again.",

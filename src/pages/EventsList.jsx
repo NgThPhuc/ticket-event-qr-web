@@ -1,25 +1,26 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Calendar, Plus } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { getEvents } from '../api/events';
+import { PlatformEventsDataTable } from '../components/PlatformEventsDataTable';
 import { useAuth } from '../contexts/AuthContext';
 import { DashboardLayout } from '../layouts/DashboardLayout';
-import { getEvents } from '../api/events';
-import { getMyOrganizations } from '../api/organizations';
-import { PlatformEventsDataTable } from '../components/PlatformEventsDataTable';
-import { Calendar, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const EventsList = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [events, setEvents] = useState([]);
-  const [organizations, setOrganizations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch organizations và events
+  // Sử dụng user.organizations từ profile thay vì gọi API
+  const organizations = user?.organizations || [];
+
+  // Fetch events
   useEffect(() => {
     const fetchData = async () => {
       if (!isAuthenticated || authLoading) {
@@ -31,14 +32,8 @@ const EventsList = () => {
       setError('');
 
       try {
-        // Lấy organizations của user
-        const myOrgs = await getMyOrganizations();
-        setOrganizations(myOrgs || []);
-
-        // Lấy organization IDs
-        const orgIds = myOrgs?.map(org => {
-          return org.organization?.id || org.organization_id || org.id;
-        }).filter(Boolean) || [];
+        // Lấy organization IDs từ user.organizations
+        const orgIds = organizations.map(org => org.id).filter(Boolean);
 
         if (orgIds.length === 0) {
           setEvents([]);
@@ -47,8 +42,6 @@ const EventsList = () => {
         }
 
         // Lấy events của tất cả organizations
-        // Có thể lấy từng organization hoặc gọi API với multiple organization_ids
-        // Tạm thời lấy events của organization đầu tiên, sau có thể cải thiện
         const allEvents = [];
         for (const orgId of orgIds) {
           try {
@@ -83,25 +76,16 @@ const EventsList = () => {
       }
     };
 
-    if (isAuthenticated) {
+    if (isAuthenticated && !authLoading) {
       fetchData();
     }
-  }, [isAuthenticated, authLoading, user, t]);
+  }, [isAuthenticated, authLoading, organizations, t]);
 
   // Check permissions
   const isPlatformAdmin = user?.platform_role === 'PLATFORM_ADMIN';
-  const isOrganizerAdmin = organizations.some(org => {
-    const role = org.role;
-    return role === 'ORGANIZER_ADMIN';
-  });
-  const isEventManager = organizations.some(org => {
-    const role = org.role;
-    return role === 'EVENT_MANAGER';
-  });
-  const isCheckinStaff = organizations.some(org => {
-    const role = org.role;
-    return role === 'CHECKIN_STAFF';
-  });
+  const isOrganizerAdmin = organizations.some(org => org.role === 'ORGANIZER_ADMIN');
+  const isEventManager = organizations.some(org => org.role === 'EVENT_MANAGER');
+  const isCheckinStaff = organizations.some(org => org.role === 'CHECKIN_STAFF');
 
   const canCreate = isOrganizerAdmin || isEventManager || isPlatformAdmin;
   const canEdit = (event) => {
@@ -110,9 +94,7 @@ const EventsList = () => {
       // Check xem event có thuộc về organization mà user có quyền không
       const eventOrgId = event.organization_id || event.organization?.id;
       return organizations.some(org => {
-        const orgId = org.organization?.id || org.organization_id || org.id;
-        const role = org.role;
-        return orgId === eventOrgId && (role === 'ORGANIZER_ADMIN' || role === 'EVENT_MANAGER');
+        return org.id === eventOrgId && (org.role === 'ORGANIZER_ADMIN' || org.role === 'EVENT_MANAGER');
       });
     }
     return false;
@@ -123,9 +105,7 @@ const EventsList = () => {
       // Chỉ ORGANIZER_ADMIN mới có quyền delete, không phải EVENT_MANAGER
       const eventOrgId = event.organization_id || event.organization?.id;
       return organizations.some(org => {
-        const orgId = org.organization?.id || org.organization_id || org.id;
-        const role = org.role;
-        return orgId === eventOrgId && role === 'ORGANIZER_ADMIN';
+        return org.id === eventOrgId && org.role === 'ORGANIZER_ADMIN';
       });
     }
     return false;

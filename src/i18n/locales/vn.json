@@ -123,7 +123,15 @@
         "people": "người",
         "optional": "Tùy chọn",
         "locale": "vi-VN",
-        "rateLimit": "Bạn thao tác quá nhanh, vui lòng thử lại sau ít giây."
+        "rateLimit": "Bạn thao tác quá nhanh, vui lòng thử lại sau ít giây.",
+        "imageUpload": {
+            "label": "Ảnh",
+            "hint": "JPG, PNG, WEBP. Tối đa 5MB",
+            "uploading": "Đang upload ảnh...",
+            "preview": "Xem trước"
+        },
+        "showMore": "Xem thêm",
+        "showLess": "Thu gọn"
     },
     "footer": {
         "whoWeAre": "Chúng tôi là ai?",
@@ -280,6 +288,7 @@
         "addressPlaceholder": "123 Nguyen Hue, District 1, HCM",
         "logoUrl": "URL Logo",
         "logoUrlPlaceholder": "https://example.com/logo.png",
+        "logo": "Logo tổ chức",
         "createButton": "Tạo Tổ Chức",
         "createSuccess": "Tạo tổ chức thành công! Đang chuyển về trang chủ...",
         "createError": "Có lỗi xảy ra khi tạo tổ chức. Vui lòng thử lại.",
@@ -393,7 +402,9 @@
         "overview": "Tổng quan",
         "manageMembers": "Quản Lý Thành Viên",
         "appName": "Ticketer",
-        "appSubtitle": "Quản Lý Sự Kiện"
+        "appSubtitle": "Quản Lý Sự Kiện",
+        "events": "Sự Kiện",
+        "checkin": "Check-in"
     },
     "organizationsManagement": {
         "title": "Quản Lý Tổ Chức",
@@ -636,10 +647,50 @@
         "onlineMeeting": "Tham gia online",
         "platform": "Nền tảng",
         "joinMeeting": "Tham gia ngay",
-        "organizedBy": "Được tổ chức bởi"
+        "cancelConfirmTitle": "Xác nhận hủy sự kiện",
+        "cancelConfirmMessage": "Bạn có chắc chắn muốn hủy sự kiện này không?",
+        "cancelWarning": "Lưu ý quan trọng:",
+        "cancelWarning1": "Tất cả khách hàng đã mua vé sẽ được hoàn tiền 100% tự động",
+        "cancelWarning2": "Sự kiện sẽ không thể khôi phục sau khi hủy",
+        "cancelWarning3": "Email thông báo sẽ được gửi tự động cho khách hàng",
+        "cancelReason": "Lý do hủy sự kiện (tùy chọn)",
+        "cancelReasonPlaceholder": "Nhập lý do hủy sự kiện...",
+        "cancelConfirm": "Hủy sự kiện",
+        "refundsProcessed": "Đã tự động tạo {{count}} yêu cầu hoàn tiền.",
+        "refundsTotalAmount": "Tổng số tiền hoàn lại: {{amount}}"
     },
     "eventDetail": {
         "priceFrom": "Giá vé từ"
+    },
+    "eventsManagement": {
+        "title": "Quản Lý Sự Kiện",
+        "subtitle": "Quản lý tất cả sự kiện trong hệ thống",
+        "eventsList": "Danh sách sự kiện",
+        "noEvents": "Không tìm thấy sự kiện nào",
+        "fetchError": "Không thể tải danh sách sự kiện",
+        "deleteSuccess": "Xóa sự kiện thành công",
+        "deleteError": "Không thể xóa sự kiện",
+        "deleteConfirmTitle": "Xác nhận xóa sự kiện",
+        "deleteConfirmMessage": "Bạn có chắc chắn muốn xóa sự kiện \"{{title}}\"? Hành động này không thể hoàn tác.",
+        "deleteConfirm": "Xóa",
+        "stats": {
+            "totalEvents": "Tổng Số Sự Kiện",
+            "publishedEvents": "Sự Kiện Đã Xuất Bản",
+            "upcomingEvents": "Sự Kiện Sắp Tới"
+        },
+        "table": {
+            "event": "SỰ KIỆN",
+            "organization": "TỔ CHỨC",
+            "attendanceMode": "HÌNH THỨC",
+            "status": "TRẠNG THÁI",
+            "startAt": "NGÀY BẮT ĐẦU",
+            "actions": "THAO TÁC"
+        },
+        "actions": {
+            "view": "Xem",
+            "edit": "Chỉnh sửa",
+            "delete": "Xóa"
+        }
     },
     "eventsPage": {
         "title": "Sự kiện",
@@ -1008,29 +1059,6 @@
             "createdAt": "Ngày tạo",
             "actions": "Thao tác"
         }
-    },
-    "event": {
-        "cancelConfirmTitle": "Xác nhận hủy sự kiện",
-        "cancelConfirmMessage": "Bạn có chắc chắn muốn hủy sự kiện này không?",
-        "cancelWarning": "Lưu ý quan trọng:",
-        "cancelWarning1": "Tất cả khách hàng đã mua vé sẽ được hoàn tiền 100% tự động",
-        "cancelWarning2": "Sự kiện sẽ không thể khôi phục sau khi hủy",
-        "cancelWarning3": "Email thông báo sẽ được gửi tự động cho khách hàng",
-        "cancelReason": "Lý do hủy sự kiện (tùy chọn)",
-        "cancelReasonPlaceholder": "Nhập lý do hủy sự kiện...",
-        "cancelConfirm": "Hủy sự kiện",
-        "refundsProcessed": "Đã tự động tạo {{count}} yêu cầu hoàn tiền.",
-        "refundsTotalAmount": "Tổng số tiền hoàn lại: {{amount}}"
-    },
-    "sidebar": {
-        "dashboard": "Dashboard",
-        "organizations": "Tổ Chức",
-        "events": "Sự Kiện",
-        "checkin": "Check-in",
-        "overview": "Tổng quan",
-        "manageMembers": "Quản Lý Thành Viên",
-        "appName": "Ticketer",
-        "appSubtitle": "Quản Lý Sự Kiện"
     },
     "checkin": {
         "dashboard": {

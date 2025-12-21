@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "../api/events";
-import { getAllOrganizations, getMyOrganizations } from "../api/organizations";
+import { getAllOrganizations } from "../api/organizations";
 import ImageUploader from "../components/ImageUploader";
 import { useAuth } from "../contexts/AuthContext";
 import { DashboardLayout } from "../layouts/DashboardLayout";
@@ -69,7 +69,7 @@ const CreateEvent = () => {
             }
 
             try {
-                // PLATFORM_ADMIN lấy tất cả organizations
+                // PLATFORM_ADMIN lấy tất cả organizations từ API
                 if (user?.platform_role === "PLATFORM_ADMIN") {
                     try {
                         const data = await getAllOrganizations();
@@ -77,28 +77,18 @@ const CreateEvent = () => {
                         setLoadingOrgs(false);
                         return;
                     } catch (err) {
-                        // Nếu không phải PLATFORM_ADMIN, tiếp tục với getMyOrganizations
+                        console.error("Error fetching all organizations:", err);
                     }
                 }
 
-                // Các role khác (ORGANIZER_ADMIN, EVENT_MANAGER) lấy organizations của họ
-                const myOrgs = await getMyOrganizations();
+                // Các role khác sử dụng user.organizations từ profile
+                const userOrgs = user?.organizations || [];
                 // Filter chỉ lấy organizations mà user có quyền ORGANIZER_ADMIN hoặc EVENT_MANAGER
-                const allowedOrgs = (myOrgs || []).filter((org) => {
-                    const role = org.role;
-                    return role === "ORGANIZER_ADMIN" || role === "EVENT_MANAGER";
+                const allowedOrgs = userOrgs.filter((org) => {
+                    return org.role === "ORGANIZER_ADMIN" || org.role === "EVENT_MANAGER";
                 });
 
-                // Transform để lấy organization object
-                const orgList = allowedOrgs.map((org) => {
-                    const orgData = org.organization || {
-                        id: org.organization_id || org.id,
-                        name: org.organization?.name || t("common.unknown"),
-                    };
-                    return { ...orgData, userRole: org.role };
-                });
-
-                setOrganizations(orgList);
+                setOrganizations(allowedOrgs);
             } catch (err) {
                 console.error("Error fetching organizations:", err);
             } finally {
@@ -106,10 +96,10 @@ const CreateEvent = () => {
             }
         };
 
-        if (isAuthenticated) {
+        if (isAuthenticated && !authLoading) {
             fetchOrganizations();
         }
-    }, [isAuthenticated, user, t]);
+    }, [isAuthenticated, authLoading, user]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;

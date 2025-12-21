@@ -1,28 +1,23 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
-  Activity,
-  ArrowRight,
-  Building2,
-  Calendar,
-  CreditCard,
-  DollarSign,
-  MapPin,
-  Package,
-  Plus,
-  TrendingUp,
-  Ticket,
-  Users,
+    Activity,
+    ArrowRight,
+    Building2,
+    Calendar,
+    DollarSign,
+    Package,
+    Plus,
+    Ticket,
+    TrendingUp
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { getEvents } from "../api/events";
 import { getMyOrders } from "../api/orders";
-import { getMyOrganizations } from "../api/organizations";
 import { useAuth } from "../contexts/AuthContext";
 import { DashboardLayout } from "../layouts/DashboardLayout";
 
@@ -43,8 +38,10 @@ const Dashboard = () => {
   });
   const [recentEvents, setRecentEvents] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
-  const [organizations, setOrganizations] = useState([]);
   const hasFetched = useRef(false);
+
+  // Sử dụng user.organizations từ profile thay vì gọi API
+  const organizations = user?.organizations || [];
 
   useEffect(() => {
     // Tránh duplicate call trong StrictMode
@@ -60,15 +57,6 @@ const Dashboard = () => {
 
       try {
         setLoading(true);
-
-        // Fetch organizations
-        let orgs = [];
-        try {
-          orgs = await getMyOrganizations();
-          setOrganizations(orgs || []);
-        } catch (err) {
-          console.error("Error fetching organizations:", err);
-        }
 
         // Fetch events
         let events = [];
@@ -109,7 +97,7 @@ const Dashboard = () => {
         );
 
         setStats({
-          totalOrganizations: orgs.length,
+          totalOrganizations: organizations.length,
           totalEvents: events.length,
           publishedEvents: publishedEvents.length,
           upcomingEvents: upcomingEvents.length,
@@ -127,7 +115,7 @@ const Dashboard = () => {
     if (isAuthenticated) {
       fetchDashboardData();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, organizations.length]);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -500,17 +488,16 @@ const Dashboard = () => {
                 ) : (
                   <div className="space-y-3">
                     {organizations.slice(0, 3).map((org) => {
-                      const orgData = org.organization || org;
                       return (
                         <div
                           key={org.id}
                           className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                          onClick={() => navigate(`/organizations/${orgData.id}`)}
+                          onClick={() => navigate(`/organizations/${org.id}`)}
                         >
-                          {orgData.logo_url ? (
+                          {org.logo_url ? (
                             <img
-                              src={orgData.logo_url}
-                              alt={orgData.name}
+                              src={org.logo_url}
+                              alt={org.name}
                               className="h-10 w-10 rounded-full object-cover"
                             />
                           ) : (
@@ -519,7 +506,7 @@ const Dashboard = () => {
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate">{orgData.name}</p>
+                            <p className="font-medium truncate">{org.name}</p>
                             <p className="text-xs text-muted-foreground capitalize">
                               {org.role?.toLowerCase().replace("_", " ") || "Member"}
                             </p>

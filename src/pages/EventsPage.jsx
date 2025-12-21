@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import EventsManagement from './EventsManagement';
-import EventsList from './EventsList';
 import { DashboardLayout } from '../layouts/DashboardLayout';
-import { useTranslation } from 'react-i18next';
-import { getAllOrganizations } from '../api/organizations';
+import EventsList from './EventsList';
+import EventsManagement from './EventsManagement';
 
 /**
  * Component wrapper cho route /events-management
@@ -18,39 +17,23 @@ const EventsPage = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
+
+  // Kiểm tra PLATFORM_ADMIN trực tiếp từ user object thay vì gọi API
+  const isPlatformAdmin = user?.platform_role === 'PLATFORM_ADMIN';
 
   useEffect(() => {
-    const checkRole = async () => {
-      if (authLoading || !isAuthenticated) {
-        setLoading(false);
-        return;
-      }
+    if (authLoading) {
+      return;
+    }
 
-      try {
-        // Kiểm tra xem có phải PLATFORM_ADMIN không
-        try {
-          await getAllOrganizations();
-          // Nếu thành công, đây là PLATFORM_ADMIN
-          setIsPlatformAdmin(true);
-          setLoading(false);
-          return;
-        } catch (error) {
-          // Không phải PLATFORM_ADMIN
-          setIsPlatformAdmin(false);
-        }
+    if (!isAuthenticated) {
+      setLoading(false);
+      return;
+    }
 
-        // Các role khác (ORGANIZER_ADMIN, EVENT_MANAGER, CHECKIN_STAFF, CUSTOMER)
-        // sẽ hiển thị EventsList
-        setLoading(false);
-      } catch (error) {
-        console.error('Error checking role:', error);
-        setLoading(false);
-      }
-    };
-
-    checkRole();
-  }, [authLoading, isAuthenticated, user]);
+    // Không cần gọi API nữa, chỉ cần set loading = false
+    setLoading(false);
+  }, [authLoading, isAuthenticated]);
 
   // Nếu đang loading, hiển thị loading state
   if (loading || authLoading) {

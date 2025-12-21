@@ -7,6 +7,8 @@ import {
     Building2,
     Calendar,
     CheckCircle2,
+    ChevronDown,
+    ChevronUp,
     Clock,
     ExternalLink,
     Globe,
@@ -33,6 +35,7 @@ const PublicEventDetail = () => {
   const [loadingTickets, setLoadingTickets] = useState(false);
   const [error, setError] = useState("");
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const hasFetched = useRef(false);
   const ticketSectionRef = useRef(null);
 
@@ -258,7 +261,36 @@ const PublicEventDetail = () => {
             {event.description && (
               <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
                 <h2 className="text-xl font-bold mb-4">{t("event.aboutEvent")}</h2>
-                <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{event.description}</p>
+                <div className="relative">
+                  <p 
+                    className={`text-muted-foreground whitespace-pre-wrap leading-relaxed ${
+                      !isDescriptionExpanded && event.description.length > 500 
+                        ? 'line-clamp-6' 
+                        : ''
+                    }`}
+                  >
+                    {event.description}
+                  </p>
+                  {event.description.length > 500 && (
+                    <div className="flex justify-center mt-2">
+                      {!isDescriptionExpanded && (
+                        <div className="absolute bottom-8 left-0 right-0 h-20 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none" />
+                      )}
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-full h-10 w-10 bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-all border-gray-200 dark:border-gray-700"
+                        onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                      >
+                        {isDescriptionExpanded ? (
+                          <ChevronUp className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                        ) : (
+                          <ChevronDown className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                        )}
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 

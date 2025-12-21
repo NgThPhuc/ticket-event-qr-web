@@ -11,8 +11,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
     Card,
     CardContent,
@@ -20,6 +18,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import {
     CheckCircle,
     Clock,
@@ -41,7 +40,6 @@ import {
     getEventById,
     publishEvent,
 } from "../api/events";
-import { getMyOrganizations } from "../api/organizations";
 import TicketTypesManager from "../components/TicketTypesManager";
 import { useAuth } from "../contexts/AuthContext";
 import { DashboardLayout } from "../layouts/DashboardLayout";
@@ -52,7 +50,6 @@ const EventDetail = () => {
   const { eventId } = useParams();
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [event, setEvent] = useState(null);
-  const [organizations, setOrganizations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [alert, setAlert] = useState({ type: "", message: "" });
@@ -62,7 +59,10 @@ const EventDetail = () => {
     eventTitle: "",
   });
 
-  // Fetch organizations và event data
+  // Sử dụng user.organizations từ profile thay vì gọi API
+  const organizations = user?.organizations || [];
+
+  // Fetch event data
   useEffect(() => {
     const fetchData = async () => {
       if (!isAuthenticated || !eventId) {
@@ -73,14 +73,6 @@ const EventDetail = () => {
       setLoading(true);
       setError("");
       try {
-        // Fetch organizations của user (để check permissions)
-        try {
-          const myOrgs = await getMyOrganizations();
-          setOrganizations(myOrgs || []);
-        } catch (err) {
-          console.error("Error fetching organizations:", err);
-        }
-
         // Fetch event data
         const data = await getEventById(eventId, "organization,creator");
         setEvent(data);
@@ -164,10 +156,8 @@ const EventDetail = () => {
     if (!event || !organizations.length) return null;
     const eventOrgId = event.organization_id || event.organization?.id;
 
-    const userOrg = organizations.find((org) => {
-      const orgId = org.organization?.id || org.organization_id || org.id;
-      return orgId === eventOrgId;
-    });
+    // Sử dụng org.id trực tiếp từ user.organizations profile
+    const userOrg = organizations.find((org) => org.id === eventOrgId);
 
     return userOrg?.role || null;
   };

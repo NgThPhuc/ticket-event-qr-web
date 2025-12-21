@@ -1,8 +1,21 @@
-import { Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useAuthModal } from '../contexts/AuthModalContext';
 
 const ProtectedRoute = ({ children }) => {
+  const { t } = useTranslation();
   const { isAuthenticated, loading } = useAuth();
+  const { openAuthModal } = useAuthModal();
+  const location = useLocation();
+
+  // Mở modal login khi user chưa đăng nhập và cố truy cập protected route
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      openAuthModal('login');
+    }
+  }, [loading, isAuthenticated, openAuthModal]);
 
   if (loading) {
     return (
@@ -28,18 +41,19 @@ const ProtectedRoute = ({ children }) => {
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             ></path>
           </svg>
-          <p className="mt-4 text-gray-600">Đang tải...</p>
+          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
         </div>
       </div>
     );
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    // Redirect về trang chủ thay vì trang login
+    // Modal login sẽ được mở bởi useEffect ở trên
+    return <Navigate to="/" replace state={{ from: location }} />;
   }
 
   return children;
 };
 
 export default ProtectedRoute;
-

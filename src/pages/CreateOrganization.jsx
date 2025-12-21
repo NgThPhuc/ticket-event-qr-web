@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '../contexts/AuthContext';
-import Header from '../components/Header';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Textarea } from '@/components/ui/textarea';
-import { createOrganization } from '../api/organizations';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { createOrganization } from '../api/organizations';
+import Header from '../components/Header';
+import ImageUploader from '../components/ImageUploader';
+import { useAuth } from '../contexts/AuthContext';
 
 const CreateOrganization = () => {
   const { t } = useTranslation();
@@ -275,18 +276,13 @@ const CreateOrganization = () => {
                 />
               </div>
 
-              {/* Logo URL */}
-              <div>
-                <Label htmlFor="logo_url" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {t('organization.logoUrl')}
-                </Label>
-                <Input
-                  id="logo_url"
-                  type="url"
-                  name="logo_url"
-                  value={formData.logo_url}
-                  onChange={handleChange}
-                  placeholder={t('organization.logoUrlPlaceholder')}
+              {/* Logo Upload */}
+              <div className="border-t pt-4">
+                <ImageUploader
+                  currentImageUrl={formData.logo_url}
+                  onImageUploaded={(url) => setFormData(prev => ({ ...prev, logo_url: url || '' }))}
+                  label={t('organization.logo') || 'Logo tổ chức'}
+                  disabled={loading}
                 />
               </div>
 

@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import AuthModal from './components/AuthModal';
 import Footer from './components/Footer';
 import { AuthProvider } from './contexts/AuthContext';
+import { AuthModalProvider } from './contexts/AuthModalContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import PublicRoute from './routes/PublicRoute';
@@ -334,7 +336,10 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
-          <AppContent />
+          <AuthModalProvider>
+            <AppContent />
+            <AuthModal />
+          </AuthModalProvider>
         </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>

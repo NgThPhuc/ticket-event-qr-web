@@ -21,8 +21,8 @@ i18n
         translation: vnTranslations,
       },
     },
-    fallbackLng: 'en', // Default language
-    lng: 'en', // Initial language
+    fallbackLng: 'vn', // Default language
+    lng: 'vn', // Initial language
     debug: false,
     interpolation: {
       escapeValue: false, // React already escapes values

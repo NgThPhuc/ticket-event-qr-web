@@ -3,14 +3,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cloudinaryService } from "../services/cloudinaryService";
 
 const ImageUploader = ({
   currentImageUrl,
   onImageUploaded,
-  label = "Ảnh bìa",
+  label,
   disabled = false,
 }) => {
+  const { t } = useTranslation();
   const [preview, setPreview] = useState(currentImageUrl || null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -58,7 +60,7 @@ const ImageUploader = ({
 
   return (
     <div className="space-y-2">
-      <Label>{label}</Label>
+      <Label>{label || t('common.imageUpload.label')}</Label>
 
       <div className="flex items-start gap-4">
         <div className="flex-1">
@@ -70,7 +72,7 @@ const ImageUploader = ({
             className="cursor-pointer"
           />
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-            JPG, PNG, WEBP. Tối đa 5MB
+            {t('common.imageUpload.hint')}
           </p>
         </div>
 
@@ -78,7 +80,7 @@ const ImageUploader = ({
           <div className="relative w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
             <img
               src={preview}
-              alt="Preview"
+              alt={t('common.imageUpload.preview')}
               className="w-full h-full object-cover"
             />
             {!uploading && (
@@ -110,7 +112,7 @@ const ImageUploader = ({
             </span>
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Đang upload ảnh...
+            {t('common.imageUpload.uploading')}
           </p>
         </div>
       )}
@@ -119,3 +121,4 @@ const ImageUploader = ({
 };
 
 export default ImageUploader;
+

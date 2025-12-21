@@ -1,9 +1,9 @@
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAllOrganizations, getMyOrganizations } from '../api/organizations';
 import { useAuth } from '../contexts/AuthContext';
+import { useAuthModal } from '../contexts/AuthModalContext';
 import { Breadcrumb } from './Breadcrumb';
 import LanguageToggle from './ui/LanguageToggle';
 import ThemeToggle from './ui/ThemeToggle';
@@ -12,11 +12,15 @@ const Header = ({ showSidebar = false }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated, user, logout } = useAuth();
+  const { openAuthModal } = useAuthModal();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
-  const [hasOrganizations, setHasOrganizations] = useState(false);
-  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
-  const lastCheckedUserId = useRef(null);
+
+  // Kiểm tra PLATFORM_ADMIN trực tiếp từ user object
+  const isPlatformAdmin = user?.platform_role === 'PLATFORM_ADMIN';
+  
+  // Sử dụng user.organizations từ profile thay vì gọi API
+  const hasOrganizations = isPlatformAdmin || (user?.organizations && user.organizations.length > 0);
 
   const menuItems = [
     { label: t('header.home'), path: '/' },
@@ -27,48 +31,7 @@ const Header = ({ showSidebar = false }) => {
 
   const handleLogout = async () => {
     await logout();
-    setHasOrganizations(false);
-    setIsPlatformAdmin(false);
-    lastCheckedUserId.current = null;
   };
-
-  // Kiểm tra xem user có organizations không
-  // PLATFORM_ADMIN luôn hiển thị Dashboard, không cần check organizations
-  useEffect(() => {
-    // Tránh duplicate call - chỉ gọi khi user thực sự thay đổi
-    const currentUserId = user?.id || null;
-    if (lastCheckedUserId.current === currentUserId) return;
-    lastCheckedUserId.current = currentUserId;
-
-    const checkOrganizations = async () => {
-      if (isAuthenticated && user) {
-        // Kiểm tra xem có phải PLATFORM_ADMIN không bằng cách thử gọi API /organizations
-        // (chỉ PLATFORM_ADMIN mới có quyền truy cập endpoint này)
-        try {
-          await getAllOrganizations();
-          // Nếu thành công, đây là PLATFORM_ADMIN
-          setIsPlatformAdmin(true);
-          setHasOrganizations(true);
-          return;
-        } catch (error) {
-          // Nếu lỗi 403, không phải PLATFORM_ADMIN
-          setIsPlatformAdmin(false);
-          // Tiếp tục check organizations của user
-          try {
-            const orgs = await getMyOrganizations();
-            setHasOrganizations(orgs && orgs.length > 0);
-          } catch (err) {
-            setHasOrganizations(false);
-          }
-        }
-      } else {
-        setIsPlatformAdmin(false);
-        setHasOrganizations(false);
-      }
-    };
-
-    checkOrganizations();
-  }, [isAuthenticated, user]);
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700">
@@ -241,8 +204,8 @@ const Header = ({ showSidebar = false }) => {
                 )}
               </div>
             ) : !showSidebar ? (
-              <Link
-                to="/login"
+              <button
+                onClick={() => openAuthModal('login')}
                 className="flex items-center gap-2 px-4 md:px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200"
               >
                 <svg
@@ -259,7 +222,7 @@ const Header = ({ showSidebar = false }) => {
                   />
                 </svg>
                 <span className="text-sm font-medium">{t('header.loginRegister')}</span>
-              </Link>
+              </button>
             ) : null}
 
             {/* Mobile Menu Toggle - ẩn khi showSidebar = true */}
@@ -355,6 +318,31 @@ const Header = ({ showSidebar = false }) => {
                   </svg>
                   {t('header.createOrganizer')}
                 </Link>
+              )}
+              {/* Nút đăng nhập cho mobile menu */}
+              {!isAuthenticated && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openAuthModal('login');
+                  }}
+                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium py-2 transition-colors duration-200 flex items-center gap-2"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  {t('header.loginRegister')}
+                </button>
               )}
             </nav>
           </div>
