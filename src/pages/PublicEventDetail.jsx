@@ -136,7 +136,7 @@ const PublicEventDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-950">
         <Header />
         <div className="flex items-center justify-center py-32">
           <div className="text-center">
@@ -150,7 +150,7 @@ const PublicEventDetail = () => {
 
   if (error || !event) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-600 dark:from-gray-100 dark:to-gray-950">
         <Header />
         <div className="container mx-auto px-4 py-12">
           <Alert variant="destructive">
@@ -173,11 +173,11 @@ const PublicEventDetail = () => {
   const hasFreeTicket = ticketTypes.some((t) => t.is_free);
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
+    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-950">
       <Header />
 
       {/* Hero Section - Ticketbox style */}
-      <div className="bg-gray-900">
+      <div className="bg-transparent">
         <div className="container mx-auto px-4 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
             
@@ -297,7 +297,7 @@ const PublicEventDetail = () => {
 
             {/* About */}
             {event.description && (
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+              <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-md rounded-2xl p-6 shadow-sm border border-white/20 dark:border-gray-700/50">
                 <h2 className="text-xl font-bold mb-4">{t("event.aboutEvent")}</h2>
                 <div className="relative">
                   <p 
@@ -334,7 +334,7 @@ const PublicEventDetail = () => {
 
             {/* Gallery */}
             {event.gallery && event.gallery.length > 0 && (
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+              <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-md rounded-2xl p-6 shadow-sm border border-white/20 dark:border-gray-700/50">
                 <h2 className="text-xl font-bold mb-4">{t("event.gallery")}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {event.gallery.map((image, index) => (
@@ -348,7 +348,7 @@ const PublicEventDetail = () => {
 
             {/* Organizer - Moved to main content */}
             {event.organization && (
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+              <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-md rounded-2xl p-6 shadow-sm border border-white/20 dark:border-gray-700/50">
                 <h2 className="text-xl font-bold mb-4">{t("event.organizedBy")}</h2>
                 <div className="flex items-start gap-4">
                   {event.organization.logo_url ? (

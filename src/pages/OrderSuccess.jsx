@@ -2,20 +2,78 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, ArrowRight, CheckCircle2, CreditCard, Eye, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertCircle, ArrowRight, CheckCircle2, CreditCard, Eye, Loader2, Timer } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { getOrderById } from "../api/orders";
 import { initiatePayment } from "../api/payment";
 import Header from "../components/Header";
 import PaymentMethodSelector from "../components/PaymentMethodSelector";
 
+// OrderCountdown Component - hiển thị countdown dựa trên expires_at từ API
+const OrderCountdown = ({ expiresAt, onExpired }) => {
+  const { t } = useTranslation();
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  const calculateTimeLeft = useCallback(() => {
+    if (!expiresAt) return 0;
+    const now = new Date().getTime();
+    const expiry = new Date(expiresAt).getTime();
+    const diff = Math.floor((expiry - now) / 1000);
+    return diff > 0 ? diff : 0;
+  }, [expiresAt]);
+
+  useEffect(() => {
+    if (!expiresAt) return;
+
+    setTimeLeft(calculateTimeLeft());
+
+    const timer = setInterval(() => {
+      const remaining = calculateTimeLeft();
+      setTimeLeft(remaining);
+
+      if (remaining <= 0) {
+        clearInterval(timer);
+        onExpired?.();
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [expiresAt, onExpired, calculateTimeLeft]);
+
+  if (!expiresAt || timeLeft <= 0) return null;
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  const isWarning = timeLeft < 60; // Dưới 1 phút
+
+  return (
+    <div className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+      isWarning 
+        ? 'bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 animate-pulse border border-red-300 dark:border-red-500/30' 
+        : 'bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-400 border border-orange-300 dark:border-orange-500/30'
+    }`}>
+      <Timer size={18} />
+      <span className="text-sm">
+        {t('order.expiresIn')}:{' '}
+        <strong className="font-mono text-lg">
+          {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+        </strong>
+      </span>
+    </div>
+  );
+};
+
 const OrderSuccess = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { orderId } = useParams();
+  
+  // Lấy order từ location.state nếu được truyền từ CheckoutPage (có expires_at)
+  const stateOrder = location.state?.order;
   
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,6 +86,28 @@ const OrderSuccess = () => {
       try {
         setLoading(true);
         const data = await getOrderById(orderId);
+        
+        // Nếu API không trả về expires_at, lấy từ stateOrder (từ POST /orders response)
+        if (!data.expires_at && stateOrder?.expires_at) {
+          data.expires_at = stateOrder.expires_at;
+          console.log('[OrderSuccess] Using expires_at from navigation state:', data.expires_at);
+        }
+        
+        // Debug: Log expires_at từ API
+        console.log('[OrderSuccess] Order data:', data);
+        console.log('[OrderSuccess] expires_at:', data.expires_at);
+        console.log('[OrderSuccess] payment_status:', data.payment_status);
+        
+        // Kiểm tra nếu order đã expired khi load
+        if (data.expires_at && data.payment_status === 'UNPAID') {
+          const isExpired = new Date(data.expires_at) < new Date();
+          if (isExpired) {
+            toast.error(t('order.checkoutExpired'));
+            navigate('/events');
+            return;
+          }
+        }
+        
         setOrder(data);
       } catch (err) {
         console.error('Error fetching order:', err);
@@ -40,7 +120,13 @@ const OrderSuccess = () => {
     if (orderId) {
       fetchOrder();
     }
-  }, [orderId, t]);
+  }, [orderId, t, navigate]);
+
+  // Handle khi order hết hạn
+  const handleExpired = useCallback(() => {
+    toast.error(t('order.checkoutExpired'));
+    navigate(`/events/${order?.event?.id || ''}`, { replace: true });
+  }, [navigate, order?.event?.id, t]);
 
   const formatPrice = (price) => {
     return parseInt(price).toLocaleString('vi-VN') + ' VND';
@@ -162,6 +248,18 @@ const OrderSuccess = () => {
             </CardContent>
           </Card>
 
+          {/* Countdown Timer - Hiển thị khi chưa thanh toán */}
+          {/* Debug: Hiển thị expires_at */}
+          {/* <div className="text-xs text-muted-foreground mb-2">
+            Debug: expires_at = {order.expires_at || 'NULL'} | payment_status = {order.payment_status}
+          </div> */}
+          {order.expires_at && (
+            <OrderCountdown 
+              expiresAt={order.expires_at} 
+              onExpired={handleExpired}
+            />
+          )}
+
           {/* Order Information */}
           <Card>
             <CardHeader>
@@ -267,3 +365,4 @@ const OrderSuccess = () => {
 };
 
 export default OrderSuccess;
+

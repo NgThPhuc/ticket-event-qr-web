@@ -2,8 +2,7 @@ import { API_BASE_URL, getHeaders, handleResponse } from './config';
 
 /**
  * Tạo đơn hàng mới (Booking)
- * @param {Object} data - Order data
- * @param {string} token - Access token (optional, will use localStorage if not provided)
+ * @param {Object} data - Order data (event_id, buyer, items)
  * @returns {Promise}
  */
 export const createOrder = async (data) => {

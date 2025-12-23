@@ -13,14 +13,68 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { AlertCircle, ArrowLeft, Calendar, MapPin, XCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertCircle, ArrowLeft, Calendar, MapPin, Timer, XCircle } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { cancelOrder, getOrderById } from "../api/orders";
 import Header from "../components/Header";
 import QRCodeDisplay from "../components/QRCodeDisplay";
+
+// OrderCountdown Component
+const OrderCountdown = ({ expiresAt, onExpired }) => {
+  const { t } = useTranslation();
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  const calculateTimeLeft = useCallback(() => {
+    if (!expiresAt) return 0;
+    const now = new Date().getTime();
+    const expiry = new Date(expiresAt).getTime();
+    const diff = Math.floor((expiry - now) / 1000);
+    return diff > 0 ? diff : 0;
+  }, [expiresAt]);
+
+  useEffect(() => {
+    if (!expiresAt) return;
+
+    setTimeLeft(calculateTimeLeft());
+
+    const timer = setInterval(() => {
+      const remaining = calculateTimeLeft();
+      setTimeLeft(remaining);
+
+      if (remaining <= 0) {
+        clearInterval(timer);
+        onExpired?.();
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [expiresAt, onExpired, calculateTimeLeft]);
+
+  if (!expiresAt || timeLeft <= 0) return null;
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  const isWarning = timeLeft < 60;
+
+  return (
+    <div className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
+      isWarning 
+        ? 'bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 animate-pulse border border-red-300 dark:border-red-500/30' 
+        : 'bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-400 border border-orange-300 dark:border-orange-500/30'
+    }`}>
+      <Timer size={18} />
+      <span className="text-sm">
+        {t('order.expiresIn')}:{' '}
+        <strong className="font-mono text-lg">
+          {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+        </strong>
+      </span>
+    </div>
+  );
+};
 
 const OrderDetail = () => {
   const { t } = useTranslation();
@@ -42,6 +96,17 @@ const OrderDetail = () => {
       setLoading(true);
       setError('');
       const data = await getOrderById(orderId);
+      
+      // Kiểm tra nếu order đã expired khi load
+      if (data.expires_at && data.payment_status === 'UNPAID') {
+        const isExpired = new Date(data.expires_at) < new Date();
+        if (isExpired && data.status !== 'CANCELLED') {
+          toast.error(t('order.checkoutExpired'));
+          navigate('/orders');
+          return;
+        }
+      }
+      
       setOrder(data);
     } catch (err) {
       console.error('Error fetching order:', err);
@@ -50,6 +115,12 @@ const OrderDetail = () => {
       setLoading(false);
     }
   };
+
+  // Handle khi order hết hạn
+  const handleExpired = useCallback(() => {
+    toast.error(t('order.checkoutExpired'));
+    navigate('/orders', { replace: true });
+  }, [navigate, t]);
 
   const handleCancel = async () => {
     try {
@@ -171,6 +242,14 @@ const OrderDetail = () => {
                 </div>
               </CardHeader>
             </Card>
+
+            {/* Countdown Timer - Hiển thị khi chưa thanh toán */}
+            {order.payment_status === 'UNPAID' && order.expires_at && order.status === 'PENDING' && (
+              <OrderCountdown 
+                expiresAt={order.expires_at} 
+                onExpired={handleExpired}
+              />
+            )}
 
             {/* Event Information */}
             {order.event && (

@@ -32,7 +32,7 @@ const Footer = () => {
                     </svg>
                   </div>
                   <span className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                    Ticketer
+                    Ticket Crate
                   </span>
                 </div>
                 <div className="flex flex-col gap-4">
@@ -51,22 +51,22 @@ const Footer = () => {
                   {t('footer.contact')}
                 </h4>
                 <p className="text-base text-gray-500 dark:text-gray-400">
-                  Ticketercontacts@gmail.com
+                  ticketcratecontacts@gmail.com
                 </p>
               </div>
             </div>
 
             {/* Right Section - Links */}
             <div className="flex flex-1 items-start justify-between gap-8 lg:gap-12">
-              {/* TICKETER Column */}
+              {/* TICKET CRATE Column */}
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
                   <h4 className="text-2xl font-medium text-gray-900 dark:text-white">
-                    TICKETER
+                    TICKET CRATE
                   </h4>
                   <div className="h-0.5 w-30 bg-gray-300 dark:bg-gray-600"></div>
                 </div>
-                <Link
+                <Link   
                   to="/about"
                   className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >

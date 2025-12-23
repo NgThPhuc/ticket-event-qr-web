@@ -84,7 +84,7 @@
             "login": "Đăng nhập"
         },
         "whyUs": {
-            "title": "Tại sao chọn Ticketer?",
+            "title": "Tại sao chọn Ticket Crate?",
             "subtitle": "Nền tảng được tin dùng bởi hàng nghìn nhà tổ chức sự kiện",
             "qrCheckin": "Check-in QR Code",
             "qrCheckinDesc": "Hệ thống check-in thông minh với mã QR, giảm thời gian xếp hàng",
@@ -131,7 +131,8 @@
             "preview": "Xem trước"
         },
         "showMore": "Xem thêm",
-        "showLess": "Thu gọn"
+        "showLess": "Thu gọn",
+        "continue": "Tiếp tục"
     },
     "footer": {
         "whoWeAre": "Chúng tôi là ai?",
@@ -401,7 +402,7 @@
         "organizations": "Tổ Chức",
         "overview": "Tổng quan",
         "manageMembers": "Quản Lý Thành Viên",
-        "appName": "Ticketer",
+        "appName": "Ticket Crate",
         "appSubtitle": "Quản Lý Sự Kiện",
         "events": "Sự Kiện",
         "checkin": "Check-in"
@@ -428,7 +429,8 @@
             "members": "MEMBERS",
             "member": "thành viên",
             "status": "STATUS",
-            "actions": "ACTIONS"
+            "actions": "ACTIONS",
+            "payout": "PAYOUT"
         },
         "actions": {
             "view": "Xem",
@@ -437,15 +439,6 @@
             "delete": "Xóa",
             "enablePayout": "Bật payout",
             "disablePayout": "Tắt payout"
-        },
-        "table": {
-            "organization": "ORGANIZATION",
-            "owner": "OWNER",
-            "members": "MEMBERS",
-            "member": "thành viên",
-            "status": "STATUS",
-            "actions": "ACTIONS",
-            "payout": "PAYOUT"
         },
         "payout": {
             "title": "Payout cho tổ chức",
@@ -856,6 +849,7 @@
             "quantityMax": "Số lượng tối đa {{max}} vé",
             "quantityRequired": "Vui lòng chọn số lượng vé",
             "attendeesRequired": "Vui lòng điền đủ thông tin {{count}} người tham dự",
+            "buyerInfoRequired": "Vui lòng điền thông tin của bạn",
             "createOrderFailed": "Không thể tạo đơn hàng. Vui lòng thử lại.",
             "orderNotFound": "Không tìm thấy đơn hàng",
             "orderNumberRequired": "Vui lòng nhập mã đơn hàng"
@@ -868,7 +862,21 @@
         "payNow": "Thanh toán ngay",
         "paymentMethods": "Phương thức thanh toán",
         "needHelp": "Cần hỗ trợ?",
-        "contactSupport": "Liên hệ hỗ trợ"
+        "contactSupport": "Liên hệ hỗ trợ",
+        "selectTickets": "Chọn vé",
+        "guestDetails": "Thông tin đặt vé",
+        "ticketsPerOrder": "vé/đơn",
+        "checkoutMode": "Bạn muốn đặt vé như thế nào?",
+        "buyerMode": "Dùng thông tin của tôi",
+        "attendeeMode": "Nhập từng người",
+        "buyerModeDesc": "Sử dụng thông tin của bạn cho tất cả vé - nhanh hơn",
+        "attendeeModeDesc": "Nhập thông tin khác nhau cho mỗi người tham dự",
+        "buyerModeInfo": "Thông tin của bạn sẽ được sử dụng cho tất cả {{count}} vé",
+        "buyerName": "Họ và tên",
+        "buyerEmail": "Email",
+        "buyerPhone": "Số điện thoại",
+        "expiresIn": "Hết hạn sau",
+        "checkoutExpired": "Phiên đặt vé đã hết hạn. Vui lòng thử lại."
     },
     "payment": {
         "initiate": "Thanh toán ngay",

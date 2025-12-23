@@ -84,7 +84,7 @@
             "login": "Login"
         },
         "whyUs": {
-            "title": "Why Choose Ticketer?",
+            "title": "Why Choose Ticket Crate?",
             "subtitle": "Platform trusted by thousands of event organizers",
             "qrCheckin": "QR Code Check-in",
             "qrCheckinDesc": "Smart check-in system with QR codes, reducing queue time",
@@ -131,7 +131,8 @@
             "preview": "Preview"
         },
         "showMore": "Show more",
-        "showLess": "Show less"
+        "showLess": "Show less",
+        "continue": "Continue"
     },
     "footer": {
         "whoWeAre": "Who we are?",
@@ -403,8 +404,9 @@
         "events": "Events",
         "overview": "Overview",
         "manageMembers": "Manage Members",
-        "appName": "Ticketer",
-        "appSubtitle": "Event Management"
+        "appName": "Ticket Crate",
+        "appSubtitle": "Event Management",
+        "checkin": "Check-in"
     },
     "organizationsManagement": {
         "title": "Organizations Management",
@@ -428,7 +430,8 @@
             "members": "MEMBERS",
             "member": "member",
             "status": "STATUS",
-            "actions": "ACTIONS"
+            "actions": "ACTIONS",
+            "payout": "PAYOUT"
         },
         "actions": {
             "view": "View",
@@ -437,15 +440,6 @@
             "delete": "Delete",
             "enablePayout": "Enable payout",
             "disablePayout": "Disable payout"
-        },
-        "table": {
-            "organization": "ORGANIZATION",
-            "owner": "OWNER",
-            "members": "MEMBERS",
-            "member": "member",
-            "status": "STATUS",
-            "actions": "ACTIONS",
-            "payout": "PAYOUT"
         },
         "payout": {
             "title": "Payout for organizations",
@@ -647,7 +641,17 @@
         "onlineMeeting": "Join Online",
         "platform": "Platform",
         "joinMeeting": "Join Now",
-        "organizedBy": "Organized by"
+        "cancelConfirmTitle": "Confirm Cancel Event",
+        "cancelConfirmMessage": "Are you sure you want to cancel this event?",
+        "cancelWarning": "Important Notice:",
+        "cancelWarning1": "All customers who purchased tickets will receive 100% automatic refund",
+        "cancelWarning2": "The event cannot be restored after cancellation",
+        "cancelWarning3": "Email notifications will be automatically sent to customers",
+        "cancelReason": "Cancellation Reason (optional)",
+        "cancelReasonPlaceholder": "Enter cancellation reason...",
+        "cancelConfirm": "Cancel Event",
+        "refundsProcessed": "Automatically created {{count}} refund requests.",
+        "refundsTotalAmount": "Total refund amount: {{amount}}"
     },
     "eventDetail": {
         "priceFrom": "Price from"
@@ -848,6 +852,7 @@
             "quantityMax": "Maximum quantity is {{max}} tickets",
             "quantityRequired": "Please select quantity",
             "attendeesRequired": "Please fill in information for {{count}} attendees",
+            "buyerInfoRequired": "Please fill in your information",
             "createOrderFailed": "Unable to create order. Please try again.",
             "orderNotFound": "Order not found",
             "orderNumberRequired": "Please enter order number"
@@ -860,7 +865,21 @@
         "payNow": "Pay Now",
         "paymentMethods": "Accepted payment methods",
         "needHelp": "Need help?",
-        "contactSupport": "Contact support"
+        "contactSupport": "Contact support",
+        "selectTickets": "Select Tickets",
+        "guestDetails": "Guest Details",
+        "ticketsPerOrder": "tickets per order",
+        "checkoutMode": "How would you like to checkout?",
+        "buyerMode": "Use my info",
+        "attendeeMode": "Enter each attendee",
+        "buyerModeDesc": "Use your information for all tickets - faster checkout",
+        "attendeeModeDesc": "Enter different information for each attendee",
+        "buyerModeInfo": "Your information will be used for all {{count}} tickets",
+        "buyerName": "Your Name",
+        "buyerEmail": "Your Email",
+        "buyerPhone": "Your Phone",
+        "expiresIn": "Expires in",
+        "checkoutExpired": "Checkout session expired. Please try again."
     },
     "payment": {
         "initiate": "Pay Now",
@@ -1051,29 +1070,6 @@
             "createdAt": "Created At",
             "actions": "Actions"
         }
-    },
-    "event": {
-        "cancelConfirmTitle": "Confirm Cancel Event",
-        "cancelConfirmMessage": "Are you sure you want to cancel this event?",
-        "cancelWarning": "Important Notice:",
-        "cancelWarning1": "All customers who purchased tickets will receive 100% automatic refund",
-        "cancelWarning2": "The event cannot be restored after cancellation",
-        "cancelWarning3": "Email notifications will be automatically sent to customers",
-        "cancelReason": "Cancellation Reason (optional)",
-        "cancelReasonPlaceholder": "Enter cancellation reason...",
-        "cancelConfirm": "Cancel Event",
-        "refundsProcessed": "Automatically created {{count}} refund requests.",
-        "refundsTotalAmount": "Total refund amount: {{amount}}"
-    },
-    "sidebar": {
-        "dashboard": "Dashboard",
-        "organizations": "Organizations",
-        "events": "Events",
-        "checkin": "Check-in",
-        "overview": "Overview",
-        "manageMembers": "Manage Members",
-        "appName": "Ticketer",
-        "appSubtitle": "Event Management"
     },
     "checkin": {
         "dashboard": {

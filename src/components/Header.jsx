@@ -66,7 +66,7 @@ const Header = ({ showSidebar = false }) => {
                   </svg>
                 </div>
                 <span className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                  Ticketer
+                  Ticket Crate
                 </span>
               </Link>
 
