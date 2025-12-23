@@ -653,7 +653,7 @@
         "refundsTotalAmount": "Tổng số tiền hoàn lại: {{amount}}"
     },
     "eventDetail": {
-        "priceFrom": "Giá vé từ"
+        "priceFrom": "Giá vé chỉ từ"
     },
     "eventsManagement": {
         "title": "Quản Lý Sự Kiện",

@@ -1,13 +1,13 @@
+import HeroSlider from '@/components/HeroSlider';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, Calendar, MapPin, Ticket, TrendingUp } from 'lucide-react';
+import { ArrowRight, Calendar, MapPin, Ticket } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { getPublicEvents } from '../api/events';
 import Header from '../components/Header';
-import HeroSlider from '@/components/HeroSlider';
 
 const Home = () => {
     const { t } = useTranslation();
@@ -43,12 +43,11 @@ const Home = () => {
     };
 
     const formatPrice = (price) => {
-        if (!price || price === 0) return t('home.featured.free');
         return new Intl.NumberFormat('vi-VN', {
             style: 'currency',
             currency: 'VND',
             maximumFractionDigits: 0,
-        }).format(price);
+        }).format(price || 0);
     };
 
     return (
@@ -60,10 +59,10 @@ const Home = () => {
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
                         <div>
-                            <div className="inline-flex items-center gap-2 text-primary font-medium mb-2">
+                            {/* <div className="inline-flex items-center gap-2 text-primary font-medium mb-2">
                                 <TrendingUp className="w-4 h-4" />
                                 <span>{t('home.featured.badge')}</span>
-                            </div>
+                            </div> */}
                             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
                                 {t('home.featured.title')}
                             </h2>
@@ -133,8 +132,9 @@ const Home = () => {
                                             <div className="flex items-center justify-between pt-3 border-t">
                                                 <div className="flex items-center gap-2">
                                                     <Ticket className="w-4 h-4 text-primary" />
-                                                    <span className="font-semibold text-primary">
-                                                        {event.min_price ? formatPrice(event.min_price) : t('home.featured.free')}
+                                                    <span className="text-sm">
+                                                        <span className="text-muted-foreground">{t('eventDetail.priceFrom')}: </span>
+                                                        <span className="font-semibold text-primary">{formatPrice(event.pricing?.min_price)}</span>
                                                     </span>
                                                 </div>
                                                 <Button size="sm" variant="ghost" className="text-primary hover:text-primary">
