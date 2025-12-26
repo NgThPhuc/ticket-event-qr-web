@@ -25,7 +25,9 @@ import {
     LayoutDashboard,
     LogOut,
     QrCode,
+    RefreshCw,
     Settings,
+    ShieldCheck,
     User,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -33,154 +35,182 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const MENU_CONFIG = [
-  {
-    key: 'dashboard',
-    icon: LayoutDashboard,
-    titleKey: 'sidebar.dashboard',
-    url: '/dashboard',
-  },
-  {
-    key: 'organizations',
-    icon: Building2,
-    titleKey: 'sidebar.organizations',
-    url: '/organizations',
-  },
-  {
-    key: 'events',
-    icon: Calendar,
-    titleKey: 'sidebar.events',
-    url: '/events-management',
-  },
-  {
-    key: 'checkin',
-    icon: QrCode,
-    titleKey: 'sidebar.checkin',
-    url: '/check-in',
-  },
+    {
+        key: 'dashboard',
+        icon: LayoutDashboard,
+        titleKey: 'sidebar.dashboard',
+        url: '/dashboard',
+    },
+    {
+        key: 'organizations',
+        icon: Building2,
+        titleKey: 'sidebar.organizations',
+        url: '/organizations',
+    },
+    {
+        key: 'events',
+        icon: Calendar,
+        titleKey: 'sidebar.events',
+        url: '/events-management',
+    },
+    {
+        key: 'checkin',
+        icon: QrCode,
+        titleKey: 'sidebar.checkin',
+        url: '/check-in',
+    },
+    {
+        key: 'refunds',
+        icon: RefreshCw,
+        titleKey: 'sidebar.refunds',
+        url: '/refunds',
+    },
+];
+
+// Menu chỉ dành cho PLATFORM_ADMIN hoặc ORGANIZER_ADMIN
+const ADMIN_MENU_CONFIG = [
+    {
+        key: 'adminRefunds',
+        icon: ShieldCheck,
+        titleKey: 'sidebar.adminRefunds',
+        url: '/admin/refunds',
+        roles: ['PLATFORM_ADMIN', 'ORGANIZER_ADMIN'],
+    },
 ];
 
 export function AppSidebar() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const { state } = useSidebar();
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();
+    const { state } = useSidebar();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
+    const handleLogout = async () => {
+        await logout();
+        navigate('/login');
+    };
 
-  const renderMenuItem = (item) => {
-    const Icon = item.icon;
+    const renderMenuItem = (item) => {
+        const Icon = item.icon;
+
+        return (
+            <SidebarMenuItem key={item.key}>
+                <SidebarMenuButton asChild>
+                    <Link to={item.url}>
+                        {Icon && <Icon />}
+                        <span>{t(item.titleKey)}</span>
+                    </Link>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+        );
+    };
 
     return (
-      <SidebarMenuItem key={item.key}>
-        <SidebarMenuButton asChild>
-          <Link to={item.url}>
-            {Icon && <Icon />}
-            <span>{t(item.titleKey)}</span>
-          </Link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    );
-  };
-
-  return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b p-4 h-[69px]">
-        <div
-          className={`flex items-center w-full ${state === 'collapsed'
-            ? 'justify-center gap-0'
-            : 'justify-start gap-2'
-            }`}
-        >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 flex-shrink-0">
-            <span className="text-lg font-bold text-white">T</span>
-          </div>
-          {state !== 'collapsed' && (
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold">{t('sidebar.appName')}</span>
-              <span className="text-xs text-muted-foreground">
-                {t('sidebar.appSubtitle')}
-              </span>
-            </div>
-          )}
-        </div>
-      </SidebarHeader>
-
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {MENU_CONFIG.map((item) => renderMenuItem(item))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-
-      <SidebarFooter className={`border-t ${state === 'collapsed' ? 'p-2' : 'p-4'}`}>
-        <SidebarMenu className={state === 'collapsed' ? 'flex justify-center' : ''}>
-          {state !== 'collapsed' ? (
-            <>
-              <SidebarMenuItem>
-                <div className="flex items-center gap-3 px-2 py-1.5 text-sm">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white flex-shrink-0">
-                    {user?.full_name?.[0]?.toUpperCase() || 'U'}
-                  </div>
-                  <div className="flex flex-col flex-1 overflow-hidden">
-                    <span className="font-medium truncate">{user?.full_name}</span>
-                    <span className="text-xs text-muted-foreground truncate">
-                      {user?.email}
-                    </span>
-                  </div>
-                </div>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={handleLogout}>
-                  <LogOut />
-                  <span>{t('header.logout')}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </>
-          ) : (
-            <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    {user?.full_name?.[0]?.toUpperCase() || 'U'}
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent side="right" align="end" className="w-56">
-                  <DropdownMenuLabel>
-                    <div className="flex flex-col">
-                      <span className="font-medium">{user?.full_name}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {user?.email}
-                      </span>
+        <Sidebar collapsible="icon">
+            <SidebarHeader className="border-b p-4 h-[69px]">
+                <div
+                    className={`flex items-center w-full ${state === 'collapsed'
+                        ? 'justify-center gap-0'
+                        : 'justify-start gap-2'
+                        }`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 flex-shrink-0">
+                        <span className="text-lg font-bold text-white">T</span>
                     </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/settings')}>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>{t('header.account')}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/settings')}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>{t('header.settings')}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>{t('header.logout')}</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          )}
-        </SidebarMenu>
-      </SidebarFooter>
+                    {state !== 'collapsed' && (
+                        <div className="flex flex-col">
+                            <span className="text-sm font-semibold">{t('sidebar.appName')}</span>
+                            <span className="text-xs text-muted-foreground">
+                                {t('sidebar.appSubtitle')}
+                            </span>
+                        </div>
+                    )}
+                </div>
+            </SidebarHeader>
 
-      <SidebarRail />
-    </Sidebar>
-  );
+            <SidebarContent>
+                <SidebarGroup>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {MENU_CONFIG.map((item) => renderMenuItem(item))}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+
+                {/* Admin Menu - chỉ hiển thị cho PLATFORM_ADMIN hoặc ORGANIZER_ADMIN */}
+                {(user?.platform_role === 'PLATFORM_ADMIN' || user?.platform_role === 'ORGANIZER_ADMIN') && (
+                    <SidebarGroup>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {ADMIN_MENU_CONFIG.map((item) => renderMenuItem(item))}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                )}
+            </SidebarContent>
+
+            <SidebarFooter className={`border-t ${state === 'collapsed' ? 'p-2' : 'p-4'}`}>
+                <SidebarMenu className={state === 'collapsed' ? 'flex justify-center' : ''}>
+                    {state !== 'collapsed' ? (
+                        <>
+                            <SidebarMenuItem>
+                                <div className="flex items-center gap-3 px-2 py-1.5 text-sm">
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white flex-shrink-0">
+                                        {user?.full_name?.[0]?.toUpperCase() || 'U'}
+                                    </div>
+                                    <div className="flex flex-col flex-1 overflow-hidden">
+                                        <span className="font-medium truncate">{user?.full_name}</span>
+                                        <span className="text-xs text-muted-foreground truncate">
+                                            {user?.email}
+                                        </span>
+                                    </div>
+                                </div>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton onClick={handleLogout}>
+                                    <LogOut />
+                                    <span>{t('header.logout')}</span>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </>
+                    ) : (
+                        <SidebarMenuItem>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                        {user?.full_name?.[0]?.toUpperCase() || 'U'}
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent side="right" align="end" className="w-56">
+                                    <DropdownMenuLabel>
+                                        <div className="flex flex-col">
+                                            <span className="font-medium">{user?.full_name}</span>
+                                            <span className="text-xs text-muted-foreground">
+                                                {user?.email}
+                                            </span>
+                                        </div>
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={() => navigate('/settings')}>
+                                        <User className="mr-2 h-4 w-4" />
+                                        <span>{t('header.account')}</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => navigate('/settings')}>
+                                        <Settings className="mr-2 h-4 w-4" />
+                                        <span>{t('header.settings')}</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleLogout}>
+                                        <LogOut className="mr-2 h-4 w-4" />
+                                        <span>{t('header.logout')}</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </SidebarMenuItem>
+                    )}
+                </SidebarMenu>
+            </SidebarFooter>
+
+            <SidebarRail />
+        </Sidebar>
+    );
 }

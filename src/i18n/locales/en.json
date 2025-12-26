@@ -406,7 +406,9 @@
         "manageMembers": "Manage Members",
         "appName": "Ticket Crate",
         "appSubtitle": "Event Management",
-        "checkin": "Check-in"
+        "checkin": "Check-in",
+        "refunds": "My Refunds",
+        "adminRefunds": "Refunds Management"
     },
     "organizationsManagement": {
         "title": "Organizations Management",

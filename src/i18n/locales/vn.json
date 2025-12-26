@@ -405,7 +405,9 @@
         "appName": "Ticket Crate",
         "appSubtitle": "Quản Lý Sự Kiện",
         "events": "Sự Kiện",
-        "checkin": "Check-in"
+        "checkin": "Check-in",
+        "refunds": "Hoàn tiền của tôi",
+        "adminRefunds": "Quản lý hoàn tiền"
     },
     "organizationsManagement": {
         "title": "Quản Lý Tổ Chức",
