@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getEventById, patchEvent } from "../api/events";
 import { getAllOrganizations } from "../api/organizations";
+import CategoryMultiSelect from "../components/CategoryMultiSelect";
 import ImageUploader from "../components/ImageUploader";
 import { useAuth } from "../contexts/AuthContext";
 import { DashboardLayout } from "../layouts/DashboardLayout";
@@ -47,7 +48,8 @@ const EditEvent = () => {
         meeting_url: "",
         stream_platform: "",
         capacity_total: "",
-        category: "",
+        capacity_total: "",
+        category_ids: [],
     });
     const [errors, setErrors] = useState({});
     const [alert, setAlert] = useState({ type: "", message: "" });
@@ -179,7 +181,7 @@ const EditEvent = () => {
                     meeting_url: data.meeting_url || "",
                     stream_platform: data.stream_platform || "",
                     capacity_total: data.capacity_total?.toString() || "",
-                    category: data.category || "",
+                    category_ids: data.categories ? data.categories.map(c => c.id) : [],
                 });
             } catch (err) {
                 setAlert({
@@ -329,8 +331,8 @@ const EditEvent = () => {
 
             if (formData.capacity_total)
                 payload.capacity_total = parseInt(formData.capacity_total);
-            if (formData.category?.trim())
-                payload.category = formData.category.trim();
+            if (formData.category_ids && formData.category_ids.length > 0)
+                payload.category_ids = formData.category_ids;
             if (formData.cover_image_url)
                 payload.cover_image_url = formData.cover_image_url;
 
@@ -511,13 +513,13 @@ const EditEvent = () => {
                             />
                         </div>
 
-                        
-                        
+
+
                         {/* Cover Image Upload */}
                         <div className="border-t pt-4">
                             <ImageUploader
                                 currentImageUrl={event?.cover_image_url}
-                                onImageUploaded={(url) => setFormData({...formData, cover_image_url: url})}
+                                onImageUploaded={(url) => setFormData({ ...formData, cover_image_url: url })}
                                 label={t("event.coverImage") || "Ảnh bìa sự kiện"}
                                 disabled={submitting}
                             />
@@ -800,15 +802,14 @@ const EditEvent = () => {
                                 />
                             </div>
 
-                            <div>
-                                <Label htmlFor="category">{t("event.category")}</Label>
-                                <Input
-                                    id="category"
-                                    type="text"
-                                    name="category"
-                                    value={formData.category}
-                                    onChange={handleChange}
-                                    placeholder={t("event.categoryPlaceholder")}
+                            <div className="col-span-1">
+                                <Label htmlFor="category_ids">{t("event.categories") || "Danh mục"}</Label>
+                                <CategoryMultiSelect
+                                    value={formData.category_ids}
+                                    onChange={(value) =>
+                                        setFormData((prev) => ({ ...prev, category_ids: value }))
+                                    }
+                                    placeholder={t("event.selectCategories") || "Chọn danh mục"}
                                 />
                             </div>
                         </div>

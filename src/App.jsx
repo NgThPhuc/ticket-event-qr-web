@@ -8,6 +8,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import PublicRoute from './routes/PublicRoute';
 
 // Pages
+import CategoriesManagement from './pages/CategoriesManagement';
 import CheckInAnalytics from './pages/CheckInAnalytics';
 import CheckInDashboard from './pages/CheckInDashboard';
 import CheckInHistory from './pages/CheckInHistory';
@@ -264,6 +265,14 @@ function AppContent() {
                     element={
                         <ProtectedRoute>
                             <RefundDetail />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/categories"
+                    element={
+                        <ProtectedRoute>
+                            <CategoriesManagement />
                         </ProtectedRoute>
                     }
                 />

@@ -28,6 +28,7 @@ import {
     RefreshCw,
     Settings,
     ShieldCheck,
+    Tags,
     User,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -69,6 +70,13 @@ const MENU_CONFIG = [
 
 // Menu chỉ dành cho PLATFORM_ADMIN hoặc ORGANIZER_ADMIN
 const ADMIN_MENU_CONFIG = [
+    {
+        key: 'categories',
+        icon: Tags,
+        titleKey: 'sidebar.categories',
+        url: '/admin/categories',
+        roles: ['PLATFORM_ADMIN'],
+    },
     {
         key: 'adminRefunds',
         icon: ShieldCheck,
@@ -141,7 +149,12 @@ export function AppSidebar() {
                     <SidebarGroup>
                         <SidebarGroupContent>
                             <SidebarMenu>
-                                {ADMIN_MENU_CONFIG.map((item) => renderMenuItem(item))}
+                                {ADMIN_MENU_CONFIG.map((item) => {
+                                    if (item.roles && !item.roles.includes(user?.platform_role)) {
+                                        return null;
+                                    }
+                                    return renderMenuItem(item);
+                                })}
                             </SidebarMenu>
                         </SidebarGroupContent>
                     </SidebarGroup>

@@ -1,4 +1,4 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
+﻿import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "../api/events";
 import { getAllOrganizations } from "../api/organizations";
+import CategoryMultiSelect from "../components/CategoryMultiSelect";
 import ImageUploader from "../components/ImageUploader";
 import { useAuth } from "../contexts/AuthContext";
 import { DashboardLayout } from "../layouts/DashboardLayout";
@@ -45,7 +46,7 @@ const CreateEvent = () => {
         meeting_url: "",
         stream_platform: "",
         capacity_total: "",
-        category: "",
+        category_ids: [],
         cover_image_url: "",
     });
     const [errors, setErrors] = useState({});
@@ -232,8 +233,8 @@ const CreateEvent = () => {
 
             if (formData.capacity_total)
                 payload.capacity_total = parseInt(formData.capacity_total);
-            if (formData.category?.trim())
-                payload.category = formData.category.trim();
+            if (formData.category_ids && formData.category_ids.length > 0)
+                payload.category_ids = formData.category_ids;
 
             const result = await createEvent(payload);
 
@@ -391,7 +392,7 @@ const CreateEvent = () => {
                         {/* Cover Image Upload */}
                         <div className="border-t pt-4">
                             <ImageUploader
-                                onImageUploaded={(url) => setFormData({...formData, cover_image_url: url})}
+                                onImageUploaded={(url) => setFormData({ ...formData, cover_image_url: url })}
                                 label={t("event.coverImage") || "Ảnh bìa sự kiện"}
                                 disabled={loading}
                             />
@@ -674,15 +675,14 @@ const CreateEvent = () => {
                                 />
                             </div>
 
-                            <div>
-                                <Label htmlFor="category">{t("event.category")}</Label>
-                                <Input
-                                    id="category"
-                                    type="text"
-                                    name="category"
-                                    value={formData.category}
-                                    onChange={handleChange}
-                                    placeholder={t("event.categoryPlaceholder")}
+                            <div className="col-span-1">
+                                <Label htmlFor="category_ids">{t("event.categories") || "Danh mục"}</Label>
+                                <CategoryMultiSelect
+                                    value={formData.category_ids}
+                                    onChange={(value) =>
+                                        setFormData((prev) => ({ ...prev, category_ids: value }))
+                                    }
+                                    placeholder={t("event.selectCategories") || "Chọn danh mục"}
                                 />
                             </div>
                         </div>

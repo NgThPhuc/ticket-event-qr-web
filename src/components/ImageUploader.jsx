@@ -7,117 +7,117 @@ import { useTranslation } from "react-i18next";
 import { cloudinaryService } from "../services/cloudinaryService";
 
 const ImageUploader = ({
-  currentImageUrl,
-  onImageUploaded,
-  label,
-  disabled = false,
+    currentImageUrl,
+    onImageUploaded,
+    label,
+    disabled = false,
 }) => {
-  const { t } = useTranslation();
-  const [preview, setPreview] = useState(currentImageUrl || null);
-  const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [file, setFile] = useState(null);
+    const { t } = useTranslation();
+    const [preview, setPreview] = useState(currentImageUrl || null);
+    const [uploading, setUploading] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [file, setFile] = useState(null);
 
-  const handleFileSelect = async (e) => {
-    const selectedFile = e.target.files?.[0];
-    if (!selectedFile) return;
+    const handleFileSelect = async (e) => {
+        const selectedFile = e.target.files?.[0];
+        if (!selectedFile) return;
 
-    // Validate
-    const validation = cloudinaryService.validateImage(selectedFile);
-    if (!validation.valid) {
-      alert(validation.error);
-      return;
-    }
+        // Validate
+        const validation = cloudinaryService.validateImage(selectedFile);
+        if (!validation.valid) {
+            alert(validation.error);
+            return;
+        }
 
-    // Show preview
-    setFile(selectedFile);
-    setPreview(URL.createObjectURL(selectedFile));
+        // Show preview
+        setFile(selectedFile);
+        setPreview(URL.createObjectURL(selectedFile));
 
-    // Upload immediately
-    setUploading(true);
-    try {
-      const result = await cloudinaryService.uploadImageWithProgress(
-        selectedFile,
-        setProgress
-      );
-      onImageUploaded(result.secure_url);
-      setPreview(result.secure_url);
-    } catch (error) {
-      alert(error.message);
-      setPreview(currentImageUrl || null);
-      setFile(null);
-    } finally {
-      setUploading(false);
-      setProgress(0);
-    }
-  };
+        // Upload immediately
+        setUploading(true);
+        try {
+            const result = await cloudinaryService.uploadImageWithProgress(
+                selectedFile,
+                setProgress
+            );
+            onImageUploaded(result.secure_url);
+            setPreview(result.secure_url);
+        } catch (error) {
+            alert(error.message);
+            setPreview(currentImageUrl || null);
+            setFile(null);
+        } finally {
+            setUploading(false);
+            setProgress(0);
+        }
+    };
 
-  const handleRemove = () => {
-    setPreview(null);
-    setFile(null);
-    onImageUploaded(null);
-  };
+    const handleRemove = () => {
+        setPreview(null);
+        setFile(null);
+        onImageUploaded(null);
+    };
 
-  return (
-    <div className="space-y-2">
-      <Label>{label || t('common.imageUpload.label')}</Label>
+    return (
+        <div className="space-y-2">
+            <Label>{label || t('common.imageUpload.label')}</Label>
 
-      <div className="flex items-start gap-4">
-        <div className="flex-1">
-          <Input
-            type="file"
-            accept="image/jpeg,image/jpg,image/png,image/webp"
-            onChange={handleFileSelect}
-            disabled={disabled || uploading}
-            className="cursor-pointer"
-          />
-          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-            {t('common.imageUpload.hint')}
-          </p>
-        </div>
+            <div className="flex items-start gap-4">
+                <div className="flex-1">
+                    <Input
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png,image/webp"
+                        onChange={handleFileSelect}
+                        disabled={disabled || uploading}
+                        className="cursor-pointer"
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        {t('common.imageUpload.hint')}
+                    </p>
+                </div>
 
-        {preview && (
-          <div className="relative w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
-            <img
-              src={preview}
-              alt={t('common.imageUpload.preview')}
-              className="w-full h-full object-cover"
-            />
-            {!uploading && (
-              <Button
-                type="button"
-                size="icon"
-                variant="destructive"
-                className="absolute top-1 right-1 h-6 w-6"
-                onClick={handleRemove}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        )}
-      </div>
-
-      {uploading && (
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-500 transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
+                {preview && (
+                    <div className="relative w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
+                        <img
+                            src={preview}
+                            alt={t('common.imageUpload.preview')}
+                            className="w-full h-full object-cover"
+                        />
+                        {!uploading && (
+                            <Button
+                                type="button"
+                                size="icon"
+                                variant="destructive"
+                                className="absolute top-1 right-1 h-6 w-6"
+                                onClick={handleRemove}
+                            >
+                                <X className="h-4 w-4" />
+                            </Button>
+                        )}
+                    </div>
+                )}
             </div>
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              {progress}%
-            </span>
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {t('common.imageUpload.uploading')}
-          </p>
+
+            {uploading && (
+                <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                        <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div
+                                className="h-full bg-blue-500 transition-all duration-300"
+                                style={{ width: `${progress}%` }}
+                            />
+                        </div>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                            {progress}%
+                        </span>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {t('common.imageUpload.uploading')}
+                    </p>
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default ImageUploader;

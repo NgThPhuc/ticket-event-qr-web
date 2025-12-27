@@ -52,7 +52,9 @@
             "art": "Nghệ thuật",
             "sports": "Thể thao",
             "food": "Ẩm thực",
-            "tech": "Công nghệ"
+            "tech": "Công nghệ",
+            "selectCategories": "Chọn danh mục",
+            "noCategories": "Không có danh mục nào"
         },
         "featured": {
             "badge": "Nổi bật",
@@ -555,7 +557,9 @@
         "streamPlatformPlaceholder": "Ví dụ: Zoom, Google Meet",
         "capacityTotal": "Tổng sức chứa",
         "capacityTotalPlaceholder": "Ví dụ: 500",
-        "category": "Danh mục",
+        "category": "Danh mục (Cũ)",
+        "categories": "Danh mục",
+        "selectCategories": "Chọn danh mục",
         "categoryPlaceholder": "Ví dụ: Công nghệ",
         "tags": "Thẻ",
         "tagsPlaceholder": "Nhập các thẻ phân cách bằng dấu phẩy",
@@ -1199,6 +1203,29 @@
             "noLogs": "Chưa có nhật ký quét",
             "showing": "Hiển thị",
             "of": "trong"
+        }
+    },
+    "categoriesManagement": {
+        "title": "Quản lý danh mục",
+        "subtitle": "Quản lý danh mục sự kiện",
+        "createTitle": "Tạo danh mục mới",
+        "editTitle": "Chỉnh sửa danh mục",
+        "name": "Tên danh mục",
+        "description": "Mô tả",
+        "icon": "Icon",
+        "color": "Màu sắc",
+        "order": "Thứ tự",
+        "active": "Hoạt động",
+        "createSuccess": "Tạo danh mục thành công",
+        "updateSuccess": "Cập nhật danh mục thành công",
+        "deleteSuccess": "Xóa danh mục thành công",
+        "deleteConfirm": "Bạn có chắc chắn muốn xóa danh mục này?",
+        "table": {
+            "name": "Tên",
+            "icon": "Icon",
+            "color": "Màu",
+            "status": "Trạng thái",
+            "actions": "Thao tác"
         }
     }
 }
