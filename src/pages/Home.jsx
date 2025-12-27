@@ -87,11 +87,11 @@ const Home = () => {
                             ))}
                         </div>
                     ) : featuredEvents.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {featuredEvents.map((event) => (
                                 <Link key={event.id} to={`/e/${event.slug}`}>
-                                    <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full">
-                                        <div className="relative h-48 overflow-hidden">
+                                    <Card className="overflow-hidden group h-full border-0 shadow-none bg-transparent">
+                                        <div className="relative h-48 overflow-hidden rounded-b-xl">
                                             {event.cover_image_url ? (
                                                 <img
                                                     src={event.cover_image_url}
@@ -115,13 +115,13 @@ const Home = () => {
                                             </div>
                                         </div>
                                         <CardContent className="p-5">
-                                            <h3 className="font-bold text-lg text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                            <h3 className="font-bold text-lg text-foreground mb-2 line-clamp-2 min-h-[3.5rem] group-hover:text-primary transition-colors">
                                                 {event.title}
                                             </h3>
-                                            {event.subtitle && (
+                                            {/* {event.subtitle && (
                                                 <p className="text-muted-foreground text-sm mb-3 line-clamp-1">{event.subtitle}</p>
-                                            )}
-                                            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                                            )} */}
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                 <MapPin className="w-4 h-4 flex-shrink-0" />
                                                 <span className="line-clamp-1">
                                                     {event.attendance_mode === 'ONLINE'
@@ -129,7 +129,7 @@ const Home = () => {
                                                         : event.venue_name || event.city || t('home.featured.locationTBA')}
                                                 </span>
                                             </div>
-                                            <div className="flex items-center justify-between pt-3 border-t">
+                                            <div className="flex items-center justify-between pt-1">
                                                 <div className="flex items-center gap-2">
                                                     <Ticket className="w-4 h-4 text-primary" />
                                                     <span className="text-sm">

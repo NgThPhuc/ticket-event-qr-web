@@ -12,23 +12,42 @@ const extendedImages = [...images, images[0]];
 const HeroSlider = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(true);
+    const [isAnimating, setIsAnimating] = useState(false);
     const timeoutRef = useRef(null);
 
     const nextSlide = useCallback(() => {
+        if (isAnimating) return;
+        setIsAnimating(true);
         setIsTransitioning(true);
-        setCurrentIndex((prev) => prev + 1);
-    }, []);
+        setCurrentIndex((prev) => {
+            if (prev >= images.length) return prev;
+            return prev + 1;
+        });
+        setTimeout(() => setIsAnimating(false), 700);
+    }, [isAnimating]);
 
     const prevSlide = useCallback(() => {
+        if (isAnimating) return;
+        setIsAnimating(true);
         setIsTransitioning(true);
         setCurrentIndex((prev) => {
             if (prev === 0) {
                 setIsTransitioning(false);
+                setTimeout(() => setIsAnimating(false), 100);
                 return images.length - 1;
             }
+            setTimeout(() => setIsAnimating(false), 700);
             return prev - 1;
         });
-    }, []);
+    }, [isAnimating]);
+
+    const goToSlide = useCallback((index) => {
+        if (isAnimating) return;
+        setIsAnimating(true);
+        setIsTransitioning(true);
+        setCurrentIndex(index);
+        setTimeout(() => setIsAnimating(false), 700);
+    }, [isAnimating]);
 
     useEffect(() => {
         if (currentIndex === images.length) {
@@ -60,7 +79,7 @@ const HeroSlider = () => {
 
     return (
         <div className="container mx-auto px-4 py-6">
-            <div className="relative w-full overflow-hidden rounded-xl h-[280px] md:h-[320px] lg:h-[380px]">
+            <div className="relative w-full overflow-hidden rounded-xl h-[330px] md:h-[380px] lg:h-[430px]">
                 {/* Inner slider */}
                 <div
                     className={`absolute inset-0 flex gap-4 ${isTransitioning ? 'transition-transform duration-700 ease-in-out' : ''}`}
@@ -100,23 +119,21 @@ const HeroSlider = () => {
                     <ChevronRight className="w-6 h-6" />
                 </button>
 
-                {/* Dots Indicator */}
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                    {images.map((_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => {
-                                setIsTransitioning(true);
-                                setCurrentIndex(index);
-                            }}
-                            className={`w-3 h-3 rounded-full transition-all duration-300 ${leftIndex === index
-                                ? 'bg-white scale-110'
-                                : 'bg-white/50 hover:bg-white/70'
-                                }`}
-                            aria-label={`Go to slide ${index + 1}`}
-                        />
-                    ))}
-                </div>
+            </div>
+
+            {/* Dots Indicator - Outside */}
+            <div className="flex justify-center gap-2 mt-4">
+                {images.map((_, index) => (
+                    <button
+                        key={index}
+                        onClick={() => goToSlide(index)}
+                        className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${leftIndex === index
+                            ? 'bg-primary scale-110'
+                            : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                            }`}
+                        aria-label={`Go to slide ${index + 1}`}
+                    />
+                ))}
             </div>
         </div>
     );
