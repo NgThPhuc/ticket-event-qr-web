@@ -1086,7 +1086,8 @@
             "ended": "Ended",
             "checkInProgress": "Check-in progress",
             "noStatsAccess": "No permission to view stats",
-            "scan": "Scan QR"
+            "scan": "Scan QR",
+            "analytics": "Analytics"
         },
         "scanner": {
             "title": "Scan QR Code",
@@ -1131,7 +1132,8 @@
             "staff": "Staff",
             "noData": "No check-ins yet",
             "showing": "Showing",
-            "of": "of"
+            "of": "of",
+            "analytics": "Analytics"
         },
         "stats": {
             "totalIssued": "Total tickets",
@@ -1144,7 +1146,10 @@
             "timeDesc": "Time",
             "revoked": "revoked",
             "refunded": "refunded",
-            "noData": "No statistics available"
+            "noData": "No statistics available",
+            "totalScans": "Total scans",
+            "failed": "failed",
+            "successRate": "Success rate"
         },
         "result": {
             "success": "Check-in successful!",
@@ -1157,6 +1162,46 @@
             "attendee": "Attendee",
             "ticketType": "Ticket type",
             "previousCheckIn": "Checked in at"
+        },
+        "analytics": {
+            "title": "Check-in Analytics",
+            "fetchEventError": "Unable to load event info",
+            "refreshed": "Data refreshed",
+            "goToScanner": "Scan QR",
+            "refresh": "Refresh",
+            "export": "Export",
+            "exporting": "Exporting...",
+            "exportSuccess": "Report exported",
+            "exportError": "Unable to export report",
+            "hourlyStats": "Hourly Statistics",
+            "totalScans": "Total scans",
+            "successful": "Successful",
+            "failed": "Failed",
+            "peakHour": "Peak hour",
+            "scans": "scans",
+            "time": "Time",
+            "gateStats": "Gate Statistics",
+            "unknownGate": "Unknown",
+            "noGateData": "No gate data available",
+            "gate": "Gate",
+            "success": "Success",
+            "total": "Total",
+            "checkins": "check-ins",
+            "staffPerformance": "Staff Performance",
+            "staff": "staff",
+            "noStaffData": "No staff data available",
+            "staffName": "Staff",
+            "progress": "Progress",
+            "successRate": "Rate",
+            "scanLogs": "Scan Logs",
+            "records": "records",
+            "searchPlaceholder": "Search by QR or ticket code...",
+            "allResults": "All results",
+            "result": "Result",
+            "ticket": "Ticket",
+            "noLogs": "No scan logs yet",
+            "showing": "Showing",
+            "of": "of"
         }
     }
 }

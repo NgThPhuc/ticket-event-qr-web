@@ -8,6 +8,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import PublicRoute from './routes/PublicRoute';
 
 // Pages
+import CheckInAnalytics from './pages/CheckInAnalytics';
 import CheckInDashboard from './pages/CheckInDashboard';
 import CheckInHistory from './pages/CheckInHistory';
 import CheckInScanner from './pages/CheckInScanner';
@@ -51,299 +52,307 @@ import Settings from './pages/Settings';
 import VerifyOTP from './pages/VerifyOTP';
 
 function AppContent() {
-  const location = useLocation();
-  const hideFooterPaths = ['/login', '/register', '/verify-otp', '/forgot-password', '/reset-password'];
-  const isDashboardRoute = location.pathname.startsWith('/dashboard') || 
-                           location.pathname.startsWith('/organizations') || 
-                           location.pathname.startsWith('/create-organization') ||
-                           location.pathname.startsWith('/events-management') ||
-                           (location.pathname.startsWith('/events/') && location.pathname !== '/events') ||
-                           location.pathname.startsWith('/create-event') ||
-                           location.pathname.startsWith('/checkout') ||
-                           location.pathname.startsWith('/order-success') ||
-                           location.pathname.startsWith('/orders') ||
-                           location.pathname.startsWith('/profile') ||
-                           location.pathname.startsWith('/settings') ||
-                           location.pathname.startsWith('/admin/revenue-shares') ||
-                           location.pathname.startsWith('/refunds') ||
-                           location.pathname.startsWith('/check-in');
-  const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
+    const location = useLocation();
+    const hideFooterPaths = ['/login', '/register', '/verify-otp', '/forgot-password', '/reset-password'];
+    const isDashboardRoute = location.pathname.startsWith('/dashboard') ||
+        location.pathname.startsWith('/organizations') ||
+        location.pathname.startsWith('/create-organization') ||
+        location.pathname.startsWith('/events-management') ||
+        (location.pathname.startsWith('/events/') && location.pathname !== '/events') ||
+        location.pathname.startsWith('/create-event') ||
+        location.pathname.startsWith('/checkout') ||
+        location.pathname.startsWith('/order-success') ||
+        location.pathname.startsWith('/orders') ||
+        location.pathname.startsWith('/profile') ||
+        location.pathname.startsWith('/settings') ||
+        location.pathname.startsWith('/admin/revenue-shares') ||
+        location.pathname.startsWith('/refunds') ||
+        location.pathname.startsWith('/check-in');
+    const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Routes>
-        {/* Public routes - chỉ cho phép khi chưa đăng nhập */}
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <Register />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/verify-otp"
-          element={
-            <PublicRoute>
-              <VerifyOTP />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/forgot-password"
-          element={
-            <PublicRoute>
-              <ForgotPassword />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/reset-password"
-          element={
-            <PublicRoute>
-              <ResetPassword />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/auth/callback"
-          element={
-            <PublicRoute>
-              <GoogleCallback />
-            </PublicRoute>
-          }
-        />
+    return (
+        <div className="flex flex-col min-h-screen">
+            <Routes>
+                {/* Public routes - chỉ cho phép khi chưa đăng nhập */}
+                <Route
+                    path="/login"
+                    element={
+                        <PublicRoute>
+                            <Login />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/register"
+                    element={
+                        <PublicRoute>
+                            <Register />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/verify-otp"
+                    element={
+                        <PublicRoute>
+                            <VerifyOTP />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/forgot-password"
+                    element={
+                        <PublicRoute>
+                            <ForgotPassword />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/reset-password"
+                    element={
+                        <PublicRoute>
+                            <ResetPassword />
+                        </PublicRoute>
+                    }
+                />
+                <Route
+                    path="/auth/callback"
+                    element={
+                        <PublicRoute>
+                            <GoogleCallback />
+                        </PublicRoute>
+                    }
+                />
 
-        {/* Home page - Public */}
-        <Route path="/" element={<Home />} />
+                {/* Home page - Public */}
+                <Route path="/" element={<Home />} />
 
-        {/* Public pages with header */}
-        <Route path="/events" element={<Events />} />
-        <Route path="/e/:slug" element={<PublicEventDetail />} />
-        <Route path="/policy" element={<Policy />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/track-order" element={<OrderTracking />} />
-        <Route path="/payment/return" element={<PaymentReturn />} />
-        <Route path="/payment/result" element={<PaymentResult />} />
-        <Route path="/payment/success" element={<PaymentSuccess />} />
-        <Route path="/payment/failure" element={<PaymentFailure />} />
-        <Route path="/payment/error" element={<PaymentError />} />
+                {/* Public pages with header */}
+                <Route path="/events" element={<Events />} />
+                <Route path="/e/:slug" element={<PublicEventDetail />} />
+                <Route path="/policy" element={<Policy />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/track-order" element={<OrderTracking />} />
+                <Route path="/payment/return" element={<PaymentReturn />} />
+                <Route path="/payment/result" element={<PaymentResult />} />
+                <Route path="/payment/success" element={<PaymentSuccess />} />
+                <Route path="/payment/failure" element={<PaymentFailure />} />
+                <Route path="/payment/error" element={<PaymentError />} />
 
-        {/* Protected pages */}
-        <Route
-          path="/checkout/:eventId"
-          element={
-            <ProtectedRoute>
-              <CheckoutPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/order-success/:orderId"
-          element={
-            <ProtectedRoute>
-              <OrderSuccess />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <MyOrders />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/orders/:orderId"
-          element={
-            <ProtectedRoute>
-              <OrderDetail />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <Settings />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/organizations"
-          element={
-            <ProtectedRoute>
-              <OrganizationsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/create-organization"
-          element={
-            <ProtectedRoute>
-              <CreateOrganization />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/organizations/:organizationId/edit"
-          element={
-            <ProtectedRoute>
-              <EditOrganization />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/organizations/:organizationId"
-          element={
-            <ProtectedRoute>
-              <OrganizationDetail />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/organizations/:organizationId/members"
-          element={
-            <ProtectedRoute>
-              <OrganizationMembers />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/events-management"
-          element={
-            <ProtectedRoute>
-              <EventsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/revenue-shares"
-          element={
-            <ProtectedRoute>
-              <RevenueSharesManagement />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/refunds"
-          element={
-            <ProtectedRoute>
-              <MyRefunds />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/refunds/:refundId"
-          element={
-            <ProtectedRoute>
-              <RefundDetail />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/refunds"
-          element={
-            <ProtectedRoute>
-              <RefundsManagement />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/check-in"
-          element={
-            <ProtectedRoute>
-              <CheckInDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/check-in/scanner"
-          element={
-            <ProtectedRoute>
-              <CheckInScanner />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/check-in/history/:eventId"
-          element={
-            <ProtectedRoute>
-              <CheckInHistory />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/events/:eventId"
-          element={
-            <ProtectedRoute>
-              <EventDetail />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/events/:eventId/edit"
-          element={
-            <ProtectedRoute>
-              <EditEvent />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/create-event"
-          element={
-            <ProtectedRoute>
-              <CreateEvent />
-            </ProtectedRoute>
-          }
-        />
+                {/* Protected pages */}
+                <Route
+                    path="/checkout/:eventId"
+                    element={
+                        <ProtectedRoute>
+                            <CheckoutPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/order-success/:orderId"
+                    element={
+                        <ProtectedRoute>
+                            <OrderSuccess />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/orders"
+                    element={
+                        <ProtectedRoute>
+                            <MyOrders />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/orders/:orderId"
+                    element={
+                        <ProtectedRoute>
+                            <OrderDetail />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            <Profile />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute>
+                            <Settings />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/organizations"
+                    element={
+                        <ProtectedRoute>
+                            <OrganizationsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/create-organization"
+                    element={
+                        <ProtectedRoute>
+                            <CreateOrganization />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/organizations/:organizationId/edit"
+                    element={
+                        <ProtectedRoute>
+                            <EditOrganization />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/organizations/:organizationId"
+                    element={
+                        <ProtectedRoute>
+                            <OrganizationDetail />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/organizations/:organizationId/members"
+                    element={
+                        <ProtectedRoute>
+                            <OrganizationMembers />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/events-management"
+                    element={
+                        <ProtectedRoute>
+                            <EventsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/revenue-shares"
+                    element={
+                        <ProtectedRoute>
+                            <RevenueSharesManagement />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/refunds"
+                    element={
+                        <ProtectedRoute>
+                            <MyRefunds />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/refunds/:refundId"
+                    element={
+                        <ProtectedRoute>
+                            <RefundDetail />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/refunds"
+                    element={
+                        <ProtectedRoute>
+                            <RefundsManagement />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/check-in"
+                    element={
+                        <ProtectedRoute>
+                            <CheckInDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/check-in/scanner"
+                    element={
+                        <ProtectedRoute>
+                            <CheckInScanner />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/check-in/history/:eventId"
+                    element={
+                        <ProtectedRoute>
+                            <CheckInHistory />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/check-in/analytics/:eventId"
+                    element={
+                        <ProtectedRoute>
+                            <CheckInAnalytics />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/events/:eventId"
+                    element={
+                        <ProtectedRoute>
+                            <EventDetail />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/events/:eventId/edit"
+                    element={
+                        <ProtectedRoute>
+                            <EditEvent />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/create-event"
+                    element={
+                        <ProtectedRoute>
+                            <CreateEvent />
+                        </ProtectedRoute>
+                    }
+                />
 
-        {/* 404 Not Found */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      {showFooter && <Footer />}
-    </div>
-  );
+                {/* 404 Not Found */}
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+            {showFooter && <Footer />}
+        </div>
+    );
 }
 
 function App() {
-  return (
-    <ThemeProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <AuthModalProvider>
-            <AppContent />
-            <AuthModal />
-          </AuthModalProvider>
-        </BrowserRouter>
-      </AuthProvider>
-    </ThemeProvider>
-  );
+    return (
+        <ThemeProvider>
+            <AuthProvider>
+                <BrowserRouter>
+                    <AuthModalProvider>
+                        <AppContent />
+                        <AuthModal />
+                    </AuthModalProvider>
+                </BrowserRouter>
+            </AuthProvider>
+        </ThemeProvider>
+    );
 }
 
 export default App;

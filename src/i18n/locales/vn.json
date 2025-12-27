@@ -1083,7 +1083,8 @@
             "ended": "Đã kết thúc",
             "checkInProgress": "Tiến độ check-in",
             "noStatsAccess": "Không có quyền xem thống kê",
-            "scan": "Quét QR"
+            "scan": "Quét QR",
+            "analytics": "Phân tích"
         },
         "scanner": {
             "title": "Quét mã QR",
@@ -1128,7 +1129,8 @@
             "staff": "Nhân viên",
             "noData": "Chưa có lượt check-in nào",
             "showing": "Hiển thị",
-            "of": "trong"
+            "of": "trong",
+            "analytics": "Phân tích"
         },
         "stats": {
             "totalIssued": "Tổng số vé",
@@ -1141,7 +1143,10 @@
             "timeDesc": "Thời gian",
             "revoked": "thu hồi",
             "refunded": "hoàn tiền",
-            "noData": "Chưa có dữ liệu thống kê"
+            "noData": "Chưa có dữ liệu thống kê",
+            "totalScans": "Tổng lượt quét",
+            "failed": "thất bại",
+            "successRate": "Tỷ lệ thành công"
         },
         "result": {
             "success": "Check-in thành công!",
@@ -1154,6 +1159,46 @@
             "attendee": "Người tham dự",
             "ticketType": "Loại vé",
             "previousCheckIn": "Đã check-in lúc"
+        },
+        "analytics": {
+            "title": "Phân tích Check-in",
+            "fetchEventError": "Không thể tải thông tin sự kiện",
+            "refreshed": "Đã làm mới dữ liệu",
+            "goToScanner": "Quét QR",
+            "refresh": "Làm mới",
+            "export": "Xuất",
+            "exporting": "Đang xuất...",
+            "exportSuccess": "Đã xuất báo cáo",
+            "exportError": "Không thể xuất báo cáo",
+            "hourlyStats": "Thống kê theo giờ",
+            "totalScans": "Tổng quét",
+            "successful": "Thành công",
+            "failed": "Thất bại",
+            "peakHour": "Cao điểm",
+            "scans": "quét",
+            "time": "Thời gian",
+            "gateStats": "Thống kê theo cổng",
+            "unknownGate": "Không xác định",
+            "noGateData": "Chưa có dữ liệu theo cổng",
+            "gate": "Cổng",
+            "success": "Thành công",
+            "total": "Tổng",
+            "checkins": "check-in",
+            "staffPerformance": "Hiệu suất nhân viên",
+            "staff": "nhân viên",
+            "noStaffData": "Chưa có dữ liệu nhân viên",
+            "staffName": "Nhân viên",
+            "progress": "Tiến độ",
+            "successRate": "Tỷ lệ",
+            "scanLogs": "Nhật ký quét",
+            "records": "bản ghi",
+            "searchPlaceholder": "Tìm theo QR hoặc mã vé...",
+            "allResults": "Tất cả kết quả",
+            "result": "Kết quả",
+            "ticket": "Vé",
+            "noLogs": "Chưa có nhật ký quét",
+            "showing": "Hiển thị",
+            "of": "trong"
         }
     }
 }
