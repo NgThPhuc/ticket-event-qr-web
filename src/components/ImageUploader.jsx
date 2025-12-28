@@ -59,7 +59,11 @@ const ImageUploader = ({
     };
 
     return (
-        <div className="space-y-2">
+        <div
+            className="space-y-2"
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={(e) => e.preventDefault()}
+        >
             <Label>{label || t('common.imageUpload.label')}</Label>
 
             <div className="flex items-start gap-4">
@@ -68,6 +72,13 @@ const ImageUploader = ({
                         type="file"
                         accept="image/jpeg,image/jpg,image/png,image/webp"
                         onChange={handleFileSelect}
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => {
+                            // Ngăn Enter key submit form
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                            }
+                        }}
                         disabled={disabled || uploading}
                         className="cursor-pointer"
                     />

@@ -316,9 +316,11 @@
         "bankName": "Bank name",
         "bankNamePlaceholder": "Vietcombank, Techcombank...",
         "payoutSectionTitle": "Organization payout",
+        "payoutSectionHint": "Enable this to allow the organization to request withdrawal of event revenue.",
         "payoutStatusLabel": "Payout status",
         "payoutStatusEnabled": "Payout enabled",
         "payoutStatusDisabled": "Payout disabled",
+        "payoutToggleError": "Unable to change payout status for organization.",
         "bankWarningMissing": "Not yet eligible for payout. Please ensure bank information is complete and payout is enabled by the platform.",
         "status": "Status",
         "active": "Active",
@@ -408,6 +410,8 @@
         "appSubtitle": "Event Management",
         "checkin": "Check-in",
         "refunds": "My Refunds",
+        "categories": "Categories",
+        "payouts": "Payouts",
         "adminRefunds": "Refunds Management"
     },
     "organizationsManagement": {
@@ -653,7 +657,25 @@
         "cancelReasonPlaceholder": "Enter cancellation reason...",
         "cancelConfirm": "Cancel Event",
         "refundsProcessed": "Automatically created {{count}} refund requests.",
-        "refundsTotalAmount": "Total refund amount: {{amount}}"
+        "refundsTotalAmount": "Total refund amount: {{amount}}",
+        "tabs": {
+            "general": "General Info",
+            "time": "Time",
+            "location": "Location",
+            "media": "Media",
+            "generalTitle": "Basic Information",
+            "timeTitle": "Time & Mode",
+            "locationTitle": "Location Information",
+            "mediaTitle": "Event Images"
+        },
+        "progress": "Progress",
+        "coverImage": "Cover Image",
+        "preview": "Preview",
+        "onlineOnlyNote": "Online events do not require a physical location.",
+        "categories": "Categories",
+        "selectCategories": "Select categories",
+        "previous": "Previous",
+        "next": "Next"
     },
     "eventDetail": {
         "priceFrom": "Price from"
@@ -1202,6 +1224,79 @@
             "noLogs": "No scan logs yet",
             "showing": "Showing",
             "of": "of"
+        }
+    },
+    "payout": {
+        "management": {
+            "title": "Payouts Management",
+            "subtitle": "Process payout requests from organizations"
+        },
+        "tabs": {
+            "all": "All",
+            "pending": "Pending",
+            "processing": "Processing",
+            "completed": "Completed",
+            "failed": "Failed"
+        },
+        "status": {
+            "pending": "Pending",
+            "processing": "Processing",
+            "completed": "Completed",
+            "failed": "Failed"
+        },
+        "list": {
+            "title": "Payout Requests",
+            "description": "Manage payout requests from organizations"
+        },
+        "table": {
+            "organization": "Organization",
+            "amount": "Amount",
+            "bank": "Bank",
+            "status": "Status",
+            "createdAt": "Created At",
+            "processedAt": "Processed At",
+            "transactionCode": "Transaction Code",
+            "actions": "Actions"
+        },
+        "noPayouts": "No payout requests",
+        "fetchError": "Failed to load payouts",
+        "processConfirm": "Confirm payment for this request?",
+        "processError": "Failed to process payment",
+        "processing": "Processing...",
+        "processButton": "Process Payment",
+        "matureButton": "Mature Shares",
+        "matureSuccess": "Matured {{count}} revenue shares",
+        "balance": {
+            "title": "Balance & Withdraw",
+            "totalRevenue": "Total Revenue",
+            "available": "Available",
+            "pending": "Pending",
+            "totalPaid": "Withdrawn"
+        },
+        "withdrawButton": "Request Withdrawal",
+        "notEnabled": "Withdrawal feature is not enabled",
+        "noBankInfo": "Please update bank information",
+        "noBalance": "Unable to load balance",
+        "requestSuccess": "Withdrawal request submitted successfully!",
+        "requestError": "Failed to submit withdrawal request",
+        "withdraw": {
+            "title": "Request Withdrawal",
+            "description": "Enter amount to withdraw. Leave empty to withdraw all available balance.",
+            "amount": "Amount to withdraw (VND)",
+            "amountPlaceholder": "Leave empty to withdraw all",
+            "hint": "Request will be processed by admin and transferred.",
+            "submit": "Submit Request"
+        },
+        "history": {
+            "title": "Withdrawal History",
+            "subtitle": "Track your withdrawal requests",
+            "button": "History",
+            "totalWithdrawn": "Total Withdrawn",
+            "totalRequests": "Total Requests",
+            "pending": "Pending",
+            "listTitle": "Request List",
+            "listDescription": "All withdrawal requests from organization",
+            "noPayouts": "No withdrawal requests yet"
         }
     }
 }

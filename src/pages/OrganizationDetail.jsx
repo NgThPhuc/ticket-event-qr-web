@@ -13,6 +13,17 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import {
     Table,
     TableBody,
     TableCell,
@@ -20,11 +31,28 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Building2, Calendar, Edit, Mail, MapPin, Phone, Trash2, User, Users } from 'lucide-react';
+import {
+    Banknote,
+    Building2,
+    Calendar,
+    Clock,
+    Edit,
+    History,
+    Loader2,
+    Mail,
+    MapPin,
+    Phone,
+    Trash2,
+    TrendingUp,
+    User,
+    Users,
+    Wallet,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getOrganization } from '../api/organizations';
+import { getOrganizationBalance, requestPayout, updateOrganizationPayoutStatus } from '../api/payouts';
 import { useAuth } from '../contexts/AuthContext';
 import { DashboardLayout } from '../layouts/DashboardLayout';
 
@@ -59,6 +87,18 @@ const OrganizationDetail = () => {
         organizationName: '',
     });
 
+    // Payout states
+    const [balance, setBalance] = useState(null);
+    const [balanceLoading, setBalanceLoading] = useState(false);
+    const [withdrawDialog, setWithdrawDialog] = useState(false);
+    const [withdrawAmount, setWithdrawAmount] = useState('');
+    const [withdrawing, setWithdrawing] = useState(false);
+
+    // Admin payout toggle
+    const isPlatformAdmin = user?.platform_role === 'PLATFORM_ADMIN';
+    const [payoutEnabled, setPayoutEnabled] = useState(false);
+    const [togglingPayout, setTogglingPayout] = useState(false);
+
     // Fetch organization details
     useEffect(() => {
         const fetchOrganization = async () => {
@@ -73,6 +113,8 @@ const OrganizationDetail = () => {
             try {
                 const data = await getOrganization(organizationId);
                 setOrganization(data);
+                // Set payout status for admin toggle
+                setPayoutEnabled(data.payout_enabled || false);
             } catch (err) {
                 setError(err.message || t('organization.fetchError') || 'Không thể tải thông tin tổ chức');
                 if (err.status === 403 || err.status === 404) {
@@ -91,6 +133,86 @@ const OrganizationDetail = () => {
         }
     }, [isAuthenticated, organizationId, navigate, t]);
 
+    // Fetch balance
+    const fetchBalance = async () => {
+        if (!organizationId) return;
+        setBalanceLoading(true);
+        try {
+            const data = await getOrganizationBalance(organizationId);
+            setBalance(data);
+        } catch (err) {
+            console.error('Error fetching balance:', err);
+        } finally {
+            setBalanceLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (isAuthenticated && organizationId && organization) {
+            fetchBalance();
+        }
+    }, [isAuthenticated, organizationId, organization]);
+
+    // Handle withdraw request
+    const handleWithdraw = async () => {
+        if (!organizationId) return;
+        setWithdrawing(true);
+        try {
+            const amount = withdrawAmount ? parseInt(withdrawAmount) : undefined;
+            await requestPayout(organizationId, amount);
+            setAlert({
+                type: 'success',
+                message: t('payout.requestSuccess') || 'Yêu cầu rút tiền đã được gửi thành công!',
+            });
+            setWithdrawDialog(false);
+            setWithdrawAmount('');
+            fetchBalance();
+        } catch (err) {
+            setAlert({
+                type: 'error',
+                message: err.message || t('payout.requestError') || 'Không thể gửi yêu cầu rút tiền',
+            });
+        } finally {
+            setWithdrawing(false);
+        }
+    };
+
+    // Admin toggle payout status
+    const handleTogglePayout = async () => {
+        if (!isPlatformAdmin || !organizationId) return;
+        setTogglingPayout(true);
+        try {
+            const newStatus = !payoutEnabled;
+            await updateOrganizationPayoutStatus(organizationId, newStatus);
+            setPayoutEnabled(newStatus);
+            // Update organization object
+            setOrganization(prev => ({ ...prev, payout_enabled: newStatus }));
+            setAlert({
+                type: 'success',
+                message: newStatus
+                    ? t('organization.payoutStatusEnabled') || 'Đã bật payout cho tổ chức.'
+                    : t('organization.payoutStatusDisabled') || 'Đã tắt payout cho tổ chức.',
+            });
+            // Refetch balance to update UI
+            fetchBalance();
+            setTimeout(() => setAlert({ type: '', message: '' }), 3000);
+        } catch (err) {
+            setAlert({
+                type: 'error',
+                message: err.message || t('organization.payoutToggleError') || 'Không thể thay đổi trạng thái payout.',
+            });
+        } finally {
+            setTogglingPayout(false);
+        }
+    };
+
+    const formatVND = (amount) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        }).format(amount || 0);
+    };
+
     const formatDate = (dateString) => {
         if (!dateString) return '-';
         const date = new Date(dateString);
@@ -103,12 +225,16 @@ const OrganizationDetail = () => {
         });
     };
 
+    const canWithdraw = balance &&
+        balance.payout_enabled &&
+        balance.has_bank_info &&
+        balance.available_balance > 0;
+
     if (authLoading || !isAuthenticated) {
         return null;
     }
 
-    // Check permissions
-    const isPlatformAdmin = user?.platform_role === 'PLATFORM_ADMIN';
+    // Check permissions - isPlatformAdmin đã khai báo ở trên
     const isOrganizerAdmin = organization?.members?.some(
         m => m.user_id === user?.id && m.role === 'ORGANIZER_ADMIN'
     );
@@ -205,6 +331,21 @@ const OrganizationDetail = () => {
                                                 <Users className="h-4 w-4" />
                                                 {t('organization.manageMembers')}
                                             </Button>
+                                            {/* Admin Only: Toggle Payout */}
+                                            {isPlatformAdmin && (
+                                                <div className="flex items-center gap-2 px-3 py-1.5 border rounded-md bg-gray-50 dark:bg-gray-800">
+                                                    <Wallet className="h-4 w-4 text-emerald-500" />
+                                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Payout
+                                                    </span>
+                                                    {togglingPayout && <Loader2 className="h-3 w-3 animate-spin text-gray-400" />}
+                                                    <Switch
+                                                        checked={payoutEnabled}
+                                                        onCheckedChange={handleTogglePayout}
+                                                        disabled={togglingPayout}
+                                                    />
+                                                </div>
+                                            )}
                                             {canDelete && (
                                                 <Button
                                                     variant="destructive"
@@ -280,55 +421,132 @@ const OrganizationDetail = () => {
                                         )}
                                     </div>
 
-                                    {/* PAYOUT COMMENTED - Manual Payout */}
-                                    {/* Giữ lại phần bank info để admin biết thông tin ngân hàng của tổ chức */}
-                                    {/* Payout & Bank Info */}
-                                    {/* <div className="pt-4 border-t">
-                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
-                      {t('organization.payoutSectionTitle') || 'Thanh toán cho tổ chức (Payout)'}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400 mb-1">
-                          {t('organization.payoutStatusLabel') || 'Trạng thái payout'}
-                        </p>
-                        <Badge
-                          variant={organization.payout_enabled ? 'default' : 'secondary'}
-                          className={organization.payout_enabled ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : ''}
-                        >
-                          {organization.payout_enabled
-                            ? t('organization.payoutStatusEnabled') || 'Đang bật payout'
-                            : t('organization.payoutStatusDisabled') || 'Chưa bật payout'}
-                        </Badge>
-                        {!organization.payout_enabled || !organization.bank_account_number || !organization.bank_account_name || !organization.bank_name ? (
-                          <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
-                            {t('organization.bankWarningMissing') || 'Chưa đủ điều kiện nhận payout. Vui lòng đảm bảo đã nhập đủ thông tin ngân hàng và được nền tảng bật payout.'}
-                          </p>
-                        ) : null}
-                      </div>
+                                    {/* Balance & Payout Section */}
+                                    {(canEdit || balance) && (
+                                        <div className="pt-4 border-t">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                                                    <Wallet className="h-4 w-4" />
+                                                    {t('payout.balance.title') || 'Số dư & Rút tiền'}
+                                                </h3>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => navigate(`/organizations/${organizationId}/payouts`)}
+                                                    className="gap-2"
+                                                >
+                                                    <History className="h-4 w-4" />
+                                                    {t('payout.history.button') || 'Lịch sử'}
+                                                </Button>
+                                            </div>
 
-                      <div className="space-y-1 text-sm text-gray-900 dark:text-white">
-                        <p>
-                          <span className="font-medium">
-                            {t('organization.bankAccountNumber') || 'Số tài khoản'}:
-                          </span>{' '}
-                          {organization.bank_account_number || '-'}
-                        </p>
-                        <p>
-                          <span className="font-medium">
-                            {t('organization.bankAccountName') || 'Chủ tài khoản'}:
-                          </span>{' '}
-                          {organization.bank_account_name || '-'}
-                        </p>
-                        <p>
-                          <span className="font-medium">
-                            {t('organization.bankName') || 'Ngân hàng'}:
-                          </span>{' '}
-                          {organization.bank_name || '-'}
-                        </p>
-                      </div>
-                    </div>
-                  </div> */}
+                                            {balanceLoading ? (
+                                                <div className="flex items-center justify-center py-8">
+                                                    <Loader2 className="h-6 w-6 animate-spin" />
+                                                </div>
+                                            ) : balance ? (
+                                                <div className="space-y-4">
+                                                    {/* Balance Cards */}
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                                        {/* Total Revenue */}
+                                                        <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+                                                            <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400 mb-1">
+                                                                <TrendingUp className="h-4 w-4" />
+                                                                <span className="text-xs font-medium uppercase">
+                                                                    {t('payout.balance.totalRevenue') || 'Tổng doanh thu'}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-xl font-bold text-purple-700 dark:text-purple-300">
+                                                                {formatVND(balance.total_revenue)}
+                                                            </p>
+                                                        </div>
+                                                        {/* Pending Balance */}
+                                                        <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800">
+                                                            <div className="flex items-center gap-2 text-yellow-600 dark:text-yellow-400 mb-1">
+                                                                <Clock className="h-4 w-4" />
+                                                                <span className="text-xs font-medium uppercase">
+                                                                    {t('payout.balance.pending') || 'Đang chờ'}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-xl font-bold text-yellow-700 dark:text-yellow-300">
+                                                                {formatVND(balance.pending_balance)}
+                                                            </p>
+                                                        </div>
+                                                        {/* Available Balance */}
+                                                        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
+                                                            <div className="flex items-center gap-2 text-green-600 dark:text-green-400 mb-1">
+                                                                <Banknote className="h-4 w-4" />
+                                                                <span className="text-xs font-medium uppercase">
+                                                                    {t('payout.balance.available') || 'Khả dụng'}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-xl font-bold text-green-700 dark:text-green-300">
+                                                                {formatVND(balance.available_balance)}
+                                                            </p>
+                                                        </div>
+                                                        {/* Total Paid Out */}
+                                                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                                                            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-1">
+                                                                <Wallet className="h-4 w-4" />
+                                                                <span className="text-xs font-medium uppercase">
+                                                                    {t('payout.balance.totalPaid') || 'Đã rút'}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-xl font-bold text-blue-700 dark:text-blue-300">
+                                                                {formatVND(balance.total_paid_out)}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Withdraw Button & Status */}
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+                                                        <div className="space-y-1">
+                                                            {!balance.payout_enabled && (
+                                                                <p className="text-sm text-amber-600 dark:text-amber-400">
+                                                                    ⚠️ {t('payout.notEnabled') || 'Tính năng rút tiền chưa được kích hoạt'}
+                                                                </p>
+                                                            )}
+                                                            {!balance.has_bank_info && (
+                                                                <p className="text-sm text-amber-600 dark:text-amber-400">
+                                                                    ⚠️ {t('payout.noBankInfo') || 'Vui lòng cập nhật thông tin ngân hàng'}{' '}
+                                                                    <button
+                                                                        onClick={() => navigate(`/organizations/${organizationId}/edit`)}
+                                                                        className="underline hover:text-amber-700 dark:hover:text-amber-300"
+                                                                    >
+                                                                        {t('payout.updateBankInfo') || 'Cập nhật ngay'}
+                                                                    </button>
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            {!balance.has_bank_info && (
+                                                                <Button
+                                                                    variant="outline"
+                                                                    onClick={() => navigate(`/organizations/${organizationId}/edit`)}
+                                                                    className="gap-2"
+                                                                >
+                                                                    <Edit className="h-4 w-4" />
+                                                                    {t('payout.updateBankInfoButton') || 'Cập nhật ngân hàng'}
+                                                                </Button>
+                                                            )}
+                                                            <Button
+                                                                onClick={() => setWithdrawDialog(true)}
+                                                                disabled={!canWithdraw}
+                                                                className="gap-2"
+                                                            >
+                                                                <Banknote className="h-4 w-4" />
+                                                                {t('payout.withdrawButton') || 'Yêu cầu rút tiền'}
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <p className="text-sm text-muted-foreground">
+                                                    {t('payout.noBalance') || 'Không thể tải thông tin số dư'}
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
 
                                     {/* Owner Information */}
                                     <div className="pt-4 border-t">
@@ -512,6 +730,61 @@ const OrganizationDetail = () => {
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+
+                {/* Withdraw Dialog */}
+                <Dialog open={withdrawDialog} onOpenChange={setWithdrawDialog}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>
+                                {t('payout.withdraw.title') || 'Yêu cầu rút tiền'}
+                            </DialogTitle>
+                            <DialogDescription>
+                                {t('payout.withdraw.description') ||
+                                    `Số dư khả dụng: ${formatVND(balance?.available_balance || 0)}. Để trống để rút toàn bộ số dư.`}
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="withdrawAmount">
+                                    {t('payout.withdraw.amount') || 'Số tiền muốn rút (VNĐ)'}
+                                </Label>
+                                <Input
+                                    id="withdrawAmount"
+                                    type="number"
+                                    placeholder={t('payout.withdraw.amountPlaceholder') || 'Để trống để rút hết'}
+                                    value={withdrawAmount}
+                                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                                    max={balance?.available_balance || 0}
+                                    min={1}
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                    {t('payout.withdraw.hint') || 'Yêu cầu sẽ được admin xử lý và chuyển khoản.'}
+                                </p>
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    setWithdrawDialog(false);
+                                    setWithdrawAmount('');
+                                }}
+                            >
+                                {t('common.cancel') || 'Hủy'}
+                            </Button>
+                            <Button onClick={handleWithdraw} disabled={withdrawing}>
+                                {withdrawing ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        {t('common.loading') || 'Đang xử lý...'}
+                                    </>
+                                ) : (
+                                    t('payout.withdraw.submit') || 'Gửi yêu cầu'
+                                )}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </DashboardLayout>
     );

@@ -20,6 +20,7 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import {
+    Banknote,
     Building2,
     Calendar,
     LayoutDashboard,
@@ -75,6 +76,13 @@ const ADMIN_MENU_CONFIG = [
         icon: Tags,
         titleKey: 'sidebar.categories',
         url: '/admin/categories',
+        roles: ['PLATFORM_ADMIN'],
+    },
+    {
+        key: 'payouts',
+        icon: Banknote,
+        titleKey: 'sidebar.payouts',
+        url: '/admin/payouts',
         roles: ['PLATFORM_ADMIN'],
     },
     {

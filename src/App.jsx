@@ -41,6 +41,8 @@ import PaymentFailure from './pages/PaymentFailure';
 import PaymentResult from './pages/PaymentResult';
 import PaymentReturn from './pages/PaymentReturn';
 import PaymentSuccess from './pages/PaymentSuccess';
+import PayoutHistory from './pages/PayoutHistory';
+import PayoutsManagement from './pages/PayoutsManagement';
 import Policy from './pages/Policy';
 import Profile from './pages/Profile';
 import PublicEventDetail from './pages/PublicEventDetail';
@@ -67,6 +69,7 @@ function AppContent() {
         location.pathname.startsWith('/profile') ||
         location.pathname.startsWith('/settings') ||
         location.pathname.startsWith('/admin/revenue-shares') ||
+        location.pathname.startsWith('/admin/payouts') ||
         location.pathname.startsWith('/refunds') ||
         location.pathname.startsWith('/check-in');
     const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
@@ -237,6 +240,14 @@ function AppContent() {
                     }
                 />
                 <Route
+                    path="/organizations/:organizationId/payouts"
+                    element={
+                        <ProtectedRoute>
+                            <PayoutHistory />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
                     path="/events-management"
                     element={
                         <ProtectedRoute>
@@ -249,6 +260,14 @@ function AppContent() {
                     element={
                         <ProtectedRoute>
                             <RevenueSharesManagement />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/payouts"
+                    element={
+                        <ProtectedRoute>
+                            <PayoutsManagement />
                         </ProtectedRoute>
                     }
                 />

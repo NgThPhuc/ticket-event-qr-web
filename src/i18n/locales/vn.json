@@ -329,9 +329,11 @@
         "bankName": "Ngân hàng",
         "bankNamePlaceholder": "Vietcombank, Techcombank...",
         "payoutSectionTitle": "Thanh toán cho tổ chức (Payout)",
+        "payoutSectionHint": "Bật tính năng này để tổ chức có thể yêu cầu rút tiền doanh thu từ các sự kiện.",
         "payoutStatusLabel": "Trạng thái payout",
         "payoutStatusEnabled": "Đang bật payout",
         "payoutStatusDisabled": "Chưa bật payout",
+        "payoutToggleError": "Không thể thay đổi trạng thái payout cho tổ chức.",
         "bankWarningMissing": "Chưa đủ điều kiện nhận payout. Vui lòng đảm bảo đã nhập đủ thông tin ngân hàng và được nền tảng bật payout."
     },
     "dashboard": {
@@ -409,6 +411,8 @@
         "events": "Sự Kiện",
         "checkin": "Check-in",
         "refunds": "Hoàn tiền của tôi",
+        "categories": "Danh mục",
+        "payouts": "Thanh toán",
         "adminRefunds": "Quản lý hoàn tiền"
     },
     "organizationsManagement": {
@@ -656,7 +660,23 @@
         "cancelReasonPlaceholder": "Nhập lý do hủy sự kiện...",
         "cancelConfirm": "Hủy sự kiện",
         "refundsProcessed": "Đã tự động tạo {{count}} yêu cầu hoàn tiền.",
-        "refundsTotalAmount": "Tổng số tiền hoàn lại: {{amount}}"
+        "refundsTotalAmount": "Tổng số tiền hoàn lại: {{amount}}",
+        "tabs": {
+            "general": "Thông Tin Chung",
+            "time": "Thời Gian",
+            "location": "Địa Điểm",
+            "media": "Media",
+            "generalTitle": "Thông Tin Cơ Bản",
+            "timeTitle": "Thời Gian & Hình Thức",
+            "locationTitle": "Thông Tin Địa Điểm",
+            "mediaTitle": "Hình Ảnh Sự Kiện"
+        },
+        "progress": "Tiến độ hoàn thành",
+        "coverImage": "Ảnh bìa sự kiện",
+        "preview": "Xem trước",
+        "onlineOnlyNote": "Sự kiện trực tuyến không yêu cầu địa điểm vật lý.",
+        "previous": "Quay lại",
+        "next": "Tiếp theo"
     },
     "eventDetail": {
         "priceFrom": "Giá vé chỉ từ"
@@ -1226,6 +1246,79 @@
             "color": "Màu",
             "status": "Trạng thái",
             "actions": "Thao tác"
+        }
+    },
+    "payout": {
+        "management": {
+            "title": "Quản Lý Payouts",
+            "subtitle": "Xử lý các yêu cầu rút tiền từ tổ chức"
+        },
+        "tabs": {
+            "all": "Tất cả",
+            "pending": "Chờ xử lý",
+            "processing": "Đang xử lý",
+            "completed": "Thành công",
+            "failed": "Thất bại"
+        },
+        "status": {
+            "pending": "Chờ xử lý",
+            "processing": "Đang xử lý",
+            "completed": "Thành công",
+            "failed": "Thất bại"
+        },
+        "list": {
+            "title": "Danh sách yêu cầu rút tiền",
+            "description": "Quản lý các yêu cầu rút tiền từ tổ chức"
+        },
+        "table": {
+            "organization": "Tổ chức",
+            "amount": "Số tiền",
+            "bank": "Ngân hàng",
+            "status": "Trạng thái",
+            "createdAt": "Ngày tạo",
+            "processedAt": "Ngày xử lý",
+            "transactionCode": "Mã GD",
+            "actions": "Thao tác"
+        },
+        "noPayouts": "Không có yêu cầu nào",
+        "fetchError": "Không thể tải danh sách payout",
+        "processConfirm": "Xác nhận thanh toán cho yêu cầu này?",
+        "processError": "Không thể xử lý thanh toán",
+        "processing": "Đang xử lý...",
+        "processButton": "Thanh toán",
+        "matureButton": "Mature Shares",
+        "matureSuccess": "Đã mature {{count}} revenue shares",
+        "balance": {
+            "title": "Số dư & Rút tiền",
+            "totalRevenue": "Tổng doanh thu",
+            "available": "Khả dụng",
+            "pending": "Đang chờ",
+            "totalPaid": "Đã rút"
+        },
+        "withdrawButton": "Yêu cầu rút tiền",
+        "notEnabled": "Tính năng rút tiền chưa được kích hoạt",
+        "noBankInfo": "Vui lòng cập nhật thông tin ngân hàng",
+        "noBalance": "Không thể tải thông tin số dư",
+        "requestSuccess": "Yêu cầu rút tiền đã được gửi thành công!",
+        "requestError": "Không thể gửi yêu cầu rút tiền",
+        "withdraw": {
+            "title": "Yêu cầu rút tiền",
+            "description": "Nhập số tiền bạn muốn rút. Để trống để rút toàn bộ số dư khả dụng.",
+            "amount": "Số tiền muốn rút (VNĐ)",
+            "amountPlaceholder": "Để trống để rút hết",
+            "hint": "Yêu cầu sẽ được admin xử lý và chuyển khoản.",
+            "submit": "Gửi yêu cầu"
+        },
+        "history": {
+            "title": "Lịch Sử Rút Tiền",
+            "subtitle": "Theo dõi các yêu cầu rút tiền của bạn",
+            "button": "Lịch sử",
+            "totalWithdrawn": "Tổng đã rút",
+            "totalRequests": "Tổng yêu cầu",
+            "pending": "Đang chờ xử lý",
+            "listTitle": "Danh sách yêu cầu",
+            "listDescription": "Tất cả yêu cầu rút tiền của tổ chức",
+            "noPayouts": "Chưa có yêu cầu rút tiền nào"
         }
     }
 }

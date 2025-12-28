@@ -11,6 +11,17 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+    Calendar,
+    Check,
+    ChevronLeft,
+    ChevronRight,
+    Image,
+    Info,
+    MapPin,
+    Save,
+    X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -21,11 +32,19 @@ import ImageUploader from "../components/ImageUploader";
 import { useAuth } from "../contexts/AuthContext";
 import { DashboardLayout } from "../layouts/DashboardLayout";
 
+const STEPS = [
+    { id: 0, key: "general", icon: Info, labelKey: "event.tabs.general" },
+    { id: 1, key: "time", icon: Calendar, labelKey: "event.tabs.time" },
+    { id: 2, key: "location", icon: MapPin, labelKey: "event.tabs.location" },
+    { id: 3, key: "media", icon: Image, labelKey: "event.tabs.media" },
+];
+
 const CreateEvent = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { user, isAuthenticated, loading: authLoading } = useAuth();
     const [organizations, setOrganizations] = useState([]);
+    const [currentStep, setCurrentStep] = useState(0);
     const [formData, setFormData] = useState({
         organization_id: "",
         title: "",
@@ -70,7 +89,6 @@ const CreateEvent = () => {
             }
 
             try {
-                // PLATFORM_ADMIN lấy tất cả organizations từ API
                 if (user?.platform_role === "PLATFORM_ADMIN") {
                     try {
                         const data = await getAllOrganizations();
@@ -82,9 +100,7 @@ const CreateEvent = () => {
                     }
                 }
 
-                // Các role khác sử dụng user.organizations từ profile
                 const userOrgs = user?.organizations || [];
-                // Filter chỉ lấy organizations mà user có quyền ORGANIZER_ADMIN hoặc EVENT_MANAGER
                 const allowedOrgs = userOrgs.filter((org) => {
                     return org.role === "ORGANIZER_ADMIN" || org.role === "EVENT_MANAGER";
                 });
@@ -119,76 +135,96 @@ const CreateEvent = () => {
         }
     };
 
-    const validate = () => {
+    // Validate current step
+    const validateCurrentStep = () => {
         const newErrors = {};
 
-        if (!formData.organization_id) {
-            newErrors.organization_id = t("event.organizationIdRequired");
-        }
-        if (!formData.title.trim()) {
-            newErrors.title = t("event.titleRequired");
-        } else if (formData.title.trim().length < 3) {
-            newErrors.title = t("event.titleMinLength");
-        }
-        if (!formData.attendance_mode) {
-            newErrors.attendance_mode = t("event.attendanceModeRequired");
-        }
-        if (!formData.timezone) {
-            newErrors.timezone = t("event.timezoneRequired");
-        }
-        if (!formData.start_at) {
-            newErrors.start_at = t("event.startAtRequired");
-        }
-        if (!formData.end_at) {
-            newErrors.end_at = t("event.endAtRequired");
-        }
-        if (
-            formData.start_at &&
-            formData.end_at &&
-            new Date(formData.start_at) >= new Date(formData.end_at)
-        ) {
-            newErrors.end_at = t("event.endTimeAfterStartTime");
-        }
-
-        // Validate based on attendance_mode
-        if (
-            formData.attendance_mode === "OFFLINE" ||
-            formData.attendance_mode === "HYBRID"
-        ) {
-            if (!formData.venue_name) {
-                newErrors.venue_name = t("event.venueNameRequired");
+        if (currentStep === 0) {
+            // General tab validation
+            if (!formData.organization_id) {
+                newErrors.organization_id = t("event.organizationIdRequired");
             }
-            if (!formData.address_line1) {
-                newErrors.address_line1 = t("event.addressLine1Required");
+            if (!formData.title.trim()) {
+                newErrors.title = t("event.titleRequired");
+            } else if (formData.title.trim().length < 3) {
+                newErrors.title = t("event.titleMinLength");
             }
-            if (!formData.city) {
-                newErrors.city = t("event.cityRequired");
+        } else if (currentStep === 1) {
+            // Time tab validation
+            if (!formData.attendance_mode) {
+                newErrors.attendance_mode = t("event.attendanceModeRequired");
+            }
+            if (!formData.timezone) {
+                newErrors.timezone = t("event.timezoneRequired");
+            }
+            if (!formData.start_at) {
+                newErrors.start_at = t("event.startAtRequired");
+            }
+            if (!formData.end_at) {
+                newErrors.end_at = t("event.endAtRequired");
+            }
+            if (
+                formData.start_at &&
+                formData.end_at &&
+                new Date(formData.start_at) >= new Date(formData.end_at)
+            ) {
+                newErrors.end_at = t("event.endTimeAfterStartTime");
+            }
+        } else if (currentStep === 2) {
+            // Location tab validation
+            if (
+                formData.attendance_mode === "OFFLINE" ||
+                formData.attendance_mode === "HYBRID"
+            ) {
+                if (!formData.venue_name) {
+                    newErrors.venue_name = t("event.venueNameRequired");
+                }
+                if (!formData.address_line1) {
+                    newErrors.address_line1 = t("event.addressLine1Required");
+                }
+                if (!formData.city) {
+                    newErrors.city = t("event.cityRequired");
+                }
+            }
+            if (
+                formData.attendance_mode === "ONLINE" ||
+                formData.attendance_mode === "HYBRID"
+            ) {
+                if (!formData.meeting_url) {
+                    newErrors.meeting_url = t("event.meetingUrlRequired");
+                }
             }
         }
-        if (
-            formData.attendance_mode === "ONLINE" ||
-            formData.attendance_mode === "HYBRID"
-        ) {
-            if (!formData.meeting_url) {
-                newErrors.meeting_url = t("event.meetingUrlRequired");
-            }
-        }
+        // Step 3 (Media) has no required fields
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
+    };
+
+    const handleNext = (e) => {
+        e?.preventDefault();
+        e?.stopPropagation();
+        if (validateCurrentStep()) {
+            setCurrentStep((prev) => Math.min(prev + 1, STEPS.length - 1));
+        }
+    };
+
+    const handlePrevious = (e) => {
+        e?.preventDefault();
+        e?.stopPropagation();
+        setCurrentStep((prev) => Math.max(prev - 1, 0));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setAlert({ type: "", message: "" });
 
-        if (!validate()) {
+        if (!validateCurrentStep()) {
             return;
         }
 
         setLoading(true);
         try {
-            // Convert datetime-local to ISO 8601
             const payload = {
                 organization_id: formData.organization_id,
                 title: formData.title.trim(),
@@ -236,7 +272,7 @@ const CreateEvent = () => {
             if (formData.category_ids && formData.category_ids.length > 0)
                 payload.category_ids = formData.category_ids;
 
-            const result = await createEvent(payload);
+            await createEvent(payload);
 
             setAlert({
                 type: "success",
@@ -280,229 +316,247 @@ const CreateEvent = () => {
         );
     }
 
-    return (
-        <DashboardLayout>
-            <div className="container mx-auto px-4 py-8">
-                <div className="max-w-3xl mx-auto">
-                    <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                            {t("event.createTitle")}
-                        </h1>
-                        <p className="text-gray-600 dark:text-gray-400">
-                            {t("event.createSubtitle")}
-                        </p>
-                    </div>
-
-                    {alert.message && (
-                        <Alert
-                            variant={alert.type === "error" ? "destructive" : "default"}
-                            className="mb-6"
-                        >
-                            <AlertDescription>{alert.message}</AlertDescription>
-                        </Alert>
-                    )}
-
-                    <form
-                        onSubmit={handleSubmit}
-                        className="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8"
-                    >
-                        {/* Organization */}
-                        <div>
-                            <Label htmlFor="organization_id">
-                                {t("event.organizationId")}{" "}
-                                <span className="text-red-500">*</span>
-                            </Label>
-                            <Select
-                                value={formData.organization_id}
-                                onValueChange={(value) =>
-                                    handleSelectChange("organization_id", value)
-                                }
-                            >
-                                <SelectTrigger
-                                    className={errors.organization_id ? "border-red-500" : ""}
+    const renderStepContent = () => {
+        switch (currentStep) {
+            case 0:
+                return (
+                    <div className="space-y-6 animate-in fade-in-0 slide-in-from-right-4 duration-300">
+                        <div className="grid grid-cols-1 gap-y-5">
+                            {/* Organization */}
+                            <div>
+                                <Label htmlFor="organization_id">
+                                    {t("event.organizationId")} <span className="text-red-500">*</span>
+                                </Label>
+                                <Select
+                                    value={formData.organization_id}
+                                    onValueChange={(value) =>
+                                        handleSelectChange("organization_id", value)
+                                    }
                                 >
-                                    <SelectValue placeholder={t("event.selectOrganization")} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {organizations.length === 0 ? (
-                                        <SelectItem value="" disabled>
-                                            {t("event.noOrganizations")}
-                                        </SelectItem>
-                                    ) : (
-                                        organizations.map((org) => (
-                                            <SelectItem key={org.id} value={org.id}>
-                                                {org.name}
+                                    <SelectTrigger
+                                        className={`mt-1 ${errors.organization_id ? "border-red-500" : ""}`}
+                                    >
+                                        <SelectValue placeholder={t("event.selectOrganization")} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {organizations.length === 0 ? (
+                                            <SelectItem value="" disabled>
+                                                {t("event.noOrganizations")}
                                             </SelectItem>
-                                        ))
-                                    )}
-                                </SelectContent>
-                            </Select>
-                            {errors.organization_id && (
-                                <p className="mt-1 text-sm text-red-600">
-                                    {errors.organization_id}
-                                </p>
-                            )}
-                        </div>
+                                        ) : (
+                                            organizations.map((org) => (
+                                                <SelectItem key={org.id} value={org.id}>
+                                                    {org.name}
+                                                </SelectItem>
+                                            ))
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                                {errors.organization_id && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.organization_id}
+                                    </p>
+                                )}
+                            </div>
 
-                        {/* Title */}
-                        <div>
-                            <Label htmlFor="title">
-                                {t("event.title")} <span className="text-red-500">*</span>
-                            </Label>
-                            <Input
-                                id="title"
-                                type="text"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                placeholder={t("event.titlePlaceholder")}
-                                className={errors.title ? "border-red-500" : ""}
-                            />
-                            {errors.title && (
-                                <p className="mt-1 text-sm text-red-600">{errors.title}</p>
-                            )}
-                        </div>
+                            {/* Title */}
+                            <div>
+                                <Label htmlFor="title">
+                                    {t("event.title")} <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="title"
+                                    type="text"
+                                    name="title"
+                                    value={formData.title}
+                                    onChange={handleChange}
+                                    placeholder={t("event.titlePlaceholder")}
+                                    className={`mt-1 ${errors.title ? "border-red-500" : ""}`}
+                                />
+                                {errors.title && (
+                                    <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+                                )}
+                            </div>
 
-                        {/* Subtitle */}
-                        <div>
-                            <Label htmlFor="subtitle">{t("event.subtitle")}</Label>
-                            <Input
-                                id="subtitle"
-                                type="text"
-                                name="subtitle"
-                                value={formData.subtitle}
-                                onChange={handleChange}
-                                placeholder={t("event.subtitlePlaceholder")}
-                            />
-                        </div>
+                            {/* Subtitle */}
+                            <div>
+                                <Label htmlFor="subtitle">{t("event.subtitle")}</Label>
+                                <Input
+                                    id="subtitle"
+                                    type="text"
+                                    name="subtitle"
+                                    value={formData.subtitle}
+                                    onChange={handleChange}
+                                    placeholder={t("event.subtitlePlaceholder")}
+                                    className="mt-1"
+                                />
+                            </div>
 
-                        {/* Description */}
-                        <div>
-                            <Label htmlFor="description">{t("event.description")}</Label>
-                            <Textarea
-                                id="description"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                placeholder={t("event.descriptionPlaceholder")}
-                                rows={4}
-                            />
-                        </div>
+                            {/* Description */}
+                            <div>
+                                <Label htmlFor="description">{t("event.description")}</Label>
+                                <Textarea
+                                    id="description"
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    placeholder={t("event.descriptionPlaceholder")}
+                                    rows={4}
+                                    className="mt-1"
+                                />
+                            </div>
 
-                        {/* Cover Image Upload */}
-                        <div className="border-t pt-4">
-                            <ImageUploader
-                                onImageUploaded={(url) => setFormData({ ...formData, cover_image_url: url })}
-                                label={t("event.coverImage") || "Ảnh bìa sự kiện"}
-                                disabled={loading}
-                            />
-                        </div>
+                            {/* Capacity & Category */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <Label htmlFor="capacity_total">
+                                        {t("event.capacityTotal")}
+                                    </Label>
+                                    <Input
+                                        id="capacity_total"
+                                        type="number"
+                                        name="capacity_total"
+                                        value={formData.capacity_total}
+                                        onChange={handleChange}
+                                        placeholder={t("event.capacityTotalPlaceholder")}
+                                        min="1"
+                                        className="mt-1"
+                                    />
+                                </div>
 
-                        {/* Attendance Mode */}
-                        <div>
-                            <Label htmlFor="attendance_mode">
-                                {t("event.attendanceMode")}{" "}
-                                <span className="text-red-500">*</span>
-                            </Label>
-                            <Select
-                                value={formData.attendance_mode}
-                                onValueChange={(value) =>
-                                    handleSelectChange("attendance_mode", value)
-                                }
-                            >
-                                <SelectTrigger
-                                    className={errors.attendance_mode ? "border-red-500" : ""}
+                                <div>
+                                    <Label htmlFor="category_ids">{t("event.categories") || "Danh mục"}</Label>
+                                    <div className="mt-1">
+                                        <CategoryMultiSelect
+                                            value={formData.category_ids}
+                                            onChange={(value) =>
+                                                setFormData((prev) => ({ ...prev, category_ids: value }))
+                                            }
+                                            placeholder={t("event.selectCategories") || "Chọn danh mục"}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+
+            case 1:
+                return (
+                    <div className="space-y-6 animate-in fade-in-0 slide-in-from-right-4 duration-300">
+                        <div className="grid grid-cols-1 gap-y-5">
+                            {/* Attendance Mode */}
+                            <div>
+                                <Label htmlFor="attendance_mode">
+                                    {t("event.attendanceMode")} <span className="text-red-500">*</span>
+                                </Label>
+                                <Select
+                                    value={formData.attendance_mode}
+                                    onValueChange={(value) =>
+                                        handleSelectChange("attendance_mode", value)
+                                    }
                                 >
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="OFFLINE">{t("event.offline")}</SelectItem>
-                                    <SelectItem value="ONLINE">{t("event.online")}</SelectItem>
-                                    <SelectItem value="HYBRID">{t("event.hybrid")}</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            {errors.attendance_mode && (
-                                <p className="mt-1 text-sm text-red-600">
-                                    {errors.attendance_mode}
-                                </p>
-                            )}
-                        </div>
+                                    <SelectTrigger
+                                        className={`mt-1 ${errors.attendance_mode ? "border-red-500" : ""}`}
+                                    >
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="OFFLINE">{t("event.offline")}</SelectItem>
+                                        <SelectItem value="ONLINE">{t("event.online")}</SelectItem>
+                                        <SelectItem value="HYBRID">{t("event.hybrid")}</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                {errors.attendance_mode && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.attendance_mode}
+                                    </p>
+                                )}
+                            </div>
 
-                        {/* Timezone */}
-                        <div>
-                            <Label htmlFor="timezone">
-                                {t("event.timezone")} <span className="text-red-500">*</span>
-                            </Label>
-                            <Input
-                                id="timezone"
-                                type="text"
-                                name="timezone"
-                                value={formData.timezone}
-                                onChange={handleChange}
-                                className={errors.timezone ? "border-red-500" : ""}
-                            />
-                            {errors.timezone && (
-                                <p className="mt-1 text-sm text-red-600">{errors.timezone}</p>
-                            )}
-                        </div>
+                            {/* Timezone */}
+                            <div>
+                                <Label htmlFor="timezone">
+                                    {t("event.timezone")} <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="timezone"
+                                    type="text"
+                                    name="timezone"
+                                    value={formData.timezone}
+                                    onChange={handleChange}
+                                    className={`mt-1 ${errors.timezone ? "border-red-500" : ""}`}
+                                />
+                                {errors.timezone && (
+                                    <p className="mt-1 text-sm text-red-600">{errors.timezone}</p>
+                                )}
+                            </div>
 
-                        {/* Start Date & Time */}
-                        <div>
-                            <Label htmlFor="start_at">
-                                {t("event.startAt")} <span className="text-red-500">*</span>
-                            </Label>
-                            <DateTimePicker
-                                date={formData.start_at}
-                                setDate={(date) =>
-                                    setFormData((prev) => ({ ...prev, start_at: date }))
-                                }
-                            />
-                            {errors.start_at && (
-                                <p className="mt-1 text-sm text-red-600">{errors.start_at}</p>
-                            )}
-                        </div>
+                            {/* Start & End Time */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <Label htmlFor="start_at">
+                                        {t("event.startAt")} <span className="text-red-500">*</span>
+                                    </Label>
+                                    <div className="mt-1">
+                                        <DateTimePicker
+                                            date={formData.start_at}
+                                            setDate={(date) =>
+                                                setFormData((prev) => ({ ...prev, start_at: date }))
+                                            }
+                                        />
+                                    </div>
+                                    {errors.start_at && (
+                                        <p className="mt-1 text-sm text-red-600">{errors.start_at}</p>
+                                    )}
+                                </div>
 
-                        {/* End Date & Time */}
-                        <div>
-                            <Label htmlFor="end_at">
-                                {t("event.endAt")} <span className="text-red-500">*</span>
-                            </Label>
-                            <DateTimePicker
-                                date={formData.end_at}
-                                setDate={(date) =>
-                                    setFormData((prev) => ({ ...prev, end_at: date }))
-                                }
-                            />
-                            {errors.end_at && (
-                                <p className="mt-1 text-sm text-red-600">{errors.end_at}</p>
-                            )}
-                        </div>
+                                <div>
+                                    <Label htmlFor="end_at">
+                                        {t("event.endAt")} <span className="text-red-500">*</span>
+                                    </Label>
+                                    <div className="mt-1">
+                                        <DateTimePicker
+                                            date={formData.end_at}
+                                            setDate={(date) =>
+                                                setFormData((prev) => ({ ...prev, end_at: date }))
+                                            }
+                                        />
+                                    </div>
+                                    {errors.end_at && (
+                                        <p className="mt-1 text-sm text-red-600">{errors.end_at}</p>
+                                    )}
+                                </div>
+                            </div>
 
-                        {/* All Day Event */}
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                id="is_all_day"
-                                name="is_all_day"
-                                checked={formData.is_all_day}
-                                onChange={handleChange}
-                                className="h-4 w-4"
-                            />
-                            <Label htmlFor="is_all_day" className="cursor-pointer">
-                                {t("event.isAllDay")}
-                            </Label>
+                            {/* All Day Event */}
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    id="is_all_day"
+                                    name="is_all_day"
+                                    checked={formData.is_all_day}
+                                    onChange={handleChange}
+                                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                />
+                                <Label htmlFor="is_all_day" className="cursor-pointer">
+                                    {t("event.isAllDay")}
+                                </Label>
+                            </div>
                         </div>
+                    </div>
+                );
 
+            case 2:
+                return (
+                    <div className="space-y-6 animate-in fade-in-0 slide-in-from-right-4 duration-300">
                         {/* OFFLINE/HYBRID Fields */}
                         {(formData.attendance_mode === "OFFLINE" ||
                             formData.attendance_mode === "HYBRID") && (
-                                <div className="space-y-4 border-t pt-4">
-                                    <h3 className="font-semibold text-lg">{t("event.venueInfo")}</h3>
-
+                                <div className="grid grid-cols-1 gap-y-5 mb-6">
                                     <div>
                                         <Label htmlFor="venue_name">
-                                            {t("event.venueName")}{" "}
-                                            <span className="text-red-500">*</span>
+                                            {t("event.venueName")} <span className="text-red-500">*</span>
                                         </Label>
                                         <Input
                                             id="venue_name"
@@ -511,7 +565,7 @@ const CreateEvent = () => {
                                             value={formData.venue_name}
                                             onChange={handleChange}
                                             placeholder={t("event.venueNamePlaceholder")}
-                                            className={errors.venue_name ? "border-red-500" : ""}
+                                            className={`mt-1 ${errors.venue_name ? "border-red-500" : ""}`}
                                         />
                                         {errors.venue_name && (
                                             <p className="mt-1 text-sm text-red-600">
@@ -522,8 +576,7 @@ const CreateEvent = () => {
 
                                     <div>
                                         <Label htmlFor="address_line1">
-                                            {t("event.addressLine1")}{" "}
-                                            <span className="text-red-500">*</span>
+                                            {t("event.addressLine1")} <span className="text-red-500">*</span>
                                         </Label>
                                         <Input
                                             id="address_line1"
@@ -532,7 +585,7 @@ const CreateEvent = () => {
                                             value={formData.address_line1}
                                             onChange={handleChange}
                                             placeholder={t("event.addressLine1Placeholder")}
-                                            className={errors.address_line1 ? "border-red-500" : ""}
+                                            className={`mt-1 ${errors.address_line1 ? "border-red-500" : ""}`}
                                         />
                                         {errors.address_line1 && (
                                             <p className="mt-1 text-sm text-red-600">
@@ -542,9 +595,7 @@ const CreateEvent = () => {
                                     </div>
 
                                     <div>
-                                        <Label htmlFor="address_line2">
-                                            {t("event.addressLine2")}
-                                        </Label>
+                                        <Label htmlFor="address_line2">{t("event.addressLine2")}</Label>
                                         <Input
                                             id="address_line2"
                                             type="text"
@@ -552,10 +603,11 @@ const CreateEvent = () => {
                                             value={formData.address_line2}
                                             onChange={handleChange}
                                             placeholder={t("event.addressLine2Placeholder")}
+                                            className="mt-1"
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <Label htmlFor="city">
                                                 {t("event.city")} <span className="text-red-500">*</span>
@@ -567,7 +619,7 @@ const CreateEvent = () => {
                                                 value={formData.city}
                                                 onChange={handleChange}
                                                 placeholder={t("event.cityPlaceholder")}
-                                                className={errors.city ? "border-red-500" : ""}
+                                                className={`mt-1 ${errors.city ? "border-red-500" : ""}`}
                                             />
                                             {errors.city && (
                                                 <p className="mt-1 text-sm text-red-600">{errors.city}</p>
@@ -583,11 +635,12 @@ const CreateEvent = () => {
                                                 value={formData.district}
                                                 onChange={handleChange}
                                                 placeholder={t("event.districtPlaceholder")}
+                                                className="mt-1"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <Label htmlFor="country">{t("event.country")}</Label>
                                             <Input
@@ -597,6 +650,7 @@ const CreateEvent = () => {
                                                 value={formData.country}
                                                 onChange={handleChange}
                                                 placeholder={t("event.countryPlaceholder")}
+                                                className="mt-1"
                                             />
                                         </div>
 
@@ -609,6 +663,7 @@ const CreateEvent = () => {
                                                 value={formData.postal_code}
                                                 onChange={handleChange}
                                                 placeholder={t("event.postalCodePlaceholder")}
+                                                className="mt-1"
                                             />
                                         </div>
                                     </div>
@@ -618,13 +673,15 @@ const CreateEvent = () => {
                         {/* ONLINE/HYBRID Fields */}
                         {(formData.attendance_mode === "ONLINE" ||
                             formData.attendance_mode === "HYBRID") && (
-                                <div className="space-y-4 border-t pt-4">
-                                    <h3 className="font-semibold text-lg">{t("event.onlineInfo")}</h3>
-
+                                <div className="grid grid-cols-1 gap-y-5">
+                                    {formData.attendance_mode === "HYBRID" && (
+                                        <h4 className="font-medium text-foreground">
+                                            {t("event.onlineInfo")}
+                                        </h4>
+                                    )}
                                     <div>
                                         <Label htmlFor="meeting_url">
-                                            {t("event.meetingUrl")}{" "}
-                                            <span className="text-red-500">*</span>
+                                            {t("event.meetingUrl")} <span className="text-red-500">*</span>
                                         </Label>
                                         <Input
                                             id="meeting_url"
@@ -633,7 +690,7 @@ const CreateEvent = () => {
                                             value={formData.meeting_url}
                                             onChange={handleChange}
                                             placeholder={t("event.meetingUrlPlaceholder")}
-                                            className={errors.meeting_url ? "border-red-500" : ""}
+                                            className={`mt-1 ${errors.meeting_url ? "border-red-500" : ""}`}
                                         />
                                         {errors.meeting_url && (
                                             <p className="mt-1 text-sm text-red-600">
@@ -643,9 +700,7 @@ const CreateEvent = () => {
                                     </div>
 
                                     <div>
-                                        <Label htmlFor="stream_platform">
-                                            {t("event.streamPlatform")}
-                                        </Label>
+                                        <Label htmlFor="stream_platform">{t("event.streamPlatform")}</Label>
                                         <Input
                                             id="stream_platform"
                                             type="text"
@@ -653,53 +708,184 @@ const CreateEvent = () => {
                                             value={formData.stream_platform}
                                             onChange={handleChange}
                                             placeholder={t("event.streamPlatformPlaceholder")}
+                                            className="mt-1"
                                         />
                                     </div>
                                 </div>
                             )}
 
-                        {/* Capacity & Category */}
-                        <div className="grid grid-cols-2 gap-4 border-t pt-4">
-                            <div>
-                                <Label htmlFor="capacity_total">
-                                    {t("event.capacityTotal")}
-                                </Label>
-                                <Input
-                                    id="capacity_total"
-                                    type="number"
-                                    name="capacity_total"
-                                    value={formData.capacity_total}
-                                    onChange={handleChange}
-                                    placeholder={t("event.capacityTotalPlaceholder")}
-                                    min="1"
-                                />
-                            </div>
+                        {formData.attendance_mode === "ONLINE" && (
+                            <p className="text-sm text-muted-foreground mt-4">
+                                {t("event.onlineOnlyNote") || "Sự kiện trực tuyến không yêu cầu địa điểm vật lý."}
+                            </p>
+                        )}
+                    </div>
+                );
 
-                            <div className="col-span-1">
-                                <Label htmlFor="category_ids">{t("event.categories") || "Danh mục"}</Label>
-                                <CategoryMultiSelect
-                                    value={formData.category_ids}
-                                    onChange={(value) =>
-                                        setFormData((prev) => ({ ...prev, category_ids: value }))
-                                    }
-                                    placeholder={t("event.selectCategories") || "Chọn danh mục"}
-                                />
+            case 3:
+                return (
+                    <div className="space-y-6 animate-in fade-in-0 slide-in-from-right-4 duration-300">
+                        <ImageUploader
+                            currentImageUrl={formData.cover_image_url}
+                            onImageUploaded={(url) => setFormData({ ...formData, cover_image_url: url })}
+                            label={t("event.coverImage") || "Ảnh bìa sự kiện"}
+                            disabled={loading}
+                        />
+
+                        {formData.cover_image_url && (
+                            <div className="mt-6">
+                                <Label className="mb-2 block">{t("event.preview") || "Xem trước"}</Label>
+                                <div className="w-full h-48 rounded-lg overflow-hidden border">
+                                    <img
+                                        src={formData.cover_image_url}
+                                        alt="Cover preview"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
                             </div>
+                        )}
+                    </div>
+                );
+
+            default:
+                return null;
+        }
+    };
+
+    const isLastStep = currentStep === STEPS.length - 1;
+    const isFirstStep = currentStep === 0;
+
+    return (
+        <DashboardLayout>
+            <div className="min-h-screen p-4 md:p-6 lg:p-10">
+                <div className="max-w-4xl mx-auto">
+                    {/* Title Section */}
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-foreground">
+                            {t("event.createTitle")}
+                        </h1>
+                        <p className="mt-2 text-muted-foreground">
+                            {t("event.createSubtitle")}
+                        </p>
+                    </div>
+
+                    {alert.message && (
+                        <Alert
+                            variant={alert.type === "error" ? "destructive" : "default"}
+                            className="mb-6"
+                        >
+                            <AlertDescription>{alert.message}</AlertDescription>
+                        </Alert>
+                    )}
+
+                    {/* Steps Indicator */}
+                    <div className="mb-8">
+                        <div className="flex items-center justify-center">
+                            {STEPS.map((step, index) => {
+                                const Icon = step.icon;
+                                const isCompleted = index < currentStep;
+                                const isCurrent = index === currentStep;
+
+                                return (
+                                    <div key={step.id} className="flex items-center">
+                                        {/* Step Circle */}
+                                        <div className="flex flex-col items-center">
+                                            <div
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${isCompleted
+                                                    ? "bg-primary border-primary text-primary-foreground"
+                                                    : isCurrent
+                                                        ? "border-primary text-primary bg-primary/10"
+                                                        : "border-muted-foreground/30 text-muted-foreground"
+                                                    }`}
+                                            >
+                                                {isCompleted ? (
+                                                    <Check className="w-5 h-5" />
+                                                ) : (
+                                                    <Icon className="w-5 h-5" />
+                                                )}
+                                            </div>
+                                            <span
+                                                className={`mt-2 text-xs font-medium ${isCurrent
+                                                    ? "text-primary"
+                                                    : isCompleted
+                                                        ? "text-foreground"
+                                                        : "text-muted-foreground"
+                                                    }`}
+                                            >
+                                                {t(step.labelKey)}
+                                            </span>
+                                        </div>
+
+                                        {/* Connector Line */}
+                                        {index < STEPS.length - 1 && (
+                                            <div
+                                                className={`w-16 md:w-24 h-0.5 mx-2 ${index < currentStep
+                                                    ? "bg-primary"
+                                                    : "bg-muted-foreground/30"
+                                                    }`}
+                                            />
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Form Content */}
+                    <form
+                        onSubmit={handleSubmit}
+                        onKeyDown={(e) => {
+                            // Ngăn Enter key tự động submit form
+                            // Chỉ cho phép submit khi focus vào nút submit
+                            if (e.key === 'Enter' && e.target.type !== 'submit') {
+                                e.preventDefault();
+                            }
+                        }}
+                    >
+                        <div className="bg-card rounded-xl shadow-lg border p-6 md:p-8 min-h-[400px]">
+                            <h3 className="text-lg font-semibold text-foreground mb-6 border-b pb-3">
+                                {t(STEPS[currentStep].labelKey + "Title") || t(STEPS[currentStep].labelKey)}
+                            </h3>
+                            {renderStepContent()}
                         </div>
 
-                        <div className="flex gap-4 pt-4">
+                        {/* Navigation Buttons */}
+                        <div className="mt-6 flex justify-between items-center">
                             <Button
                                 type="button"
                                 variant="outline"
                                 onClick={() => navigate("/events-management")}
-                                className="flex-1"
                                 disabled={loading}
                             >
+                                <X className="w-4 h-4 mr-2" />
                                 {t("common.cancel")}
                             </Button>
-                            <Button type="submit" disabled={loading} className="flex-1">
-                                {loading ? t("common.loading") : t("event.createButton")}
-                            </Button>
+
+                            <div className="flex gap-3">
+                                {!isFirstStep && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={handlePrevious}
+                                        disabled={loading}
+                                    >
+                                        <ChevronLeft className="w-4 h-4 mr-2" />
+                                        {t("event.previous") || "Quay lại"}
+                                    </Button>
+                                )}
+
+                                {isLastStep ? (
+                                    <Button type="submit" disabled={loading}>
+                                        <Save className="w-4 h-4 mr-2" />
+                                        {loading ? t("common.loading") : t("event.createButton")}
+                                    </Button>
+                                ) : (
+                                    <Button type="button" onClick={handleNext} disabled={loading}>
+                                        {t("event.next") || "Tiếp theo"}
+                                        <ChevronRight className="w-4 h-4 ml-2" />
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                     </form>
                 </div>

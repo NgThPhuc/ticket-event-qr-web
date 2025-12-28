@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronDown, Search, X } from "lucide-react";
@@ -79,12 +78,11 @@ const CategoryMultiSelect = ({
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
+                <div
                     role="combobox"
                     aria-expanded={open}
-                    disabled={disabled}
-                    className={`w-full justify-between min-h-[40px] h-auto ${className}`}
+                    className={`flex items-center w-full justify-between min-h-[40px] h-auto px-3 py-2 border rounded-md bg-background cursor-pointer hover:bg-accent/50 transition-colors ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
+                    onClick={() => !disabled && setOpen(!open)}
                 >
                     <div className="flex flex-wrap gap-1 flex-1">
                         {selectedCategories.length > 0 ? (
@@ -100,16 +98,23 @@ const CategoryMultiSelect = ({
                                     }}
                                 >
                                     {cat.name}
-                                    <button
-                                        type="button"
-                                        className="ml-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full p-0.5"
+                                    <span
+                                        role="button"
+                                        tabIndex={0}
+                                        className="ml-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full p-0.5 cursor-pointer"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             removeCategory(cat.id);
                                         }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.stopPropagation();
+                                                removeCategory(cat.id);
+                                            }
+                                        }}
                                     >
                                         <X className="h-3 w-3" />
-                                    </button>
+                                    </span>
                                 </Badge>
                             ))
                         ) : (
@@ -119,7 +124,7 @@ const CategoryMultiSelect = ({
                         )}
                     </div>
                     <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
-                </Button>
+                </div>
             </PopoverTrigger>
             <PopoverContent className="w-full min-w-[300px] p-0" align="start">
                 {/* Search Input */}

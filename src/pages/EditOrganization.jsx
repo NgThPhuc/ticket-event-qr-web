@@ -2,12 +2,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import { Building2 } from 'lucide-react';
+import { Building2, Loader2, Wallet } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getOrganization, updateOrganization } from '../api/organizations';
+import { updateOrganizationPayoutStatus } from '../api/payouts';
 import { useAuth } from '../contexts/AuthContext';
 import { DashboardLayout } from '../layouts/DashboardLayout';
 
@@ -15,7 +17,8 @@ const EditOrganization = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { organizationId } = useParams();
-    const { isAuthenticated } = useAuth();
+    const { user, isAuthenticated } = useAuth();
+    const isPlatformAdmin = user?.platform_role === 'PLATFORM_ADMIN';
     const [organization, setOrganization] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
@@ -32,6 +35,8 @@ const EditOrganization = () => {
     const [errors, setErrors] = useState({});
     const [alert, setAlert] = useState({ type: '', message: '' });
     const [loading, setLoading] = useState(true);
+    const [payoutEnabled, setPayoutEnabled] = useState(false);
+    const [togglingPayout, setTogglingPayout] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
     // Redirect nếu chưa đăng nhập
@@ -67,6 +72,8 @@ const EditOrganization = () => {
                     bank_account_name: data.bank_account_name || '',
                     bank_name: data.bank_name || '',
                 });
+                // Set payout status for admin
+                setPayoutEnabled(data.payout_enabled || false);
             } catch (err) {
                 setAlert({
                     type: 'error',
@@ -94,6 +101,31 @@ const EditOrganization = () => {
         // Xóa error khi user nhập
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
+        }
+    };
+
+    // Admin toggle payout status
+    const handleTogglePayout = async () => {
+        if (!isPlatformAdmin || !organizationId) return;
+        setTogglingPayout(true);
+        try {
+            const newStatus = !payoutEnabled;
+            await updateOrganizationPayoutStatus(organizationId, newStatus);
+            setPayoutEnabled(newStatus);
+            setAlert({
+                type: 'success',
+                message: newStatus
+                    ? t('organization.payoutStatusEnabled') || 'Đã bật payout cho tổ chức.'
+                    : t('organization.payoutStatusDisabled') || 'Đã tắt payout cho tổ chức.',
+            });
+            setTimeout(() => setAlert({ type: '', message: '' }), 3000);
+        } catch (err) {
+            setAlert({
+                type: 'error',
+                message: err.message || t('organization.payoutToggleError') || 'Không thể thay đổi trạng thái payout.',
+            });
+        } finally {
+            setTogglingPayout(false);
         }
     };
 
@@ -415,73 +447,103 @@ const EditOrganization = () => {
                                 />
                             </div>
 
-                            {/* PAYOUT COMMENTED - Manual Payout */}
-                            {/* Bank Info for Payout - Đã comment vì làm payout thủ công */}
-                            {/* <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                  {t('organization.bankInfoTitle') || 'Thông tin ngân hàng để nhận payout'}
-                </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  {t('organization.bankInfoHint') || 'Vui lòng nhập đầy đủ thông tin ngân hàng. Nền tảng chỉ trả tiền khi tổ chức có đủ 3 trường này và đã được bật payout.'}
-                </p>
+                            {/* Bank Info for Payout */}
+                            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                                    {t('organization.bankInfoTitle') || 'Thông tin ngân hàng để nhận payout'}
+                                </h2>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                    {t('organization.bankInfoHint') || 'Vui lòng nhập đầy đủ thông tin ngân hàng để có thể yêu cầu rút tiền.'}
+                                </p>
 
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="bank_account_number" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      {t('organization.bankAccountNumber') || 'Số tài khoản ngân hàng'}
-                    </Label>
-                    <Input
-                      id="bank_account_number"
-                      type="text"
-                      name="bank_account_number"
-                      value={formData.bank_account_number}
-                      onChange={handleChange}
-                      placeholder="0123456789"
-                    />
-                  </div>
+                                <div className="space-y-4">
+                                    <div>
+                                        <Label htmlFor="bank_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            {t('organization.bankName') || 'Ngân hàng'}
+                                        </Label>
+                                        <Input
+                                            id="bank_name"
+                                            type="text"
+                                            name="bank_name"
+                                            value={formData.bank_name}
+                                            onChange={handleChange}
+                                            placeholder={t('organization.bankNamePlaceholder') || 'Vietcombank, Techcombank...'}
+                                        />
+                                    </div>
 
-                  <div>
-                    <Label htmlFor="bank_account_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      {t('organization.bankAccountName') || 'Tên chủ tài khoản'}
-                    </Label>
-                    <Input
-                      id="bank_account_name"
-                      type="text"
-                      name="bank_account_name"
-                      value={formData.bank_account_name}
-                      onChange={handleChange}
-                      placeholder={t('organization.bankAccountNamePlaceholder') || 'Nguyen Van A'}
-                    />
-                  </div>
+                                    <div>
+                                        <Label htmlFor="bank_account_number" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            {t('organization.bankAccountNumber') || 'Số tài khoản ngân hàng'}
+                                        </Label>
+                                        <Input
+                                            id="bank_account_number"
+                                            type="text"
+                                            name="bank_account_number"
+                                            value={formData.bank_account_number}
+                                            onChange={handleChange}
+                                            placeholder="0123456789"
+                                        />
+                                    </div>
 
-                  <div>
-                    <Label htmlFor="bank_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      {t('organization.bankName') || 'Ngân hàng'}
-                    </Label>
-                    <Input
-                      id="bank_name"
-                      type="text"
-                      name="bank_name"
-                      value={formData.bank_name}
-                      onChange={handleChange}
-                      placeholder={t('organization.bankNamePlaceholder') || 'Vietcombank, Techcombank...'}
-                    />
-                  </div>
+                                    <div>
+                                        <Label htmlFor="bank_account_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            {t('organization.bankAccountName') || 'Tên chủ tài khoản'}
+                                        </Label>
+                                        <Input
+                                            id="bank_account_name"
+                                            type="text"
+                                            name="bank_account_name"
+                                            value={formData.bank_account_name}
+                                            onChange={handleChange}
+                                            placeholder={t('organization.bankAccountNamePlaceholder') || 'NGUYEN VAN A'}
+                                        />
+                                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                            {t('organization.bankAccountNameHint') || 'Nhập đúng tên chủ tài khoản (viết hoa, không dấu)'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
 
-                  {organization && (
-                    <div className="mt-2 text-sm">
-                      <span className="font-medium text-gray-700 dark:text-gray-300">
-                        {t('organization.payoutStatusLabel') || 'Trạng thái payout:'}
-                      </span>{' '}
-                      <span className={organization.payout_enabled ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-gray-500 dark:text-gray-400'}>
-                        {organization.payout_enabled
-                          ? t('organization.payoutStatusEnabled') || 'Đang bật payout'
-                          : t('organization.payoutStatusDisabled') || 'Chưa bật payout'}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div> */}
+                            {/* Admin Only: Payout Control */}
+                            {isPlatformAdmin && (
+                                <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <Wallet className="h-5 w-5 text-emerald-500" />
+                                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                            {t('organization.payoutSectionTitle') || 'Thanh toán cho tổ chức (Payout)'}
+                                        </h2>
+                                    </div>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                        {t('organization.payoutSectionHint') || 'Bật tính năng này để tổ chức có thể yêu cầu rút tiền doanh thu từ các sự kiện.'}
+                                    </p>
+                                    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                {t('organization.payoutStatusLabel') || 'Trạng thái payout'}
+                                            </Label>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                                {payoutEnabled
+                                                    ? t('organization.payoutStatusEnabled') || 'Đang bật payout'
+                                                    : t('organization.payoutStatusDisabled') || 'Chưa bật payout'
+                                                }
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            {togglingPayout && <Loader2 className="h-4 w-4 animate-spin text-gray-500" />}
+                                            <Switch
+                                                checked={payoutEnabled}
+                                                onCheckedChange={handleTogglePayout}
+                                                disabled={togglingPayout}
+                                            />
+                                        </div>
+                                    </div>
+                                    {!organization?.bank_name || !organization?.bank_account_number || !organization?.bank_account_name ? (
+                                        <p className="mt-2 text-sm text-amber-600 dark:text-amber-400">
+                                            ⚠️ {t('organization.bankWarningMissing') || 'Tổ chức chưa có đủ thông tin ngân hàng để nhận payout.'}
+                                        </p>
+                                    ) : null}
+                                </div>
+                            )}
 
                             <div className="flex gap-4 pt-4">
                                 <Button
