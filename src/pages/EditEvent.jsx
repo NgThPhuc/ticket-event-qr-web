@@ -190,7 +190,7 @@ const EditEvent = () => {
                     meeting_url: data.meeting_url || "",
                     stream_platform: data.stream_platform || "",
                     capacity_total: data.capacity_total?.toString() || "",
-                    category_ids: data.categories ? data.categories.map(c => c.id) : [],
+                    category_ids: data.categories ? data.categories.map(c => c.id).filter(Boolean) : [],
                     cover_image_url: data.cover_image_url || "",
                 });
             } catch (err) {
@@ -360,8 +360,9 @@ const EditEvent = () => {
 
             if (formData.capacity_total)
                 payload.capacity_total = parseInt(formData.capacity_total);
-            if (formData.category_ids && formData.category_ids.length > 0)
-                payload.category_ids = formData.category_ids;
+            // Luôn gửi category_ids (kể cả array rỗng) để backend có thể cập nhật/xóa categories
+            // Filter để loại bỏ null/undefined
+            payload.category_ids = (formData.category_ids || []).filter(id => id && typeof id === 'string');
             if (formData.cover_image_url)
                 payload.cover_image_url = formData.cover_image_url;
 

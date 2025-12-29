@@ -56,23 +56,8 @@ import VerifyOTP from './pages/VerifyOTP';
 
 function AppContent() {
     const location = useLocation();
-    const hideFooterPaths = ['/login', '/register', '/verify-otp', '/forgot-password', '/reset-password'];
-    const isDashboardRoute = location.pathname.startsWith('/dashboard') ||
-        location.pathname.startsWith('/organizations') ||
-        location.pathname.startsWith('/create-organization') ||
-        location.pathname.startsWith('/events-management') ||
-        (location.pathname.startsWith('/events/') && location.pathname !== '/events') ||
-        location.pathname.startsWith('/create-event') ||
-        location.pathname.startsWith('/checkout') ||
-        location.pathname.startsWith('/order-success') ||
-        location.pathname.startsWith('/orders') ||
-        location.pathname.startsWith('/profile') ||
-        location.pathname.startsWith('/settings') ||
-        location.pathname.startsWith('/admin/revenue-shares') ||
-        location.pathname.startsWith('/admin/payouts') ||
-        location.pathname.startsWith('/refunds') ||
-        location.pathname.startsWith('/check-in');
-    const showFooter = !hideFooterPaths.includes(location.pathname) && !isDashboardRoute;
+    // Footer chỉ hiển thị ở trang Home
+    const showFooter = location.pathname === '/';
 
     return (
         <div className="flex flex-col min-h-screen">

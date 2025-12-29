@@ -269,8 +269,9 @@ const CreateEvent = () => {
 
             if (formData.capacity_total)
                 payload.capacity_total = parseInt(formData.capacity_total);
-            if (formData.category_ids && formData.category_ids.length > 0)
-                payload.category_ids = formData.category_ids;
+            // Luôn gửi category_ids (kể cả array rỗng) để backend có thể xóa categories
+            // Filter để loại bỏ null/undefined
+            payload.category_ids = (formData.category_ids || []).filter(id => id && typeof id === 'string');
 
             await createEvent(payload);
 
