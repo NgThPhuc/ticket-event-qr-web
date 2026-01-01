@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import {
     Table,
     TableBody,
@@ -12,7 +11,6 @@ import {
     getCoreRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import { Eye, Pencil, Trash2, Users } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -134,93 +132,8 @@ export function PlatformOrganizationsDataTable({
             //       </div>
             //     );
             //   },
-            // },
-            {
-                id: 'actions',
-                header: t('organizationsManagement.table.actions') || 'ACTIONS',
-                cell: ({ row }) => {
-                    const org = row.original;
-                    const orgId = org.id;
-
-                    return (
-                        <div className="flex items-center gap-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    if (onView) {
-                                        onView(orgId);
-                                    } else {
-                                        navigate(`/organizations/${orgId}`);
-                                    }
-                                }}
-                                className="h-8 gap-1"
-                            >
-                                <Eye className="h-4 w-4" />
-                                {t('organizationsManagement.actions.view') || 'View'}
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    if (onEdit) {
-                                        onEdit(orgId);
-                                    } else {
-                                        navigate(`/organizations/${orgId}/edit`);
-                                    }
-                                }}
-                                className="h-8 gap-1"
-                            >
-                                <Pencil className="h-4 w-4" />
-                                {t('organizationsManagement.actions.edit') || 'Edit'}
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    if (onMembers) {
-                                        onMembers(orgId);
-                                    } else {
-                                        navigate(`/organizations/${orgId}/members`);
-                                    }
-                                }}
-                                className="h-8 gap-1"
-                            >
-                                <Users className="h-4 w-4" />
-                                {t('organizationsManagement.actions.members') || 'Members'}
-                            </Button>
-                            <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => {
-                                    if (onDelete) {
-                                        onDelete(orgId, org.name);
-                                    }
-                                }}
-                                className="h-8 gap-1"
-                            >
-                                <Trash2 className="h-4 w-4" />
-                                {t('organizationsManagement.actions.delete') || 'Delete'}
-                            </Button>
-                            {/* PAYOUT COMMENTED - Manual Payout */}
-                            {/* {onTogglePayout && (
-                <Button
-                  variant={org.payout_enabled ? 'outline' : 'default'}
-                  size="sm"
-                  onClick={() => onTogglePayout(org)}
-                  className="h-8 gap-1"
-                >
-                  {org.payout_enabled
-                    ? t('organizationsManagement.actions.disablePayout') || 'Tắt payout'
-                    : t('organizationsManagement.actions.enablePayout') || 'Bật payout'}
-                </Button>
-              )} */}
-                        </div>
-                    );
-                },
-            },
         ],
-        [navigate, t, onView, onEdit, onMembers, onDelete]
+        [t]
     );
 
     const table = useReactTable({
@@ -254,6 +167,8 @@ export function PlatformOrganizationsDataTable({
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() && 'selected'}
+                                className="cursor-pointer hover:bg-muted/50 transition-colors"
+                                onClick={() => navigate(`/organizations/${row.original.id}`)}
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.id}>

@@ -2,7 +2,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Home, RotateCcw } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../components/Header";
@@ -15,74 +14,19 @@ import Header from "../components/Header";
  * - code: VNPAY response code
  */
 
-// VNPAY Response Codes mapping
-const VNPAY_ERROR_MESSAGES = {
-  '07': {
-    title: 'Giao dịch nghi vấn',
-    message: 'Giao dịch đã trừ tiền nhưng có vấn đề. Vui lòng liên hệ ngân hàng hoặc hỗ trợ.',
-    canRetry: false,
-    severity: 'warning'
-  },
-  '09': {
-    title: 'Thẻ chưa đăng ký dịch vụ',
-    message: 'Thẻ/Tài khoản chưa đăng ký dịch vụ Internet Banking tại ngân hàng.',
-    canRetry: true,
-    severity: 'error'
-  },
-  '10': {
-    title: 'Thông tin không đúng',
-    message: 'Thông tin thẻ/tài khoản không đúng. Vui lòng kiểm tra lại.',
-    canRetry: true,
-    severity: 'error'
-  },
-  '11': {
-    title: 'Thẻ hết hạn',
-    message: 'Thẻ của bạn đã hết hạn. Vui lòng sử dụng thẻ khác.',
-    canRetry: true,
-    severity: 'error'
-  },
-  '12': {
-    title: 'Thẻ bị khóa',
-    message: 'Thẻ của bạn đã bị khóa. Vui lòng liên hệ ngân hàng.',
-    canRetry: false,
-    severity: 'error'
-  },
-  '24': {
-    title: 'Giao dịch bị hủy',
-    message: 'Bạn đã hủy giao dịch thanh toán.',
-    canRetry: true,
-    severity: 'info'
-  },
-  '51': {
-    title: 'Không đủ số dư',
-    message: 'Tài khoản không đủ số dư để thực hiện giao dịch.',
-    canRetry: true,
-    severity: 'error'
-  },
-  '65': {
-    title: 'Vượt quá số lần nhập OTP',
-    message: 'Bạn đã nhập sai OTP quá số lần cho phép. Vui lòng thử lại sau.',
-    canRetry: true,
-    severity: 'error'
-  },
-  '75': {
-    title: 'Ngân hàng đang bảo trì',
-    message: 'Ngân hàng đang bảo trì. Vui lòng thử lại sau.',
-    canRetry: true,
-    severity: 'warning'
-  },
-  '79': {
-    title: 'Vượt quá số lần thanh toán',
-    message: 'Bạn đã vượt quá số lần thanh toán cho phép trong ngày. Vui lòng thử lại vào ngày mai.',
-    canRetry: false,
-    severity: 'error'
-  },
-  'default': {
-    title: 'Thanh toán thất bại',
-    message: 'Đã có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.',
-    canRetry: true,
-    severity: 'error'
-  }
+// VNPAY Response Codes với metadata (không chứa hardcoded text)
+const VNPAY_ERROR_CONFIG = {
+  '07': { canRetry: false, severity: 'warning' },
+  '09': { canRetry: true, severity: 'error' },
+  '10': { canRetry: true, severity: 'error' },
+  '11': { canRetry: true, severity: 'error' },
+  '12': { canRetry: false, severity: 'error' },
+  '24': { canRetry: true, severity: 'info' },
+  '51': { canRetry: true, severity: 'error' },
+  '65': { canRetry: true, severity: 'error' },
+  '75': { canRetry: true, severity: 'warning' },
+  '79': { canRetry: false, severity: 'error' },
+  'default': { canRetry: true, severity: 'error' }
 };
 
 const PaymentFailure = () => {
@@ -91,13 +35,25 @@ const PaymentFailure = () => {
   const [searchParams] = useSearchParams();
   
   const code = searchParams.get('code') || 'default';
-  const [errorInfo, setErrorInfo] = useState(VNPAY_ERROR_MESSAGES['default']);
+  
+  // Lấy config cho error code
+  const getErrorConfig = (errorCode) => {
+    return VNPAY_ERROR_CONFIG[errorCode] || VNPAY_ERROR_CONFIG['default'];
+  };
 
-  useEffect(() => {
-    // Get error message based on code
-    const info = VNPAY_ERROR_MESSAGES[code] || VNPAY_ERROR_MESSAGES['default'];
-    setErrorInfo(info);
-  }, [code]);
+  // Lấy title và message từ i18n
+  const getErrorInfo = (errorCode) => {
+    const config = getErrorConfig(errorCode);
+    const translationCode = VNPAY_ERROR_CONFIG[errorCode] ? errorCode : 'default';
+    
+    return {
+      title: t(`payment.vnpayErrors.${translationCode}.title`),
+      message: t(`payment.vnpayErrors.${translationCode}.message`),
+      ...config
+    };
+  };
+
+  const errorInfo = getErrorInfo(code);
 
   const handleRetry = () => {
     // Go back to orders page where user can retry payment

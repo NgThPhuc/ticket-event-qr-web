@@ -13,13 +13,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { AlertCircle, ArrowLeft, Calendar, MapPin, Timer, XCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { cancelOrder, getOrderById } from "../api/orders";
-import Header from "../components/Header";
 import QRCodeDisplay from "../components/QRCodeDisplay";
 
 // OrderCountdown Component
@@ -85,7 +85,7 @@ const OrderDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCancelDialog, setShowCancelDialog] = useState(false);
- const [canceling, setCanceling] = useState(false);
+  const [canceling, setCanceling] = useState(false);
 
   useEffect(() => {
     fetchOrder();
@@ -178,22 +178,20 @@ const OrderDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
+      <DashboardLayout>
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             <p className="mt-4 text-muted-foreground">{t('common.loading')}</p>
           </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   if (error || !order) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
+      <DashboardLayout>
         <div className="container mx-auto px-4 py-12">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -205,24 +203,22 @@ const OrderDetail = () => {
             </Button>
           </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
+    <DashboardLayout>
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
-        <Button
+        {/* <Button
           variant="ghost"
           onClick={() => navigate('/orders')}
           className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           {t('order.backToOrders')}
-        </Button>
+        </Button> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
@@ -412,7 +408,7 @@ const OrderDetail = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </DashboardLayout>
   );
 };
 

@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getEventBySlug } from "../api/events";
 import { getTicketTypes } from "../api/ticketTypes";
+import AIChatbot from "../components/AIChatbot";
 import Header from "../components/Header";
 
 const PublicEventDetail = () => {
@@ -471,6 +472,8 @@ const PublicEventDetail = () => {
           </div>
         </div>
       </div>
+      {/* AI Chatbot with event context */}
+      <AIChatbot eventId={event?.id} />
     </div>
   );
 };

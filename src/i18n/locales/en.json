@@ -13,7 +13,11 @@
         "logout": "Logout",
         "dashboard": "Dashboard",
         "createOrganizer": "Create Organizer",
-        "settings": "Settings"
+        "settings": "Settings",
+        "theme": "Theme",
+        "language": "Language",
+        "searchPlaceholder": "What are you looking for today?",
+        "searchButton": "Search"
     },
     "home": {
         "title": "Ticket Event QR Web",
@@ -132,7 +136,9 @@
         },
         "showMore": "Show more",
         "showLess": "Show less",
-        "continue": "Continue"
+        "continue": "Continue",
+        "refresh": "Refresh",
+        "redirecting": "Redirecting..."
     },
     "footer": {
         "whoWeAre": "Who we are?",
@@ -412,7 +418,47 @@
         "refunds": "My Refunds",
         "categories": "Categories",
         "payouts": "Payouts",
-        "adminRefunds": "Refunds Management"
+        "adminRefunds": "Refunds Management",
+        "orders": "Orders",
+        "platformDashboard": "Platform Dashboard"
+    },
+    "myTickets": {
+        "title": "My Tickets",
+        "subtitle": "View and manage your event tickets",
+        "fetchError": "Unable to load tickets",
+        "noTickets": "No tickets yet",
+        "noTicketsDescription": "You haven't purchased any tickets yet. Explore events!",
+        "exploreEvents": "Explore Events",
+        "filterByStatus": "Filter by Status",
+        "filterByCheckin": "Filter by Check-in",
+        "allStatuses": "All Statuses",
+        "allCheckinStatuses": "All Check-in",
+        "unknownEvent": "Unknown Event",
+        "unknownType": "Unknown Type",
+        "status": {
+            "active": "Active",
+            "revoked": "Revoked",
+            "refunded": "Refunded"
+        },
+        "checkinStatus": {
+            "notCheckedIn": "Not Checked In",
+            "checkedIn": "Checked In"
+        }
+    },
+    "ticketDetail": {
+        "fetchError": "Unable to load ticket details",
+        "backToList": "Back to My Tickets",
+        "qrCode": "QR Code",
+        "ticketSerial": "Ticket Serial",
+        "eventInfo": "Event Information",
+        "viewEvent": "View Event",
+        "ticketType": "Ticket Type",
+        "attendeeInfo": "Attendee Information",
+        "orderInfo": "Order Information",
+        "orderNumber": "Order Number",
+        "viewOrder": "View Order",
+        "checkedInAt": "Checked in at",
+        "gate": "Gate"
     },
     "organizationsManagement": {
         "title": "Organizations Management",
@@ -694,7 +740,8 @@
         "stats": {
             "totalEvents": "Total Events",
             "publishedEvents": "Published Events",
-            "upcomingEvents": "Upcoming Events"
+            "upcomingEvents": "Upcoming Events",
+            "completedEvents": "Completed Events"
         },
         "table": {
             "event": "EVENT",
@@ -712,7 +759,7 @@
     },
     "eventsPage": {
         "title": "Events",
-        "subtitle": "Manage your events",
+        "subtitle": "Discover public events happening now",
         "noEvents": "You don't have any events yet",
         "createEvent": "Create Event",
         "page": "Page",
@@ -721,12 +768,33 @@
         "filterOffline": "Offline",
         "filterOnline": "Online",
         "filterHybrid": "Hybrid",
+        "filterMixed": "Mixed",
         "searchButton": "Search",
         "loadError": "Unable to load events list",
         "noEventsTitle": "No events found",
         "noEventsDescription": "Try searching with different keywords or remove filters",
         "prev": "Prev",
-        "next": "Next"
+        "next": "Next",
+        "cityPlaceholder": "City...",
+        "sort": "Sort",
+        "sortStartAsc": "Start date ↑",
+        "sortStartDesc": "Start date ↓",
+        "sortNewest": "Newest first",
+        "sortOldest": "Oldest first",
+        "sortTitleAZ": "Name A-Z",
+        "sortTitleZA": "Name Z-A",
+        "advancedFilters": "Filters",
+        "advancedFiltersTitle": "Advanced Filters",
+        "upcomingOnly": "Upcoming events only",
+        "timeFrom": "From date",
+        "timeTo": "To date",
+        "categories": "Categories",
+        "resetFilters": "Reset filters",
+        "activeFilters": "Active filters:",
+        "from": "From",
+        "to": "To",
+        "clearAll": "Clear all",
+        "createEvent": "Create Event"
     },
     "ticketTypes": {
         "title": "Ticket Types",
@@ -849,6 +917,22 @@
         "filterByPayment": "Filter by Payment",
         "allStatuses": "All Statuses",
         "allPaymentStatuses": "All",
+        "ordersSubtitle": "Manage all your orders",
+        "ordersList": "Orders List",
+        "stats": {
+            "totalOrders": "Total Orders",
+            "paidOrders": "Paid Orders",
+            "pendingOrders": "Pending",
+            "totalRevenue": "Total Spent"
+        },
+        "table": {
+            "orderNumber": "ORDER NUMBER",
+            "event": "EVENT",
+            "status": "STATUS",
+            "payment": "PAYMENT",
+            "date": "DATE",
+            "amount": "AMOUNT"
+        },
         "status": {
             "PENDING": "Pending",
             "CONFIRMED": "Confirmed",
@@ -924,7 +1008,62 @@
         "viewOrder": "View Order",
         "checkingStatus": "Checking status...",
         "pleaseWait": "Please wait a moment",
-        "redirectingToTickets": "Redirecting to tickets..."
+        "redirectingToTickets": "Redirecting to tickets...",
+        "errorCode": "Error code",
+        "failure": {
+            "tryAgain": "Try Again",
+            "goHome": "Go Home",
+            "contactSupport": "Contact Support",
+            "helpTitle": "Need Help?",
+            "helpMessage": "Please check your card information, account balance, or contact your bank for support.",
+            "contactBankNotice": "If money was deducted but you haven't received tickets, please contact your bank or our support within 24 hours."
+        },
+        "vnpayErrors": {
+            "07": {
+                "title": "Suspicious Transaction",
+                "message": "Money was deducted but there's an issue. Please contact your bank or support."
+            },
+            "09": {
+                "title": "Card Not Registered",
+                "message": "Card/Account is not registered for Internet Banking at the bank."
+            },
+            "10": {
+                "title": "Invalid Information",
+                "message": "Card/account information is incorrect. Please check again."
+            },
+            "11": {
+                "title": "Card Expired",
+                "message": "Your card has expired. Please use another card."
+            },
+            "12": {
+                "title": "Card Locked",
+                "message": "Your card has been locked. Please contact your bank."
+            },
+            "24": {
+                "title": "Transaction Cancelled",
+                "message": "You have cancelled the payment transaction."
+            },
+            "51": {
+                "title": "Insufficient Balance",
+                "message": "Your account doesn't have enough balance for this transaction."
+            },
+            "65": {
+                "title": "OTP Limit Exceeded",
+                "message": "You've entered wrong OTP too many times. Please try again later."
+            },
+            "75": {
+                "title": "Bank Under Maintenance",
+                "message": "The bank is under maintenance. Please try again later."
+            },
+            "79": {
+                "title": "Daily Transaction Limit Exceeded",
+                "message": "You've exceeded the daily transaction limit. Please try again tomorrow."
+            },
+            "default": {
+                "title": "Payment Failed",
+                "message": "An error occurred during payment. Please try again."
+            }
+        }
     },
     "ticket": {
         "free": "FREE",
@@ -1298,5 +1437,90 @@
             "listDescription": "All withdrawal requests from organization",
             "noPayouts": "No withdrawal requests yet"
         }
+    },
+    "analytics": {
+        "adminDashboard": "Platform Dashboard",
+        "adminDashboardDesc": "System-wide overview",
+        "organizationDashboard": "Organization Dashboard",
+        "organizationDashboardDesc": "Your organization statistics",
+        "eventDashboard": "Event Dashboard",
+        "eventDashboardDesc": "Event performance analytics",
+        "fetchError": "Unable to load dashboard data",
+        "totalUsers": "Total Users",
+        "verified": "verified",
+        "thisMonth": "this month",
+        "organizations": "Organizations",
+        "active": "active",
+        "events": "Events",
+        "published": "published",
+        "upcoming": "upcoming",
+        "ordersThisMonth": "Orders This Month",
+        "totalOrders": "total orders",
+        "revenueThisMonth": "Revenue This Month",
+        "pendingPayouts": "pending payouts",
+        "salesTrend": "Sales Trend",
+        "platformRevenue": "Platform-wide revenue",
+        "organizationRevenue": "Organization revenue over time",
+        "period": {
+            "day": "Daily",
+            "week": "Weekly",
+            "month": "Monthly",
+            "year": "Yearly"
+        },
+        "totalRevenue": "Total Revenue",
+        "totalTickets": "Total Tickets",
+        "platformFee": "Platform Fee",
+        "topOrganizations": "Top Organizations",
+        "topEvents": "Top Events",
+        "byRevenue": "By revenue",
+        "noOrganizations": "No organizations yet",
+        "noEvents": "No events yet",
+        "organization": "Organization",
+        "event": "Event",
+        "revenue": "Revenue",
+        "ticketsSold": "Tickets Sold",
+        "totalEvents": "Total Events",
+        "ordersIn30Days": "orders in 30 days",
+        "in30Days": "in 30 days",
+        "availableBalance": "Available Balance",
+        "pending": "pending",
+        "paidOut": "paid out",
+        "periodRevenue": "Period revenue",
+        "periodOrders": "Period orders",
+        "eventsWithStats": "Events",
+        "eventsPerformance": "Events performance",
+        "status": "Status",
+        "checkinRate": "Check-in",
+        "recentOrders": "Recent Orders",
+        "noOrders": "No orders yet",
+        "orders": "Orders",
+        "paid": "paid",
+        "cancelled": "cancelled",
+        "checkin": "Check-in",
+        "checkedIn": "checked in",
+        "notCheckedIn": "not yet",
+        "revenueByTicketType": "Revenue by Ticket Type",
+        "salesByDate": "Sales by Date",
+        "noData": "No data available",
+        "ticketTypesBreakdown": "Ticket Types Breakdown",
+        "soldVsTotal": "Sold vs total tickets",
+        "noTicketTypes": "No ticket types yet",
+        "sold": "tickets",
+        "salesComparison": "Ticket Type Revenue Comparison",
+        "viewEventPage": "View Event Page"
+    },
+    "chatbot": {
+        "title": "AI Assistant",
+        "welcome": "Hello! How can I help you?",
+        "placeholder": "Type a message...",
+        "send": "Send",
+        "loading": "Thinking...",
+        "rateLimit": "Too many messages. Please wait 1 minute.",
+        "error": "Sorry, I encountered an error. Please try again later.",
+        "unavailable": "AI is under maintenance. Please try again later.",
+        "online": "Online",
+        "suggestion1": "Where is this event?",
+        "suggestion2": "How to buy tickets?",
+        "suggestion3": "Refund policy?"
     }
 }

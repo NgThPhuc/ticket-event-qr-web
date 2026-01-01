@@ -13,7 +13,11 @@
         "logout": "Đăng xuất",
         "dashboard": "Dashboard",
         "createOrganizer": "Tạo Organizer",
-        "settings": "Cài đặt"
+        "settings": "Cài đặt",
+        "theme": "Giao diện",
+        "language": "Ngôn ngữ",
+        "searchPlaceholder": "Bạn tìm gì hôm nay?",
+        "searchButton": "Tìm kiếm"
     },
     "home": {
         "title": "Ticket Event QR Web",
@@ -134,7 +138,9 @@
         },
         "showMore": "Xem thêm",
         "showLess": "Thu gọn",
-        "continue": "Tiếp tục"
+        "continue": "Tiếp tục",
+        "refresh": "Làm mới",
+        "redirecting": "Đang chuyển hướng..."
     },
     "footer": {
         "whoWeAre": "Chúng tôi là ai?",
@@ -413,7 +419,47 @@
         "refunds": "Hoàn tiền của tôi",
         "categories": "Danh mục",
         "payouts": "Thanh toán",
-        "adminRefunds": "Quản lý hoàn tiền"
+        "adminRefunds": "Quản lý hoàn tiền",
+        "orders": "Đơn hàng",
+        "platformDashboard": "Dashboard Nền Tảng"
+    },
+    "myTickets": {
+        "title": "Vé của tôi",
+        "subtitle": "Xem và quản lý các vé sự kiện của bạn",
+        "fetchError": "Không thể tải danh sách vé",
+        "noTickets": "Chưa có vé nào",
+        "noTicketsDescription": "Bạn chưa mua vé nào. Hãy khám phá sự kiện!",
+        "exploreEvents": "Khám phá sự kiện",
+        "filterByStatus": "Lọc theo trạng thái",
+        "filterByCheckin": "Lọc theo check-in",
+        "allStatuses": "Tất cả trạng thái",
+        "allCheckinStatuses": "Tất cả check-in",
+        "unknownEvent": "Sự kiện không xác định",
+        "unknownType": "Loại vé không xác định",
+        "status": {
+            "active": "Còn hiệu lực",
+            "revoked": "Đã thu hồi",
+            "refunded": "Đã hoàn tiền"
+        },
+        "checkinStatus": {
+            "notCheckedIn": "Chưa check-in",
+            "checkedIn": "Đã check-in"
+        }
+    },
+    "ticketDetail": {
+        "fetchError": "Không thể tải chi tiết vé",
+        "backToList": "Quay lại danh sách vé",
+        "qrCode": "Mã QR",
+        "ticketSerial": "Số serial vé",
+        "eventInfo": "Thông tin sự kiện",
+        "viewEvent": "Xem sự kiện",
+        "ticketType": "Loại vé",
+        "attendeeInfo": "Thông tin người tham dự",
+        "orderInfo": "Thông tin đơn hàng",
+        "orderNumber": "Mã đơn hàng",
+        "viewOrder": "Xem đơn hàng",
+        "checkedInAt": "Check-in lúc",
+        "gate": "Cổng"
     },
     "organizationsManagement": {
         "title": "Quản Lý Tổ Chức",
@@ -695,7 +741,8 @@
         "stats": {
             "totalEvents": "Tổng Số Sự Kiện",
             "publishedEvents": "Sự Kiện Đã Xuất Bản",
-            "upcomingEvents": "Sự Kiện Sắp Tới"
+            "upcomingEvents": "Sự Kiện Sắp Tới",
+            "completedEvents": "Sự kiện Đã Kết Thúc"
         },
         "table": {
             "event": "SỰ KIỆN",
@@ -715,17 +762,38 @@
         "title": "Sự kiện",
         "subtitle": "Khám phá các sự kiện công khai đang diễn ra",
         "searchPlaceholder": "Tìm kiếm sự kiện...",
-        "filterAll": "Tất cả loại",
+        "filterAll": "Tất cả hình thức",
         "filterOffline": "Offline",
         "filterOnline": "Online",
         "filterHybrid": "Hybrid",
+        "filterMixed": "Kết hợp",
         "searchButton": "Tìm kiếm",
         "loadError": "Không thể tải danh sách sự kiện",
         "noEventsTitle": "Không tìm thấy sự kiện nào",
         "noEventsDescription": "Hãy thử tìm kiếm với từ khóa khác hoặc bỏ bộ lọc",
         "prev": "Trước",
         "next": "Sau",
-        "page": "Trang"
+        "page": "Trang",
+        "cityPlaceholder": "Thành phố...",
+        "sort": "Sắp xếp",
+        "sortStartAsc": "Ngày bắt đầu ↑",
+        "sortStartDesc": "Ngày bắt đầu ↓",
+        "sortNewest": "Mới nhất",
+        "sortOldest": "Cũ nhất",
+        "sortTitleAZ": "Tên A-Z",
+        "sortTitleZA": "Tên Z-A",
+        "advancedFilters": "Bộ lọc",
+        "advancedFiltersTitle": "Bộ lọc nâng cao",
+        "upcomingOnly": "Chỉ sự kiện sắp diễn ra",
+        "timeFrom": "Từ ngày",
+        "timeTo": "Đến ngày",
+        "categories": "Danh mục",
+        "resetFilters": "Xóa bộ lọc",
+        "activeFilters": "Đang lọc:",
+        "from": "Từ",
+        "to": "Đến",
+        "clearAll": "Xóa tất cả",
+        "createEvent": "Tạo sự kiện"
     },
     "ticketTypes": {
         "title": "Loại Vé",
@@ -848,6 +916,22 @@
         "filterByPayment": "Lọc theo thanh toán",
         "allStatuses": "Tất cả trạng thái",
         "allPaymentStatuses": "Tất cả",
+        "ordersSubtitle": "Quản lý tất cả đơn hàng của bạn",
+        "ordersList": "Danh sách đơn hàng",
+        "stats": {
+            "totalOrders": "Tổng Đơn Hàng",
+            "paidOrders": "Đã Thanh Toán",
+            "pendingOrders": "Đang Chờ",
+            "totalRevenue": "Tổng Chi Tiêu"
+        },
+        "table": {
+            "orderNumber": "MÃ ĐƠN HÀNG",
+            "event": "SỰ KIỆN",
+            "status": "TRẠNG THÁI",
+            "payment": "THANH TOÁN",
+            "date": "NGÀY ĐẶT",
+            "amount": "TỔNG TIỀN"
+        },
         "status": {
             "PENDING": "Chờ xử lý",
             "CONFIRMED": "Đã xác nhận",
@@ -923,7 +1007,62 @@
         "viewOrder": "Xem đơn hàng",
         "checkingStatus": "Đang kiểm tra trạng thái...",
         "pleaseWait": "Vui lòng đợi trong giây lát",
-        "redirectingToTickets": "Đang chuyển đến trang vé..."
+        "redirectingToTickets": "Đang chuyển đến trang vé...",
+        "errorCode": "Mã lỗi",
+        "failure": {
+            "tryAgain": "Thử lại",
+            "goHome": "Về trang chủ",
+            "contactSupport": "Liên hệ hỗ trợ",
+            "helpTitle": "Cần trợ giúp?",
+            "helpMessage": "Vui lòng kiểm tra thông tin thẻ, số dư tài khoản hoặc liên hệ ngân hàng của bạn để được hỗ trợ.",
+            "contactBankNotice": "Nếu tiền đã bị trừ nhưng chưa nhận được vé, vui lòng liên hệ ngân hàng hoặc bộ phận hỗ trợ của chúng tôi trong vòng 24 giờ."
+        },
+        "vnpayErrors": {
+            "07": {
+                "title": "Giao dịch nghi vấn",
+                "message": "Giao dịch đã trừ tiền nhưng có vấn đề. Vui lòng liên hệ ngân hàng hoặc hỗ trợ."
+            },
+            "09": {
+                "title": "Thẻ chưa đăng ký dịch vụ",
+                "message": "Thẻ/Tài khoản chưa đăng ký dịch vụ Internet Banking tại ngân hàng."
+            },
+            "10": {
+                "title": "Thông tin không đúng",
+                "message": "Thông tin thẻ/tài khoản không đúng. Vui lòng kiểm tra lại."
+            },
+            "11": {
+                "title": "Thẻ hết hạn",
+                "message": "Thẻ của bạn đã hết hạn. Vui lòng sử dụng thẻ khác."
+            },
+            "12": {
+                "title": "Thẻ bị khóa",
+                "message": "Thẻ của bạn đã bị khóa. Vui lòng liên hệ ngân hàng."
+            },
+            "24": {
+                "title": "Giao dịch bị hủy",
+                "message": "Bạn đã hủy giao dịch thanh toán."
+            },
+            "51": {
+                "title": "Không đủ số dư",
+                "message": "Tài khoản không đủ số dư để thực hiện giao dịch."
+            },
+            "65": {
+                "title": "Vượt quá số lần nhập OTP",
+                "message": "Bạn đã nhập sai OTP quá số lần cho phép. Vui lòng thử lại sau."
+            },
+            "75": {
+                "title": "Ngân hàng đang bảo trì",
+                "message": "Ngân hàng đang bảo trì. Vui lòng thử lại sau."
+            },
+            "79": {
+                "title": "Vượt quá số lần thanh toán",
+                "message": "Bạn đã vượt quá số lần thanh toán cho phép trong ngày. Vui lòng thử lại vào ngày mai."
+            },
+            "default": {
+                "title": "Thanh toán thất bại",
+                "message": "Đã có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại."
+            }
+        }
     },
     "ticket": {
         "free": "MIỄN PHÍ",
@@ -1236,6 +1375,7 @@
         "color": "Màu sắc",
         "order": "Thứ tự",
         "active": "Hoạt động",
+        "inactive": "Không hoạt động",
         "createSuccess": "Tạo danh mục thành công",
         "updateSuccess": "Cập nhật danh mục thành công",
         "deleteSuccess": "Xóa danh mục thành công",
@@ -1246,7 +1386,8 @@
             "color": "Màu",
             "status": "Trạng thái",
             "actions": "Thao tác"
-        }
+        },
+        "status": "Trạng Thái"
     },
     "payout": {
         "management": {
@@ -1320,5 +1461,90 @@
             "listDescription": "Tất cả yêu cầu rút tiền của tổ chức",
             "noPayouts": "Chưa có yêu cầu rút tiền nào"
         }
+    },
+    "analytics": {
+        "adminDashboard": "Dashboard Nền Tảng",
+        "adminDashboardDesc": "Tổng quan toàn bộ hệ thống",
+        "organizationDashboard": "Dashboard Tổ Chức",
+        "organizationDashboardDesc": "Thống kê tổ chức của bạn",
+        "eventDashboard": "Dashboard Sự Kiện",
+        "eventDashboardDesc": "Phân tích hiệu suất sự kiện",
+        "fetchError": "Không thể tải dữ liệu dashboard",
+        "totalUsers": "Tổng Người Dùng",
+        "verified": "đã xác thực",
+        "thisMonth": "tháng này",
+        "organizations": "Tổ Chức",
+        "active": "đang hoạt động",
+        "events": "Sự Kiện",
+        "published": "đã xuất bản",
+        "upcoming": "sắp diễn ra",
+        "ordersThisMonth": "Đơn Hàng Tháng Này",
+        "totalOrders": "tổng cộng",
+        "revenueThisMonth": "Doanh Thu Tháng Này",
+        "pendingPayouts": "payout chờ xử lý",
+        "salesTrend": "Xu Hướng Doanh Thu",
+        "platformRevenue": "Doanh thu toàn nền tảng",
+        "organizationRevenue": "Doanh thu tổ chức theo thời gian",
+        "period": {
+            "day": "Theo ngày",
+            "week": "Theo tuần",
+            "month": "Theo tháng",
+            "year": "Theo năm"
+        },
+        "totalRevenue": "Tổng Doanh Thu",
+        "totalTickets": "Tổng Vé",
+        "platformFee": "Phí Nền Tảng",
+        "topOrganizations": "Top Tổ Chức",
+        "topEvents": "Top Sự Kiện",
+        "byRevenue": "Theo doanh thu",
+        "noOrganizations": "Chưa có tổ chức nào",
+        "noEvents": "Chưa có sự kiện nào",
+        "organization": "Tổ Chức",
+        "event": "Sự Kiện",
+        "revenue": "Doanh Thu",
+        "ticketsSold": "Vé Đã Bán",
+        "totalEvents": "Tổng Sự Kiện",
+        "ordersIn30Days": "đơn trong 30 ngày",
+        "in30Days": "trong 30 ngày",
+        "availableBalance": "Số Dư Khả Dụng",
+        "pending": "đang chờ",
+        "paidOut": "đã rút",
+        "periodRevenue": "Doanh thu kỳ này",
+        "periodOrders": "Đơn hàng kỳ này",
+        "eventsWithStats": "Sự Kiện",
+        "eventsPerformance": "Hiệu suất các sự kiện",
+        "status": "Trạng Thái",
+        "checkinRate": "Check-in",
+        "recentOrders": "Đơn Hàng Gần Đây",
+        "noOrders": "Chưa có đơn hàng nào",
+        "orders": "Đơn Hàng",
+        "paid": "đã thanh toán",
+        "cancelled": "đã hủy",
+        "checkin": "Check-in",
+        "checkedIn": "đã check-in",
+        "notCheckedIn": "chưa",
+        "revenueByTicketType": "Doanh Thu Theo Loại Vé",
+        "salesByDate": "Doanh Thu Theo Ngày",
+        "noData": "Chưa có dữ liệu",
+        "ticketTypesBreakdown": "Chi Tiết Loại Vé",
+        "soldVsTotal": "Số vé đã bán và tổng số vé",
+        "noTicketTypes": "Chưa có loại vé nào",
+        "sold": "vé",
+        "salesComparison": "So Sánh Doanh Thu Loại Vé",
+        "viewEventPage": "Xem Trang Sự Kiện"
+    },
+    "chatbot": {
+        "title": "Trợ lý AI",
+        "welcome": "Xin chào! Tôi có thể giúp gì cho bạn?",
+        "placeholder": "Nhập tin nhắn...",
+        "send": "Gửi",
+        "loading": "Đang trả lời...",
+        "rateLimit": "Bạn đã gửi quá nhiều tin nhắn. Vui lòng đợi 1 phút.",
+        "error": "Xin lỗi, tôi gặp sự cố. Vui lòng thử lại sau.",
+        "unavailable": "AI đang bảo trì. Vui lòng thử lại sau.",
+        "online": "Trực tuyến",
+        "suggestion1": "Sự kiện diễn ra ở đâu?",
+        "suggestion2": "Làm sao để mua vé?",
+        "suggestion3": "Chính sách hoàn tiền?"
     }
 }

@@ -1,7 +1,6 @@
-import { useLocation, Link, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 export function Breadcrumb() {
   const location = useLocation();
@@ -63,6 +62,31 @@ export function Breadcrumb() {
       else if (path === '/events-management') {
         // Không thêm item thứ 2, chỉ hiển thị "Events"
       }
+    }
+    // Orders
+    else if (path.startsWith('/orders')) {
+      items.push({ label: t('sidebar.orders') || 'Đơn hàng', path: '/orders' });
+      
+      // Order Detail
+      if (params.orderId) {
+        items.push({ label: t('order.orderDetail') || 'Chi tiết đơn hàng', path: null });
+      }
+    }
+    // Check-in
+    else if (path.startsWith('/check-in')) {
+      items.push({ label: t('sidebar.checkin') || 'Check-in', path: '/check-in' });
+    }
+    // Categories
+    else if (path.startsWith('/admin/categories')) {
+      items.push({ label: t('sidebar.categories') || 'Danh mục', path: '/admin/categories' });
+    }
+    // Payouts
+    else if (path.startsWith('/admin/payouts')) {
+      items.push({ label: t('sidebar.payouts') || 'Thanh toán', path: '/admin/payouts' });
+    }
+    // Refunds
+    else if (path.startsWith('/refunds') || path.startsWith('/admin/refunds')) {
+      items.push({ label: t('sidebar.refunds') || 'Hoàn tiền', path: path.startsWith('/admin') ? '/admin/refunds' : '/refunds' });
     }
 
     return items;

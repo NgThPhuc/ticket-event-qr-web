@@ -10,6 +10,7 @@ import { getPublicEvents } from '../api/events';
 import CategoryEventsSection from '../components/CategoryEventsSection';
 import Header from '../components/Header';
 import LocationSection from '../components/LocationSection';
+import AIChatbot from '@/components/AIChatbot';
 
 const Home = () => {
     const { t } = useTranslation();
@@ -429,6 +430,8 @@ const Home = () => {
                     )}
                 </div>
             </section> */}
+            {/* AI Chatbot */}
+            {/* <AIChatbot /> */}
         </div>
     );
 };

@@ -1,23 +1,23 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Activity, Calendar, CheckCircle, MapPin } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { deleteEvent, getEvents } from '../api/events';
+import { PlatformEventsDataTable } from '../components/PlatformEventsDataTable';
 import { useAuth } from '../contexts/AuthContext';
 import { DashboardLayout } from '../layouts/DashboardLayout';
-import { PlatformEventsDataTable } from '../components/PlatformEventsDataTable';
-import { getEvents, deleteEvent } from '../api/events';
-import { Calendar, MapPin, Activity } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const EventsManagement = () => {
   const { t } = useTranslation();
@@ -85,6 +85,12 @@ const EventsManagement = () => {
     const startDate = new Date(event.start_at);
     const now = new Date();
     return startDate > now && event.status !== 'CANCELLED' && event.status !== 'COMPLETED';
+  }).length;
+  const completedEvents = events.filter(event => {
+    if (!event.end_at) return false;
+    const endDate = new Date(event.end_at);
+    const now = new Date();
+    return endDate < now || event.status === 'COMPLETED';
   }).length;
 
   const handleView = (eventId) => {
@@ -165,7 +171,7 @@ const EventsManagement = () => {
         )}
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Events */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
@@ -213,6 +219,23 @@ const EventsManagement = () => {
               </div>
               <div className="h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
                 <MapPin className="h-6 w-6 text-purple-600 dark:text-purple-300" />
+              </div>
+            </div>
+          </div>
+
+          {/* Completed Events */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  {t('eventsManagement.stats.completedEvents') || 'Completed Events'}
+                </p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                  {completedEvents}
+                </p>
+              </div>
+              <div className="h-12 w-12 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
+                <CheckCircle className="h-6 w-6 text-orange-600 dark:text-orange-300" />
               </div>
             </div>
           </div>

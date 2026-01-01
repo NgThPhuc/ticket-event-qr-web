@@ -127,7 +127,7 @@ const CategorySection = ({ category, visibleCards = 4 }) => {
                         </h2>
                     </div>
                     <button 
-                        onClick={() => navigate(`/events?category=${category.slug}`)}
+                        onClick={() => navigate(`/events?category_slugs=${category.slug}`)}
                         className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors"
                     >
                         {t('home.featured.viewAll', 'Xem thêm')}

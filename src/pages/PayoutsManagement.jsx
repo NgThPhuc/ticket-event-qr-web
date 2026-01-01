@@ -83,6 +83,12 @@ const PayoutsManagement = () => {
     const [processingId, setProcessingId] = useState(null);
     const [maturingShares, setMaturingShares] = useState(false);
     const [meta, setMeta] = useState({ total: 0, page: 1, limit: 20, total_pages: 1 });
+    const [stats, setStats] = useState({
+        PENDING: 0,
+        PROCESSING: 0,
+        COMPLETED: 0,
+        FAILED: 0
+    });
 
     // Check admin permission
     const isPlatformAdmin = user?.platform_role === "PLATFORM_ADMIN";
@@ -92,6 +98,23 @@ const PayoutsManagement = () => {
             navigate("/dashboard");
         }
     }, [authLoading, isAuthenticated, isPlatformAdmin, navigate]);
+
+    // Fetch stats cho mỗi trạng thái
+    const fetchStats = async () => {
+        try {
+            const statuses = ["PENDING", "PROCESSING", "COMPLETED", "FAILED"];
+            const newStats = {};
+            
+            for (const status of statuses) {
+                const result = await getAllPayouts({ status, limit: 1 });
+                newStats[status] = result.meta?.total || 0;
+            }
+            
+            setStats(newStats);
+        } catch (err) {
+            console.error("Error fetching stats:", err);
+        }
+    };
 
     const fetchPayouts = async () => {
         setLoading(true);
@@ -114,6 +137,13 @@ const PayoutsManagement = () => {
         }
     };
 
+    // Fetch stats khi component mount
+    useEffect(() => {
+        if (isAuthenticated && isPlatformAdmin) {
+            fetchStats();
+        }
+    }, [isAuthenticated, isPlatformAdmin]);
+
     useEffect(() => {
         if (isAuthenticated && isPlatformAdmin) {
             fetchPayouts();
@@ -129,6 +159,7 @@ const PayoutsManagement = () => {
         try {
             await processPayout(payoutId);
             await fetchPayouts();
+            await fetchStats(); // Cập nhật lại stats
         } catch (err) {
             setError(err.message || t("payout.processError") || "Không thể xử lý thanh toán");
         } finally {
@@ -142,6 +173,7 @@ const PayoutsManagement = () => {
             const result = await matureShares();
             alert(t("payout.matureSuccess", { count: result.matured }) || `Đã mature ${result.matured} revenue shares`);
             await fetchPayouts();
+            await fetchStats(); // Cập nhật lại stats
         } catch (err) {
             setError(err.message || "Không thể mature shares");
         } finally {
@@ -220,7 +252,6 @@ const PayoutsManagement = () => {
                     {TABS.slice(1).map((tab) => {
                         const config = STATUS_CONFIG[tab.key];
                         const Icon = config?.icon || Clock;
-                        const count = payouts.filter(p => activeTab === "all" ? p.status === tab.key : false).length;
                         return (
                             <Card
                                 key={tab.key}
@@ -236,7 +267,7 @@ const PayoutsManagement = () => {
                                             {t(tab.labelKey) || tab.label}
                                         </p>
                                         <p className="text-xl font-bold">
-                                            {activeTab === tab.key ? meta.total : "-"}
+                                            {stats[tab.key] || 0}
                                         </p>
                                     </div>
                                 </CardContent>

@@ -1,20 +1,19 @@
-import { useMemo } from 'react';
-import {
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-} from '@tanstack/react-table';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Eye, Edit, Trash2 } from 'lucide-react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import {
+    flexRender,
+    getCoreRowModel,
+    useReactTable,
+} from '@tanstack/react-table';
+import { Calendar } from 'lucide-react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const getStatusBadgeVariant = (status) => {
@@ -131,57 +130,8 @@ export function PlatformEventsDataTable({
           );
         },
       },
-      {
-        id: 'actions',
-        header: () => (
-          <div className="flex justify-end">
-            {t('eventsManagement.table.actions') || 'ACTIONS'}
-          </div>
-        ),
-        cell: ({ row }) => {
-          const event = row.original;
-          
-          return (
-            <div className="flex justify-end gap-2">
-              {onView && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onView(event.id)}
-                  className="h-8 gap-1"
-                >
-                  <Eye className="h-4 w-4" />
-                  {t('eventsManagement.actions.view') || 'View'}
-                </Button>
-              )}
-              {onEdit && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEdit(event.id)}
-                  className="h-8 gap-1"
-                >
-                  <Edit className="h-4 w-4" />
-                  {t('eventsManagement.actions.edit') || 'Edit'}
-                </Button>
-              )}
-              {onDelete && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => onDelete(event.id, event.title)}
-                  className="h-8 gap-1"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  {t('eventsManagement.actions.delete') || 'Delete'}
-                </Button>
-              )}
-            </div>
-          );
-        },
-      },
     ],
-    [t, onView, onEdit, onDelete]
+    [t]
   );
 
   const table = useReactTable({
@@ -215,6 +165,8 @@ export function PlatformEventsDataTable({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
+                className="cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => onView && onView(row.original.id)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

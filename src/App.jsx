@@ -8,6 +8,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import PublicRoute from './routes/PublicRoute';
 
 // Pages
+import AdminDashboard from './pages/AdminDashboard';
 import CategoriesManagement from './pages/CategoriesManagement';
 import CheckInAnalytics from './pages/CheckInAnalytics';
 import CheckInDashboard from './pages/CheckInDashboard';
@@ -20,6 +21,7 @@ import CreateOrganization from './pages/CreateOrganization';
 import Dashboard from './pages/Dashboard';
 import EditEvent from './pages/EditEvent';
 import EditOrganization from './pages/EditOrganization';
+import EventDashboard from './pages/EventDashboard';
 import EventDetail from './pages/EventDetail';
 import Events from './pages/Events';
 import EventsPage from './pages/EventsPage';
@@ -29,10 +31,12 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import MyOrders from './pages/MyOrders';
 import MyRefunds from './pages/MyRefunds';
+import MyTickets from './pages/MyTickets';
 import NotFound from './pages/NotFound';
 import OrderDetail from './pages/OrderDetail';
 import OrderSuccess from './pages/OrderSuccess';
 import OrderTracking from './pages/OrderTracking';
+import OrganizationDashboard from './pages/OrganizationDashboard';
 import OrganizationDetail from './pages/OrganizationDetail';
 import OrganizationMembers from './pages/OrganizationMembers';
 import OrganizationsPage from './pages/OrganizationsPage';
@@ -52,6 +56,7 @@ import Register from './pages/Register';
 import ResetPassword from './pages/ResetPassword';
 import RevenueSharesManagement from './pages/RevenueSharesManagement';
 import Settings from './pages/Settings';
+import TicketDetail from './pages/TicketDetail';
 import VerifyOTP from './pages/VerifyOTP';
 
 function AppContent() {
@@ -161,6 +166,22 @@ function AppContent() {
                     }
                 />
                 <Route
+                    path="/my-tickets"
+                    element={
+                        <ProtectedRoute>
+                            <MyTickets />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/my-tickets/:ticketId"
+                    element={
+                        <ProtectedRoute>
+                            <TicketDetail />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
                     path="/profile"
                     element={
                         <ProtectedRoute>
@@ -173,6 +194,30 @@ function AppContent() {
                     element={
                         <ProtectedRoute>
                             <Settings />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/dashboard/organizations/:organizationId"
+                    element={
+                        <ProtectedRoute>
+                            <OrganizationDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/dashboard/events/:eventId"
+                    element={
+                        <ProtectedRoute>
+                            <EventDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <AdminDashboard />
                         </ProtectedRoute>
                     }
                 />

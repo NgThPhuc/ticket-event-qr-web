@@ -29,8 +29,9 @@ import {
     RefreshCw,
     Settings,
     ShieldCheck,
+    ShoppingCart,
     Tags,
-    User,
+    User
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
@@ -61,16 +62,31 @@ const MENU_CONFIG = [
         titleKey: 'sidebar.checkin',
         url: '/check-in',
     },
+];
+
+// Menu chỉ dành cho PLATFORM_ADMIN hoặc ORGANIZER_ADMIN
+const ADMIN_MENU_CONFIG = [
+    // {
+    //     key: 'platformDashboard',
+    //     icon: TrendingUp,
+    //     titleKey: 'sidebar.platformDashboard',
+    //     url: '/admin/dashboard',
+    //     roles: ['PLATFORM_ADMIN'],
+    // },
+    {
+        key: 'orders',
+        icon: ShoppingCart,
+        titleKey: 'sidebar.orders',
+        url: '/orders',
+        roles: ['PLATFORM_ADMIN', 'ORGANIZER_ADMIN'],
+    },
     {
         key: 'refunds',
         icon: RefreshCw,
         titleKey: 'sidebar.refunds',
         url: '/refunds',
+        roles: ['ORGANIZER_ADMIN'],
     },
-];
-
-// Menu chỉ dành cho PLATFORM_ADMIN hoặc ORGANIZER_ADMIN
-const ADMIN_MENU_CONFIG = [
     {
         key: 'categories',
         icon: Tags,
@@ -90,7 +106,7 @@ const ADMIN_MENU_CONFIG = [
         icon: ShieldCheck,
         titleKey: 'sidebar.adminRefunds',
         url: '/admin/refunds',
-        roles: ['PLATFORM_ADMIN', 'ORGANIZER_ADMIN'],
+        roles: ['PLATFORM_ADMIN'],
     },
 ];
 
@@ -147,26 +163,20 @@ export function AppSidebar() {
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarMenu>
+                            {/* Menu chung */}
                             {MENU_CONFIG.map((item) => renderMenuItem(item))}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
-
-                {/* Admin Menu - chỉ hiển thị cho PLATFORM_ADMIN hoặc ORGANIZER_ADMIN */}
-                {(user?.platform_role === 'PLATFORM_ADMIN' || user?.platform_role === 'ORGANIZER_ADMIN') && (
-                    <SidebarGroup>
-                        <SidebarGroupContent>
-                            <SidebarMenu>
-                                {ADMIN_MENU_CONFIG.map((item) => {
+                            
+                            {/* Admin Menu - chỉ hiển thị cho PLATFORM_ADMIN hoặc ORGANIZER_ADMIN */}
+                            {(user?.platform_role === 'PLATFORM_ADMIN' || user?.platform_role === 'ORGANIZER_ADMIN') &&
+                                ADMIN_MENU_CONFIG.map((item) => {
                                     if (item.roles && !item.roles.includes(user?.platform_role)) {
                                         return null;
                                     }
                                     return renderMenuItem(item);
                                 })}
-                            </SidebarMenu>
-                        </SidebarGroupContent>
-                    </SidebarGroup>
-                )}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
             </SidebarContent>
 
             <SidebarFooter className={`border-t ${state === 'collapsed' ? 'p-2' : 'p-4'}`}>
