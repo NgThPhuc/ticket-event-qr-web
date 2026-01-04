@@ -291,16 +291,6 @@ const Header = ({ showSidebar = false }) => {
         {!showSidebar && mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
             <nav className="flex flex-col gap-4">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium py-2 transition-colors duration-200"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
               {isAuthenticated && (hasOrganizations || isPlatformAdmin) && (
                 <Link
                   to="/dashboard"

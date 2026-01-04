@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import * as authAPI from '../api/auth';
 
 const AuthContext = createContext(null);
@@ -34,8 +34,14 @@ export const AuthProvider = ({ children }) => {
         // Verify token bằng cách lấy profile
         try {
           const profile = await authAPI.getProfile();
-          setUser(profile);
-          localStorage.setItem('user', JSON.stringify(profile));
+          // Merge organizations từ savedUser nếu profile không có
+          const mergedUser = {
+            ...profile,
+            organizations: profile.organizations || savedUser.organizations || [],
+            platform_role: profile.platform_role || savedUser.platform_role,
+          };
+          setUser(mergedUser);
+          localStorage.setItem('user', JSON.stringify(mergedUser));
         } catch (error) {
           // Token không hợp lệ, xóa khỏi localStorage
           authAPI.logout();

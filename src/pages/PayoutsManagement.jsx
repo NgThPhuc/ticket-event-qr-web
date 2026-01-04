@@ -33,6 +33,38 @@ import { getAllPayouts, matureShares, processPayout } from "../api/payouts";
 import { useAuth } from "../contexts/AuthContext";
 import { DashboardLayout } from "../layouts/DashboardLayout";
 
+// ============== MOCK DATA FOR SCREENSHOT ==============
+const USE_MOCK_DATA = true; // Đặt thành false để dùng API thật
+
+const MOCK_PAYOUTS = [
+    {
+        id: '1',
+        organization: { name: 'Đà Nẵng Events' },
+        account_holder: 'Nguyễn Văn A',
+        amount: 45620000,
+        bank_name: 'Vietcombank',
+        bank_account: '1234567890',
+        status: 'PENDING',
+        created_at: '2025-12-30T10:15:00.000Z',
+        transaction_code: null,
+    },
+    {
+        id: '2',
+        organization: { name: 'Saigon Music Festival' },
+        account_holder: 'Trần Thị B',
+        amount: 38560000,
+        bank_name: 'Techcombank',
+        bank_account: '9876543210',
+        status: 'COMPLETED',
+        created_at: '2025-12-28T14:30:00.000Z',
+        transaction_code: 'TXN-20251228-001',
+    },
+];
+
+const MOCK_STATS = { PENDING: 1, PROCESSING: 0, COMPLETED: 1, FAILED: 0 };
+const MOCK_META = { total: 2, page: 1, limit: 20, total_pages: 1 };
+// ============== END MOCK DATA ==============
+
 const STATUS_CONFIG = {
     PENDING: {
         label: "Chờ xử lý",
@@ -101,6 +133,11 @@ const PayoutsManagement = () => {
 
     // Fetch stats cho mỗi trạng thái
     const fetchStats = async () => {
+        if (USE_MOCK_DATA) {
+            setStats(MOCK_STATS);
+            return;
+        }
+        
         try {
             const statuses = ["PENDING", "PROCESSING", "COMPLETED", "FAILED"];
             const newStats = {};
@@ -119,6 +156,17 @@ const PayoutsManagement = () => {
     const fetchPayouts = async () => {
         setLoading(true);
         setError(null);
+        
+        if (USE_MOCK_DATA) {
+            const filtered = activeTab === "all" 
+                ? MOCK_PAYOUTS 
+                : MOCK_PAYOUTS.filter(p => p.status === activeTab);
+            setPayouts(filtered);
+            setMeta({ ...MOCK_META, total: filtered.length });
+            setLoading(false);
+            return;
+        }
+        
         try {
             const params = {
                 page: meta.page,

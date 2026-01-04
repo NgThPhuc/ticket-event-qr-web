@@ -10,7 +10,6 @@ import { getPublicEvents } from '../api/events';
 import CategoryEventsSection from '../components/CategoryEventsSection';
 import Header from '../components/Header';
 import LocationSection from '../components/LocationSection';
-import AIChatbot from '@/components/AIChatbot';
 
 const Home = () => {
     const { t } = useTranslation();
@@ -157,7 +156,7 @@ const Home = () => {
                     )}
                     {!showFullDate && (
                         <div className="absolute top-3 left-3">
-                            <Badge className="bg-white/90 text-foreground hover:bg-white">
+                            <Badge className="bg-white text-gray-900 hover:bg-white font-semibold shadow-sm">
                                 {formatDate(event.start_at)}
                             </Badge>
                         </div>
@@ -267,7 +266,7 @@ const Home = () => {
                                                             </div>
                                                         )}
                                                         <div className="absolute top-3 left-3">
-                                                            <Badge className="bg-white/90 text-foreground hover:bg-white">
+                                                            <Badge className="bg-white text-gray-900 hover:bg-white font-semibold shadow-sm">
                                                                 {formatDate(event.start_at)}
                                                             </Badge>
                                                         </div>

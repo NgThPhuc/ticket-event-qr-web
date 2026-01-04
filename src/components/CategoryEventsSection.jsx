@@ -205,7 +205,7 @@ const CategorySection = ({ category, visibleCards = 4 }) => {
                                                         </div>
                                                     )}
                                                     <div className="absolute top-3 left-3">
-                                                        <Badge className="bg-white/90 text-foreground hover:bg-white">
+                                                        <Badge className="bg-white text-gray-900 hover:bg-white font-semibold shadow-sm">
                                                             {formatDate(event.start_at)}
                                                         </Badge>
                                                     </div>

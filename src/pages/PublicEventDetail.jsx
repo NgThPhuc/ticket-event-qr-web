@@ -473,7 +473,7 @@ const PublicEventDetail = () => {
         </div>
       </div>
       {/* AI Chatbot with event context */}
-      <AIChatbot eventId={event?.id} />
+      {/* <AIChatbot eventId={event?.id} /> */}
     </div>
   );
 };

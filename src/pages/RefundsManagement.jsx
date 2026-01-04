@@ -1,34 +1,67 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '../contexts/AuthContext';
-import { DashboardLayout } from '../layouts/DashboardLayout';
-import { getRefunds } from '../api/refunds';
-import { RefundStatusBadge } from '../components/RefundStatusBadge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  ArrowRight,
-  Calendar,
-  CheckCircle,
-  Clock,
-  DollarSign,
-  FileText,
-  RefreshCw,
-  Search,
+    ArrowRight,
+    CheckCircle,
+    Clock,
+    DollarSign,
+    FileText,
+    Search
 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { getRefunds } from '../api/refunds';
+import { RefundStatusBadge } from '../components/RefundStatusBadge';
+import { useAuth } from '../contexts/AuthContext';
+import { DashboardLayout } from '../layouts/DashboardLayout';
+
+// ============== MOCK DATA FOR SCREENSHOT ==============
+const USE_MOCK_DATA = true; // Đặt thành false để dùng API thật
+
+const MOCK_REFUNDS = [
+    {
+        id: '1',
+        order: {
+            order_number: 'ORD-2025-001234',
+            user: { full_name: 'Nguyễn Văn An', email: 'an.nguyen@gmail.com' },
+            event: { title: 'Countdown Party 2026 - Đà Nẵng' },
+        },
+        refund_amount: 1500000,
+        status: 'PENDING',
+        payment_method: 'VNPAY',
+        created_at: '2025-12-30T09:30:00.000Z',
+        reason: 'Không thể tham dự do lý do cá nhân',
+    },
+    {
+        id: '2',
+        order: {
+            order_number: 'ORD-2025-001198',
+            user: { full_name: 'Trần Thị Bình', email: 'binh.tran@gmail.com' },
+            event: { title: 'Rock Festival Vietnam 2026' },
+        },
+        refund_amount: 2400000,
+        status: 'COMPLETED',
+        payment_method: 'VNPAY',
+        created_at: '2025-12-28T15:45:00.000Z',
+        reason: 'Sự kiện bị hủy',
+    },
+];
+
+const MOCK_META = { total: 2, page: 1, limit: 20, total_pages: 1 };
+// ============== END MOCK DATA ==============
 
 const RefundsManagement = () => {
   const { t } = useTranslation();
@@ -65,6 +98,17 @@ const RefundsManagement = () => {
 
     setLoading(true);
     setError('');
+    
+    if (USE_MOCK_DATA) {
+      const filtered = status === 'ALL' 
+        ? MOCK_REFUNDS 
+        : MOCK_REFUNDS.filter(r => r.status === status);
+      setRefunds(filtered);
+      setMeta({ ...MOCK_META, total: filtered.length });
+      setLoading(false);
+      return;
+    }
+    
     try {
       const params = { page, limit: 20 };
       if (status !== 'ALL') {

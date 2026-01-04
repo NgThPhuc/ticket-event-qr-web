@@ -23,26 +23,41 @@ const Dashboard = () => {
       return;
     }
 
+    // DEBUG: Log user data
+    console.log("=== Dashboard Redirect Debug ===");
+    console.log("User:", user);
+    console.log("Platform Role:", user.platform_role);
+    console.log("Organizations:", user.organizations);
+    console.log("Organizations length:", user.organizations?.length);
+
     const platformRole = user.platform_role;
     const organizations = user.organizations || [];
 
     // PLATFORM_ADMIN → Admin Dashboard
     if (platformRole === "PLATFORM_ADMIN") {
+      console.log("→ Redirecting to /admin/dashboard");
       navigate("/admin/dashboard", { replace: true });
       return;
     }
 
-    // ORGANIZER_ADMIN or EVENT_MANAGER with organizations → Organization Dashboard
-    if (
-      (platformRole === "ORGANIZER_ADMIN" || platformRole === "EVENT_MANAGER") &&
-      organizations.length > 0
-    ) {
-      // Navigate to first organization's dashboard
-      navigate(`/dashboard/organizations/${organizations[0].id}`, { replace: true });
-      return;
+    // Check if user has organizations
+    if (organizations.length > 0) {
+      // Check platform_role OR organization role
+      const orgRole = organizations[0].role;
+      const isOrgAdmin = platformRole === "ORGANIZER_ADMIN" || 
+                         platformRole === "EVENT_MANAGER" ||
+                         orgRole === "ORGANIZER_ADMIN" ||
+                         orgRole === "EVENT_MANAGER";
+      
+      if (isOrgAdmin) {
+        console.log("→ Redirecting to /dashboard/organizations/" + organizations[0].id);
+        navigate(`/dashboard/organizations/${organizations[0].id}`, { replace: true });
+        return;
+      }
     }
 
     // CUSTOMER or user without organizations → My Orders
+    console.log("→ Redirecting to /my-orders (fallback)");
     navigate("/my-orders", { replace: true });
   }, [authLoading, isAuthenticated, user, navigate]);
 

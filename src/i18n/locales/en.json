@@ -910,6 +910,7 @@
         "updatedAt": "Last Updated",
         "ticket": "Ticket",
         "tickets": "tickets",
+        "ticketsUnit": "tickets",
         "ticketNumber": "Ticket #{{number}}",
         "checkinStatus": "Check-in Status",
         "checkinAt": "Check-in Time",

@@ -44,14 +44,14 @@ const PaymentSuccess = () => {
   }, [orderNumber, navigate, t]);
 
   const handleViewMyTickets = () => {
-    navigate('/orders');
+    navigate('/my-tickets');
   };
 
   const handleViewOrderDetail = () => {
     // Need to get orderId from orderNumber
     // Option 1: Call API to get order by order_number
     // Option 2: Navigate to /orders and let user find it
-    navigate('/orders');
+    navigate('/my-tickets');
   };
 
   return (

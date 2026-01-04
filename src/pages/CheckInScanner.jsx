@@ -157,23 +157,24 @@ export default function CheckInScanner() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => navigate('/check-in')}
+              className="shrink-0"
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div>
-              <h1 className="text-2xl font-bold">
+            <div className="min-w-0">
+              <h1 className="text-xl md:text-2xl font-bold truncate">
                 {t('checkin.scanner.title', 'Quét mã QR')}
               </h1>
               {currentEvent && (
-                <p className="text-gray-500">{currentEvent.name}</p>
+                <p className="text-gray-500 text-sm truncate">{currentEvent.name}</p>
               )}
             </div>
           </div>
@@ -181,6 +182,7 @@ export default function CheckInScanner() {
             <Button
               variant="outline"
               onClick={() => navigate(`/check-in/history/${selectedEventId}`)}
+              className="w-full sm:w-auto"
             >
               <History className="w-4 h-4 mr-2" />
               {t('checkin.scanner.viewHistory', 'Lịch sử')}
@@ -188,21 +190,22 @@ export default function CheckInScanner() {
           )}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        {/* Main Content - Responsive Grid */}
+        <div className="grid gap-4 md:gap-6 lg:grid-cols-3">
           {/* Left side - Scanner */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 md:space-y-6">
             {/* Event selection */}
             <Card>
-              <CardContent className="p-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+              <CardContent className="p-3 md:p-4">
+                <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label>{t('checkin.scanner.selectEvent', 'Chọn sự kiện')}</Label>
+                    <Label className="text-sm">{t('checkin.scanner.selectEvent', 'Chọn sự kiện')}</Label>
                     <Select
                       value={selectedEventId}
                       onValueChange={setSelectedEventId}
                       disabled={eventsLoading}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder={t('checkin.scanner.eventPlaceholder', 'Chọn sự kiện...')} />
                       </SelectTrigger>
                       <SelectContent>
@@ -216,7 +219,7 @@ export default function CheckInScanner() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>{t('checkin.scanner.selectGate', 'Cổng check-in')}</Label>
+                    <Label className="text-sm">{t('checkin.scanner.selectGate', 'Cổng check-in')}</Label>
                     <Select
                       value={selectedGate}
                       onValueChange={(v) => {
@@ -224,7 +227,7 @@ export default function CheckInScanner() {
                         if (v !== 'custom') setCustomGate('');
                       }}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder={t('checkin.scanner.gatePlaceholder', 'Chọn cổng (tùy chọn)')} />
                       </SelectTrigger>
                       <SelectContent>
@@ -257,7 +260,7 @@ export default function CheckInScanner() {
             {/* Scanner */}
             {selectedEventId ? (
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-4 md:p-6">
                   <QRScanner
                     onScan={handleScan}
                     onError={handleScanError}
@@ -268,9 +271,9 @@ export default function CheckInScanner() {
               </Card>
             ) : (
               <Card>
-                <CardContent className="p-12 text-center">
-                  <Settings className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">
+                <CardContent className="p-8 md:p-12 text-center">
+                  <Settings className="w-12 h-12 md:w-16 md:h-16 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500 text-sm md:text-base">
                     {t('checkin.scanner.selectEventPrompt', 'Vui lòng chọn sự kiện để bắt đầu quét')}
                   </p>
                 </CardContent>
@@ -278,8 +281,8 @@ export default function CheckInScanner() {
             )}
           </div>
 
-          {/* Right side - Stats */}
-          <div className="space-y-6">
+          {/* Right side - Stats (hiển thị dưới trên mobile) */}
+          <div className="space-y-4 md:space-y-6 order-first lg:order-last">
             {selectedEventId && (
               <>
                 <CheckInStatsCard
@@ -290,26 +293,28 @@ export default function CheckInScanner() {
 
                 {/* Quick actions */}
                 <Card>
-                  <CardContent className="p-4 space-y-3">
-                    <h3 className="font-medium text-sm text-gray-500 uppercase">
+                  <CardContent className="p-3 md:p-4 space-y-2 md:space-y-3">
+                    <h3 className="font-medium text-xs md:text-sm text-gray-500 uppercase">
                       {t('checkin.scanner.quickActions', 'Thao tác nhanh')}
                     </h3>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start"
-                      onClick={() => navigate(`/check-in/history/${selectedEventId}`)}
-                    >
-                      <History className="w-4 h-4 mr-2" />
-                      {t('checkin.scanner.viewHistory', 'Xem lịch sử check-in')}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start"
-                      onClick={() => navigate(`/events/${selectedEventId}`)}
-                    >
-                      <Settings className="w-4 h-4 mr-2" />
-                      {t('checkin.scanner.eventDetails', 'Chi tiết sự kiện')}
-                    </Button>
+                    <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-sm"
+                        onClick={() => navigate(`/check-in/history/${selectedEventId}`)}
+                      >
+                        <History className="w-4 h-4 mr-2" />
+                        <span className="truncate">{t('checkin.history.title', 'Lịch sử')}</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-sm"
+                        onClick={() => navigate(`/events/${selectedEventId}`)}
+                      >
+                        <Settings className="w-4 h-4 mr-2" />
+                        <span className="truncate">{t('checkin.scanner.eventDetails', 'Chi tiết sự kiện')}</span>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </>

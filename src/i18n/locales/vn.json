@@ -140,7 +140,8 @@
         "showLess": "Thu gọn",
         "continue": "Tiếp tục",
         "refresh": "Làm mới",
-        "redirecting": "Đang chuyển hướng..."
+        "redirecting": "Đang chuyển hướng...",
+        "actions":" Hành động"
     },
     "footer": {
         "whoWeAre": "Chúng tôi là ai?",
@@ -909,6 +910,7 @@
         "updatedAt": "Cập nhật lần cuối",
         "ticket": "Vé",
         "tickets": "vé",
+        "ticketsUnit": "vé",
         "ticketNumber": "Vé #{{number}}",
         "checkinStatus": "Trạng thái check-in",
         "checkinAt": "Thời gian check-in",

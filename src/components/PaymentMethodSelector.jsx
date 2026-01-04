@@ -16,22 +16,22 @@ const PaymentMethodSelector = ({ value = "PAYOS", onChange, disabled = false }) 
   const { t } = useTranslation();
 
   const paymentMethods = [
-    {
-      id: "PAYOS",
-      name: "PayOS",
-      description: t('payment.methods.payos.description', 'Banking, Momo, ZaloPay, QR Code'),
-      icon: <Smartphone className="h-5 w-5" />,
-      badge: {
-        text: t('payment.methods.recommended', 'Khuyên dùng'),
-        variant: "default"
-      },
-      features: [
-        t('payment.methods.payos.feature1', 'Chuyển khoản ngân hàng'),
-        t('payment.methods.payos.feature2', 'Ví Momo'),
-        t('payment.methods.payos.feature3', 'Ví ZaloPay'),
-        t('payment.methods.payos.feature4', 'QR Code (VietQR)'),
-      ]
-    },
+    // {
+    //   id: "PAYOS",
+    //   name: "PayOS",
+    //   description: t('payment.methods.payos.description', 'Banking, Momo, ZaloPay, QR Code'),
+    //   icon: <Smartphone className="h-5 w-5" />,
+    //   badge: {
+    //     text: t('payment.methods.recommended', 'Khuyên dùng'),
+    //     variant: "default"
+    //   },
+    //   features: [
+    //     t('payment.methods.payos.feature1', 'Chuyển khoản ngân hàng'),
+    //     t('payment.methods.payos.feature2', 'Ví Momo'),
+    //     t('payment.methods.payos.feature3', 'Ví ZaloPay'),
+    //     t('payment.methods.payos.feature4', 'QR Code (VietQR)'),
+    //   ]
+    // },
     {
       id: "VNPAY",
       name: "VNPAY",

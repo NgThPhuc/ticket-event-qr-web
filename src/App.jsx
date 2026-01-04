@@ -18,6 +18,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import Contact from './pages/Contact';
 import CreateEvent from './pages/CreateEvent';
 import CreateOrganization from './pages/CreateOrganization';
+import CustomerOrderDetail from './pages/CustomerOrderDetail';
 import Dashboard from './pages/Dashboard';
 import EditEvent from './pages/EditEvent';
 import EditOrganization from './pages/EditOrganization';
@@ -33,7 +34,6 @@ import MyOrders from './pages/MyOrders';
 import MyRefunds from './pages/MyRefunds';
 import MyTickets from './pages/MyTickets';
 import NotFound from './pages/NotFound';
-import OrderDetail from './pages/OrderDetail';
 import OrderSuccess from './pages/OrderSuccess';
 import OrderTracking from './pages/OrderTracking';
 import OrganizationDashboard from './pages/OrganizationDashboard';
@@ -161,7 +161,7 @@ function AppContent() {
                     path="/orders/:orderId"
                     element={
                         <ProtectedRoute>
-                            <OrderDetail />
+                            <CustomerOrderDetail />
                         </ProtectedRoute>
                     }
                 />
