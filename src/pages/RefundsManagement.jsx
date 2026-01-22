@@ -29,7 +29,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { DashboardLayout } from '../layouts/DashboardLayout';
 
 // ============== MOCK DATA FOR SCREENSHOT ==============
-const USE_MOCK_DATA = true; // Đặt thành false để dùng API thật
+const USE_MOCK_DATA = false; // Đặt thành false để dùng API thật
 
 const MOCK_REFUNDS = [
     {
